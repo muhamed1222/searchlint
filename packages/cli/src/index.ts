@@ -171,7 +171,7 @@ type CliParsedCommand =
       error: string;
     };
 
-export const searchLintCliVersion = "1.0.0-beta.18";
+export const searchLintCliVersion = "1.0.0-beta.20";
 const searchLintCliPackageRange = "beta";
 const searchLintNextPackageRange = "beta";
 
@@ -1016,6 +1016,9 @@ function parseInitCommand(args: readonly string[]): CliParsedCommand {
 
   for (let index = 0; index < args.length; index += 1) {
     const arg = args[index];
+    if (arg === undefined) {
+      continue;
+    }
     if (arg === "--print-config") {
       if (printConfig) {
         return {
@@ -1028,8 +1031,9 @@ function parseInitCommand(args: readonly string[]): CliParsedCommand {
       continue;
     }
 
-    if (arg === "--site") {
-      const value = args[index + 1];
+    if (arg === "--site" || arg.startsWith("--site=")) {
+      const value =
+        arg === "--site" ? args[index + 1] : arg.slice("--site=".length);
       if (!value || value.startsWith("--")) {
         return { ok: false, error: "Missing value for '--site'." };
       }
@@ -1047,7 +1051,21 @@ function parseInitCommand(args: readonly string[]): CliParsedCommand {
         };
       }
       siteUrl = value;
-      index += 1;
+      if (arg === "--site") {
+        index += 1;
+      }
+      continue;
+    }
+
+    if (isHttpUrl(arg)) {
+      if (siteUrl !== undefined) {
+        return {
+          ok: false,
+          error:
+            "Usage: searchlint init [--site https://example.com] [--print-config]"
+        };
+      }
+      siteUrl = arg;
       continue;
     }
 
@@ -1348,7 +1366,7 @@ export function usageText(): string {
 Usage:
   searchlint check --snapshot <snapshot.json> --catalog <RULE_CATALOG.yaml> [options]
   searchlint crawl --url <https://example.com/> --catalog <RULE_CATALOG.yaml> [options]
-  searchlint init
+  searchlint init [--site https://example.com]
   searchlint init --print-config
   searchlint doctor
   searchlint completion <bash|zsh|fish>

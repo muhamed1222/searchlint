@@ -51,6 +51,9 @@ npm run searchlint:verify
 npm run dev
 ```
 
+The equals form is also accepted:
+`npx -y @searchlint/cli@beta init --site=https://example.com`.
+
 Expected `doctor` output in a patched Next.js project includes:
 
 ```text
@@ -76,7 +79,7 @@ command above when testing a newly published beta.
 
 The current verified beta versions are:
 
-- `@searchlint/cli@1.0.0-beta.18`
+- `@searchlint/cli@1.0.0-beta.20`
 - `@searchlint/next@1.0.0-beta.8`
 - `@searchlint/core@1.0.0-beta.3`
 - `@searchlint/browser@1.0.0-beta.2`
@@ -148,6 +151,9 @@ npm run dev
 
 If `package.json` contains an absolute `homepage` URL, `searchlint init` uses it
 as the default `site` when `--site` is not provided.
+Both `--site https://example.com` and `--site=https://example.com` are
+supported. The CLI also accepts `searchlint init https://example.com` as a
+fallback for package-manager argument forwarding.
 
 Open the local site and click the SearchLint badge to inspect the current page.
 The command patches supported Next.js config files and creates `searchlint.seo`

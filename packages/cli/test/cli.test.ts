@@ -398,7 +398,7 @@ describe("runSearchLintCli", () => {
 
     expect(result).toMatchObject({
       exitCode: 0,
-      stdout: "searchlint 1.0.0-beta.18\n",
+      stdout: "searchlint 1.0.0-beta.20\n",
       stderr: ""
     });
   });
@@ -409,7 +409,7 @@ describe("runSearchLintCli", () => {
     expect(result.exitCode, result.stderr).toBe(0);
     expect(result.stderr).toBe("");
     expect(result.stdout).toContain("SearchLint doctor");
-    expect(result.stdout).toContain("version: 1.0.0-beta.18");
+    expect(result.stdout).toContain("version: 1.0.0-beta.20");
     expect(result.stdout).toContain("node: >=24.0.0 required");
     expect(result.stdout).toContain("status: local CLI runtime checks passed");
   });
@@ -647,6 +647,28 @@ describe("runSearchLintCli", () => {
     expect(result.stdout).toContain('site "https://client.example"');
   });
 
+  it("accepts init --site=<url> for a provided site URL", async () => {
+    const result = await runSearchLintCli(
+      ["init", "--site=https://client.example", "--print-config"],
+      createIo({})
+    );
+
+    expect(result.exitCode).toBe(0);
+    expect(result.stderr).toBe("");
+    expect(result.stdout).toContain('site "https://client.example"');
+  });
+
+  it("accepts a positional init site URL for npm/npx argument forwarding", async () => {
+    const result = await runSearchLintCli(
+      ["init", "https://client.example", "--print-config"],
+      createIo({})
+    );
+
+    expect(result.exitCode).toBe(0);
+    expect(result.stderr).toBe("");
+    expect(result.stdout).toContain('site "https://client.example"');
+  });
+
   it("initializes a Next.js project for local dev badge onboarding", async () => {
     const files: Record<string, string> = {
       "package.json": JSON.stringify({
@@ -699,6 +721,42 @@ describe("runSearchLintCli", () => {
     };
     const result = await runSearchLintCli(
       ["init", "--site", "https://client.example"],
+      createIo(files, undefined, true)
+    );
+
+    expect(result.exitCode, result.stderr).toBe(0);
+    expect(result.stdout).toContain("Site: https://client.example (--site)");
+    expect(files["searchlint.seo"]).toContain('site "https://client.example"');
+  });
+
+  it("initializes searchlint.seo with the --site=<url> form", async () => {
+    const files: Record<string, string> = {
+      "package.json": JSON.stringify({
+        scripts: { dev: "next dev" },
+        dependencies: { next: "16.2.9" }
+      }),
+      "next.config.mjs": "const nextConfig = {};\nexport default nextConfig;\n"
+    };
+    const result = await runSearchLintCli(
+      ["init", "--site=https://client.example"],
+      createIo(files, undefined, true)
+    );
+
+    expect(result.exitCode, result.stderr).toBe(0);
+    expect(result.stdout).toContain("Site: https://client.example (--site)");
+    expect(files["searchlint.seo"]).toContain('site "https://client.example"');
+  });
+
+  it("initializes searchlint.seo with a positional site URL", async () => {
+    const files: Record<string, string> = {
+      "package.json": JSON.stringify({
+        scripts: { dev: "next dev" },
+        dependencies: { next: "16.2.9" }
+      }),
+      "next.config.mjs": "const nextConfig = {};\nexport default nextConfig;\n"
+    };
+    const result = await runSearchLintCli(
+      ["init", "https://client.example"],
       createIo(files, undefined, true)
     );
 
