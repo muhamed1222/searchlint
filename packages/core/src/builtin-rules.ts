@@ -2551,7 +2551,8 @@ function contentImageEmptyAlt(context: RuleContext): readonly RuleReport[] {
   }
 
   const empty = imageTagEntries(html).find(
-    (entry) => entry.alt?.trim().length === 0
+    (entry) =>
+      entry.alt?.trim().length === 0 && !isDecorativeImageCandidate(entry)
   );
   if (!empty) {
     return [];
@@ -2566,6 +2567,66 @@ function contentImageEmptyAlt(context: RuleContext): readonly RuleReport[] {
       imageAltReportDetails(empty, "non-empty descriptive alt text")
     )
   ];
+}
+
+function isDecorativeImageCandidate(entry: ImageTagEntry): boolean {
+  if (hasBooleanishAttribute(entry.tag, "aria-hidden", "true")) {
+    return true;
+  }
+  const role = attributeValue(entry.tag, "role")?.trim().toLowerCase();
+  if (role === "presentation" || role === "none") {
+    return true;
+  }
+  if (
+    hasBooleanishAttribute(entry.tag, "data-searchlint-decorative", "true") ||
+    hasBooleanishAttribute(entry.tag, "data-decorative", "true")
+  ) {
+    return true;
+  }
+  return isLikelyDecorativeImageSource(entry.src);
+}
+
+function hasBooleanishAttribute(
+  tag: string,
+  attributeName: string,
+  expectedValue: string
+): boolean {
+  const value = attributeValue(tag, attributeName)?.trim().toLowerCase();
+  return value === expectedValue;
+}
+
+function isLikelyDecorativeImageSource(src: string | undefined): boolean {
+  if (!src) {
+    return false;
+  }
+  const decoded = decodeAttributeUrl(src).toLowerCase();
+  const target = nextImageSourceUrl(decoded) ?? decoded;
+  const path = target.split(/[?#]/, 1)[0] ?? target;
+  const fileName = path.split("/").pop() ?? path;
+  return /(?:^|[-_.@])(bg|background|decorative|decoration|ornament|pattern|texture|shape|shell-bg)(?:[-_.@]|$)/i.test(
+    fileName
+  );
+}
+
+function nextImageSourceUrl(decodedSrc: string): string | undefined {
+  const query = decodedSrc.match(/[?&]url=([^&]+)/i)?.[1];
+  return query ? decodeAttributeUrl(query) : undefined;
+}
+
+function decodeAttributeUrl(value: string): string {
+  const htmlDecoded = value
+    .replace(/&amp;/gi, "&")
+    .replace(/&#x([0-9a-f]+);/gi, (_, hex: string) =>
+      String.fromCodePoint(Number.parseInt(hex, 16))
+    )
+    .replace(/&#([0-9]+);/g, (_, decimal: string) =>
+      String.fromCodePoint(Number.parseInt(decimal, 10))
+    );
+  try {
+    return decodeURIComponent(htmlDecoded);
+  } catch {
+    return htmlDecoded;
+  }
 }
 
 function imageAltEvidence(state: string, entry: ImageTagEntry): string {

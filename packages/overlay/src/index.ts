@@ -191,19 +191,45 @@ export function filterDiagnostics(
   });
 }
 
-export function renderBadgeLabel(state: BadgeState, count: number): string {
+export function renderBadgeLabel(
+  state: BadgeState,
+  count: number,
+  diagnostics: readonly Pick<Diagnostic, "severity">[] = []
+): string {
   if (state === "checking") return "SearchLint checking";
   if (state === "clean") return "SearchLint clean";
+  if (hasMixedDiagnosticSeverities(diagnostics)) {
+    return `SearchLint issues: ${count}`;
+  }
   return `SearchLint ${state}: ${count}`;
 }
 
-function renderBadgeVisibleText(state: BadgeState, count: number): string {
+function renderBadgeVisibleText(
+  state: BadgeState,
+  count: number,
+  diagnostics: readonly Pick<Diagnostic, "severity">[] = []
+): string {
   if (state === "checking") return "checking";
   if (count === 0 || state === "clean") return "";
+  if (hasMixedDiagnosticSeverities(diagnostics)) {
+    return formatCount(count, "issue");
+  }
   if (state === "blocked") return formatCount(count, "blocker");
   if (state === "warnings") return formatCount(count, "warning");
   if (state === "info") return formatCount(count, "note");
   return formatCount(count, "error");
+}
+
+function hasMixedDiagnosticSeverities(
+  diagnostics: readonly Pick<Diagnostic, "severity">[]
+): boolean {
+  if (diagnostics.length <= 1) {
+    return false;
+  }
+  const firstSeverity = diagnostics[0]?.severity;
+  return diagnostics.some(
+    (diagnostic) => diagnostic.severity !== firstSeverity
+  );
 }
 
 export function nearestOverlayPosition(
@@ -220,8 +246,12 @@ export function nearestOverlayPosition(
 export function renderOverlayHtml(state: SearchLintOverlayState): string {
   const diagnostics = filterDiagnostics(state.diagnostics, state.filters);
   const total = state.diagnostics.length;
-  const badgeLabel = renderBadgeLabel(state.status, total);
-  const badgeVisibleText = renderBadgeVisibleText(state.status, total);
+  const badgeLabel = renderBadgeLabel(state.status, total, state.diagnostics);
+  const badgeVisibleText = renderBadgeVisibleText(
+    state.status,
+    total,
+    state.diagnostics
+  );
   const position = state.position ?? "bottom-right";
   const direction = state.direction ?? "ltr";
   return `${renderStyles()}

@@ -599,6 +599,46 @@ describe("createCoreStructuralMediaSchemaLinkRules", () => {
     ]);
   });
 
+  it("does not flag decorative empty-alt image candidates", async () => {
+    const result = await run(
+      snapshot(`<html><head>
+        <meta property="og:image" content="/og.png">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta name="twitter:image" content="/twitter.png">
+      </head><body>
+        <h1>Product Detail</h1>
+        <img src="/_next/image?url=%2Fimages%2Fdesktop%2Fshell-bg.png&amp;w=3840&amp;q=70" alt="">
+        <img src="/decorative-divider.svg" alt="">
+        <img src="/content.png" alt="Product photo">
+      </body></html>`)
+    );
+
+    expect(
+      result.diagnostics.some((diagnostic) => diagnostic.ruleId === "SL-IMG-007")
+    ).toBe(false);
+  });
+
+  it("does not flag explicitly decorative empty-alt images", async () => {
+    const result = await run(
+      snapshot(`<html><head>
+        <meta property="og:image" content="/og.png">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta name="twitter:image" content="/twitter.png">
+      </head><body>
+        <h1>Product Detail</h1>
+        <img src="/hero-accent.png" alt="" aria-hidden="true">
+        <img src="/layout-line.png" alt="" role="presentation">
+        <img src="/content.png" alt="Product photo">
+      </body></html>`)
+    );
+
+    expect(
+      result.diagnostics.some((diagnostic) => diagnostic.ruleId === "SL-IMG-007")
+    ).toBe(false);
+  });
+
   it("detects image targets from resolved URL observations", async () => {
     const result = await run({
       ...snapshot(`<html><head>

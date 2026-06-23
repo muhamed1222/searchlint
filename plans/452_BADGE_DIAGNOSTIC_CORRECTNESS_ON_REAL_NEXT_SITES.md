@@ -65,7 +65,7 @@ Initial real-site acceptance pages:
 
 ## Evidence Log
 
-- `@searchlint/cli@1.0.0-beta.20` and `@searchlint/next@1.0.0-beta.8` are the
+- `@searchlint/cli@1.0.0-beta.22` and `@searchlint/next@1.0.0-beta.10` are the
   current beta packages for the zero-manual-edit Next.js init path.
 - `http://localhost:3001/blog` rendered the badge with `SearchLint info: 2`. The
   two diagnostics were `SL-HEAD-005` and `SL-META-009`, both heuristic
@@ -82,9 +82,9 @@ Initial real-site acceptance pages:
   image. This plan improved image alt diagnostics to include image index, `src`,
   expected/actual values, runtime selector, and structured evidence.
 - The improved local developer chain was published to npm with tag `beta`:
-  `@searchlint/core@1.0.0-beta.3`, `@searchlint/browser@1.0.0-beta.2`,
-  `@searchlint/overlay@1.0.0-beta.6`, `@searchlint/next@1.0.0-beta.8`, and
-  `@searchlint/cli@1.0.0-beta.20`.
+  `@searchlint/core@1.0.0-beta.4`, `@searchlint/browser@1.0.0-beta.3`,
+  `@searchlint/overlay@1.0.0-beta.8`, `@searchlint/next@1.0.0-beta.10`, and
+  `@searchlint/cli@1.0.0-beta.22`.
 - Reinstalling `@searchlint/cli@beta` and `@searchlint/next@beta` in the
   Outlivion test site from npm preserved the improved `SL-IMG-007` evidence.
 - `SL-META-009` now tolerates minor title-length overage up to 65 characters so
@@ -92,8 +92,8 @@ Initial real-site acceptance pages:
 - `SL-HEAD-005` now tokenizes title and H1 text with Unicode-aware meaningful
   terms and records normalized token evidence.
 - After installing `@searchlint/cli@1.0.0-beta.10` and
-  `@searchlint/next@1.0.0-beta.8` from npm in the Outlivion test site, the
-  Next badge path used `@searchlint/core@1.0.0-beta.3`.
+  `@searchlint/next@1.0.0-beta.10` from npm in the Outlivion test site, the
+  Next badge path used `@searchlint/core@1.0.0-beta.4`.
 - Playwright verification on `http://localhost:3000/blog` showed
   `SearchLint info: 1`; the former 61-character `SL-META-009` note was gone
   and the remaining `SL-HEAD-005` note showed the improved expected/actual
@@ -140,10 +140,30 @@ Initial real-site acceptance pages:
 - `@searchlint/cli@1.0.0-beta.18` prints the resolved starter site and source in
   init output, for example `Site: https://client.example (--site)`. Smoke
   verification confirmed the summary line.
-- `@searchlint/cli@1.0.0-beta.20` accepts the equals-form site option,
+- `@searchlint/cli@1.0.0-beta.22` accepts the equals-form site option,
   `searchlint init --site=https://client.example`, and the positional fallback
   `searchlint init https://client.example` for package-manager argument
   forwarding.
+- A second real Next.js 16 project, `vpn-tg-app`, was smoke-tested from a
+  temporary copy at `http://localhost:3010`. `npx searchlint init
+  --site=https://outlivion.space` patched `next.config.ts`, `npm run
+  searchlint:verify` passed, and the browser rendered
+  `searchlint-dev-overlay` without client errors.
+- The `vpn-tg-app` smoke exposed an `SL-IMG-007` false positive for a
+  decorative Next optimized image source ending in `shell-bg.png` with
+  `alt=""`. `SL-IMG-007` now ignores explicitly decorative empty-alt images
+  (`aria-hidden`, `role=presentation|none`, decorative data attributes) and
+  obvious decorative asset filenames, including Next optimizer `url=...`
+  sources.
+- Re-running `vpn-tg-app` from npm-published packages
+  (`@searchlint/cli@1.0.0-beta.22`, `@searchlint/next@1.0.0-beta.10`,
+  `@searchlint/overlay@1.0.0-beta.8`, `@searchlint/core@1.0.0-beta.4`) rendered
+  `searchlint-dev-overlay` at `http://localhost:3012/` with no client errors.
+  The badge reported `SearchLint issues: 3`, and the diagnostics were
+  `SL-CANON-001`, `SL-IMG-001`, and `SL-IMG-004`; `SL-IMG-007` was absent.
+- Mixed-severity badge text now uses `issues` instead of reporting the total as
+  the highest severity. For example, one error plus one warning plus one note
+  renders as `3 issues`, not `3 errors`.
 
 ## Validation
 

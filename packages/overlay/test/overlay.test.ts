@@ -36,6 +36,21 @@ describe("deriveBadgeState", () => {
     expect(renderBadgeLabel("blocked", 3)).toBe("SearchLint blocked: 3");
   });
 
+  it("renders mixed-severity badge counts as issues", () => {
+    const html = renderOverlayHtml({
+      status: "errors",
+      diagnostics: [
+        diagnostic("SL-CANON-001", "error"),
+        diagnostic("SL-IMG-001", "warning"),
+        diagnostic("SL-IMG-004", "info")
+      ]
+    });
+
+    expect(html).toContain('aria-label="SearchLint issues: 3"');
+    expect(html).toContain(">3 issues</span>");
+    expect(html).not.toContain(">3 errors</span>");
+  });
+
   it("snaps dragged badges to the nearest viewport corner", () => {
     expect(nearestOverlayPosition(1000, 800, 100, 100)).toBe("top-left");
     expect(nearestOverlayPosition(1000, 800, 900, 100)).toBe("top-right");
@@ -139,8 +154,8 @@ describe("diagnostic filtering and rendering", () => {
       diagnostics
     });
 
-    expect(html).toContain('aria-label="SearchLint blocked: 1000"');
-    expect(html).toContain("1000 blockers");
+    expect(html).toContain('aria-label="SearchLint issues: 1000"');
+    expect(html).toContain("1000 issues");
     expect(html.match(/<article class="sl-card/g)?.length).toBe(1000);
     expect(html).toContain("overflow-wrap: anywhere");
   });

@@ -171,7 +171,7 @@ type CliParsedCommand =
       error: string;
     };
 
-export const searchLintCliVersion = "1.0.0-beta.20";
+export const searchLintCliVersion = "1.0.0-beta.22";
 const searchLintCliPackageRange = "beta";
 const searchLintNextPackageRange = "beta";
 

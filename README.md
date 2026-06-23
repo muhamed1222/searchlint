@@ -79,11 +79,11 @@ command above when testing a newly published beta.
 
 The current verified beta versions are:
 
-- `@searchlint/cli@1.0.0-beta.20`
-- `@searchlint/next@1.0.0-beta.8`
-- `@searchlint/core@1.0.0-beta.3`
-- `@searchlint/browser@1.0.0-beta.2`
-- `@searchlint/overlay@1.0.0-beta.6`
+- `@searchlint/cli@1.0.0-beta.22`
+- `@searchlint/next@1.0.0-beta.10`
+- `@searchlint/core@1.0.0-beta.4`
+- `@searchlint/browser@1.0.0-beta.3`
+- `@searchlint/overlay@1.0.0-beta.8`
 
 The broader package set is still prerelease. Stable 1.0 install commands will
 use the normal package names after final release:
