@@ -622,6 +622,18 @@ function report(
   };
 }
 
+const titleLengthGuidance = {
+  min: 10,
+  max: 60,
+  toleratedMax: 65
+} as const;
+
+function meaningfulWordTokens(value: string): readonly string[] {
+  return (value.toLocaleLowerCase().match(/[\p{L}\p{N}]+/gu) ?? []).filter(
+    (token) => token.length > 1
+  );
+}
+
 function sourceFindings(context: RuleContext): readonly SourceCodeFinding[] {
   return context.snapshot.sourceCode?.findings ?? [];
 }
@@ -1882,19 +1894,39 @@ function titleLengthOutsideGuidance(
   const title = allTitleTexts(context).find(
     (candidate) => candidate.length > 0
   );
-  if (!title || (title.length >= 10 && title.length <= 60)) {
+  if (
+    !title ||
+    (title.length >= titleLengthGuidance.min &&
+      title.length <= titleLengthGuidance.toleratedMax)
+  ) {
     return [];
   }
 
+  const overage = Math.max(0, title.length - titleLengthGuidance.max);
   return [
     report(
       context,
       "raw-html",
       "Title length is outside guidance",
-      `Observed title length is ${title.length} characters.`,
+      overage > 0
+        ? `Observed title length is ${title.length} characters, ${overage} over the ${titleLengthGuidance.max} character guidance.`
+        : `Observed title length is ${title.length} characters.`,
       {
-        expected: "10 to 60 characters",
-        actual: `${title.length} characters`
+        expected: `${titleLengthGuidance.min} to ${titleLengthGuidance.max} characters; minor overage up to ${titleLengthGuidance.toleratedMax} is tolerated`,
+        actual: `${title.length} characters`,
+        structuredEvidence: [
+          {
+            type: "record",
+            label: "title length guidance",
+            value: {
+              title,
+              titleLength: title.length,
+              minimum: titleLengthGuidance.min,
+              maximum: titleLengthGuidance.max,
+              toleratedMaximum: titleLengthGuidance.toleratedMax
+            }
+          }
+        ]
       }
     )
   ];
@@ -2144,8 +2176,8 @@ function titleH1TokenMismatch(context: RuleContext): readonly RuleReport[] {
     return [];
   }
 
-  const titleTokens = new Set(title.toLowerCase().split(/\W+/).filter(Boolean));
-  const h1Tokens = new Set(h1.toLowerCase().split(/\W+/).filter(Boolean));
+  const titleTokens = new Set(meaningfulWordTokens(title));
+  const h1Tokens = new Set(meaningfulWordTokens(h1));
   const overlap = [...titleTokens].filter((token) => h1Tokens.has(token));
   if (overlap.length > 0) {
     return [];
@@ -2158,8 +2190,21 @@ function titleH1TokenMismatch(context: RuleContext): readonly RuleReport[] {
       "Title and H1 do not share tokens",
       `Rendered title '${title}' and H1 '${h1}' share no normalized word tokens.`,
       {
-        expected: title,
-        actual: h1
+        expected: "At least one shared meaningful title/H1 term",
+        actual: "0 shared meaningful terms",
+        structuredEvidence: [
+          {
+            type: "record",
+            label: "title and h1 token overlap",
+            value: {
+              title,
+              h1,
+              titleTokens: [...titleTokens].join(", "),
+              h1Tokens: [...h1Tokens].join(", "),
+              overlap: overlap.join(", ")
+            }
+          }
+        ]
       }
     )
   ];

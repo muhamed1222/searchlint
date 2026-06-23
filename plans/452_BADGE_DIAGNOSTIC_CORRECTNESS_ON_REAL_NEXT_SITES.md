@@ -65,7 +65,7 @@ Initial real-site acceptance pages:
 
 ## Evidence Log
 
-- `@searchlint/cli@1.0.0-beta.8` and `@searchlint/next@1.0.0-beta.6` are the
+- `@searchlint/cli@1.0.0-beta.10` and `@searchlint/next@1.0.0-beta.8` are the
   current beta packages for the zero-manual-edit Next.js init path.
 - `http://localhost:3001/blog` rendered the badge with `SearchLint info: 2`. The
   two diagnostics were `SL-HEAD-005` and `SL-META-009`, both heuristic
@@ -82,19 +82,35 @@ Initial real-site acceptance pages:
   image. This plan improved image alt diagnostics to include image index, `src`,
   expected/actual values, runtime selector, and structured evidence.
 - The improved local developer chain was published to npm with tag `beta`:
-  `@searchlint/core@1.0.0-beta.2`, `@searchlint/browser@1.0.0-beta.1`,
-  `@searchlint/overlay@1.0.0-beta.5`, `@searchlint/next@1.0.0-beta.7`, and
-  `@searchlint/cli@1.0.0-beta.9`.
+  `@searchlint/core@1.0.0-beta.3`, `@searchlint/browser@1.0.0-beta.2`,
+  `@searchlint/overlay@1.0.0-beta.6`, `@searchlint/next@1.0.0-beta.8`, and
+  `@searchlint/cli@1.0.0-beta.10`.
 - Reinstalling `@searchlint/cli@beta` and `@searchlint/next@beta` in the
   Outlivion test site from npm preserved the improved `SL-IMG-007` evidence.
+- `SL-META-009` now tolerates minor title-length overage up to 65 characters so
+  the badge does not report 61-character titles as actionable guidance.
+- `SL-HEAD-005` now tokenizes title and H1 text with Unicode-aware meaningful
+  terms and records normalized token evidence.
+- After installing `@searchlint/cli@1.0.0-beta.10` and
+  `@searchlint/next@1.0.0-beta.8` from npm in the Outlivion test site, the
+  Next badge path used `@searchlint/core@1.0.0-beta.3`.
+- Playwright verification on `http://localhost:3000/blog` showed
+  `SearchLint info: 1`; the former 61-character `SL-META-009` note was gone
+  and the remaining `SL-HEAD-005` note showed the improved expected/actual
+  wording.
+- Playwright verification on `http://localhost:3000/pricing` and
+  `http://localhost:3000/locations/germany-vpn` showed `SearchLint clean`.
 
 ## Validation
 
 - `pnpm --filter @searchlint/core typecheck`
 - `pnpm --filter @searchlint/core test`
+- `pnpm --filter @searchlint/browser typecheck`
 - `pnpm --filter @searchlint/cli test`
 - `pnpm --filter @searchlint/next test`
 - `pnpm --filter @searchlint/overlay test`
+- `pnpm pack` for `packages/core`, `packages/browser`, `packages/overlay`,
+  `packages/next`, and `packages/cli`
 
 ## Decision Log
 

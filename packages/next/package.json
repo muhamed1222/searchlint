@@ -1,6 +1,6 @@
 {
   "name": "@searchlint/next",
-  "version": "1.0.0-beta.7",
+  "version": "1.0.0-beta.8",
   "description": "SearchLint Next.js development integration",
   "license": "Apache-2.0",
   "sideEffects": false,

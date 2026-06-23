@@ -440,6 +440,45 @@ describe("createCoreStructuralMediaSchemaLinkRules", () => {
     );
   });
 
+  it("compares title and H1 tokens with Unicode-aware meaningful terms", async () => {
+    const matching = await run(
+      snapshot(
+        cleanHtml(),
+        `<html><head><title>Блог Outlivion VPN</title></head><body>
+          <h1>Блог о доступе</h1>
+        </body></html>`
+      )
+    );
+    expect(
+      matching.diagnostics.map((diagnostic) => diagnostic.ruleId)
+    ).not.toContain("SL-HEAD-005");
+
+    const mismatching = await run(
+      snapshot(
+        cleanHtml(),
+        `<html><head><title>Блог Outlivion VPN</title></head><body>
+          <h1>Заметки о доступе</h1>
+        </body></html>`
+      )
+    );
+    const diagnostic = mismatching.diagnostics.find(
+      (entry) => entry.ruleId === "SL-HEAD-005"
+    );
+    expect(diagnostic?.actual).toBe("0 shared meaningful terms");
+    expect(diagnostic?.structuredEvidence).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          label: "title and h1 token overlap",
+          value: expect.objectContaining({
+            titleTokens: "блог, outlivion, vpn",
+            h1Tokens: "заметки, доступе",
+            overlap: ""
+          })
+        })
+      ])
+    );
+  });
+
   it("detects missing H1 and rendered-only H1", async () => {
     const missing = await run(
       snapshot("<html><body></body></html>", "<html><body></body></html>")

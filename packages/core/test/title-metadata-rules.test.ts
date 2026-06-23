@@ -518,6 +518,45 @@ describe("createCoreTitleMetadataRules", () => {
     ]);
   });
 
+  it("tolerates minor title length overage before reporting guidance", async () => {
+    const toleratedTitle = "A".repeat(61);
+    const excessiveTitle = "A".repeat(68);
+
+    const tolerated = await run(
+      snapshot(`<head>
+        <meta charset="utf-8">
+        <title>${toleratedTitle}</title>
+        <meta name="description" content="A useful product description that fits normal search result guidance for this page.">
+        <meta property="og:title" content="${toleratedTitle}">
+        <meta property="og:description" content="A useful product description that fits normal search result guidance for this page.">
+        <meta name="twitter:title" content="${toleratedTitle}">
+        <meta name="twitter:description" content="A useful product description that fits normal search result guidance for this page.">
+      </head>`)
+    );
+    expect(
+      tolerated.diagnostics.map((diagnostic) => diagnostic.ruleId)
+    ).not.toContain("SL-META-009");
+
+    const excessive = await run(
+      snapshot(`<head>
+        <meta charset="utf-8">
+        <title>${excessiveTitle}</title>
+        <meta name="description" content="A useful product description that fits normal search result guidance for this page.">
+        <meta property="og:title" content="${excessiveTitle}">
+        <meta property="og:description" content="A useful product description that fits normal search result guidance for this page.">
+        <meta name="twitter:title" content="${excessiveTitle}">
+        <meta name="twitter:description" content="A useful product description that fits normal search result guidance for this page.">
+      </head>`)
+    );
+    const diagnostic = excessive.diagnostics.find(
+      (entry) => entry.ruleId === "SL-META-009"
+    );
+    expect(diagnostic?.evidence).toContain("8 over the 60 character guidance");
+    expect(diagnostic?.expected).toBe(
+      "10 to 60 characters; minor overage up to 65 is tolerated"
+    );
+  });
+
   it("detects missing social metadata, viewport, and charset", async () => {
     const result = await run({
       ...snapshot(
