@@ -232,6 +232,21 @@ Initial real-site acceptance pages:
   rendered image source `/_next/image?url=%2Ftrust-vpn-route.png...`, which is
   still an actionable empty-alt content/decorative-classification issue for the
   tested site rather than a duplicate-logo false positive.
+- `@searchlint/overlay@1.0.0-beta.10` removes the hidden duplicate badge label
+  span from the button internals. The button still exposes a full `aria-label`
+  such as `SearchLint issues: 2`, while the DOM/visible text is only the compact
+  status such as `2 issues`.
+- `@searchlint/next@1.0.0-beta.13`, `@searchlint/cli@1.0.0-beta.27`, and
+  `searchlint@1.0.0-beta.27` publish the overlay badge label cleanup through
+  the normal local developer npm path. The unscoped `searchlint` npm `latest`
+  and `beta` dist-tags both point to `1.0.0-beta.27`.
+- Outlivion was upgraded again through
+  `npm exec --package=searchlint@latest -- searchlint init --upgrade
+  --site=https://outlivion.space`, `npm install`, and
+  `npm run searchlint:verify`. Playwright smoke checks confirmed badge button
+  labels: `/` has `ariaLabel: "SearchLint issues: 2"` and `text: "2 issues"`,
+  `/blog` has `ariaLabel: "SearchLint info: 1"` and `text: "1 note"`, and clean
+  pages have `ariaLabel: "SearchLint clean"` with empty visible text.
 
 ## Validation
 

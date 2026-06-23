@@ -257,7 +257,6 @@ export function renderOverlayHtml(state: SearchLintOverlayState): string {
   return `${renderStyles()}
 <button class="sl-badge sl-badge--${state.status}${badgeVisibleText ? " sl-badge--expanded" : ""} sl-position--${position}" dir="${direction}" type="button" aria-label="${escapeHtml(badgeLabel)}" aria-haspopup="dialog" aria-controls="${panelId}" aria-expanded="false" data-action="toggle">
   <span class="sl-badge__logo" aria-hidden="true">${renderSearchLintLogo()}</span>
-  <span class="sl-badge__label">${escapeHtml(badgeLabel)}</span>
   <span class="sl-badge__status" aria-hidden="${badgeVisibleText ? "false" : "true"}" aria-live="polite" aria-atomic="true">${escapeHtml(badgeVisibleText)}</span>
 </button>
 <section id="${panelId}" class="sl-panel sl-position--${position}" dir="${direction}" role="dialog" aria-modal="false" aria-labelledby="${panelTitleId}" aria-describedby="${panelDescriptionId}" hidden tabindex="-1">
@@ -862,7 +861,6 @@ function renderStyles(): string {
     .sl-badge--clean, .sl-badge--checking, .sl-badge--info, .sl-badge--warnings, .sl-badge--errors, .sl-badge--blocked { border-color: #E8E8E8; }
     .sl-badge__logo { display: block; width: 28px; height: 28px; border-radius: 999px; overflow: hidden; background: #151515; }
     .sl-badge__logo svg { display: block; width: 100%; height: 100%; }
-    .sl-badge__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
     .sl-badge__status { display: none; color: #E8E8E8; font-weight: 400; letter-spacing: 0; }
     .sl-badge--expanded .sl-badge__status { display: inline; }
     .sl-panel { position: fixed; z-index: 2147483647; width: min(760px, calc(100vw - 32px)); max-height: min(760px, calc(100vh - 90px)); overflow: auto; border: 1px solid #d1d5db; border-radius: 8px; background: #fff; color: #111827; box-shadow: 0 18px 60px rgb(15 23 42 / 24%); font: 13px/1.45 ui-sans-serif, system-ui; overflow-wrap: anywhere; }

@@ -1,6 +1,6 @@
 {
   "name": "searchlint",
-  "version": "1.0.0-beta.26",
+  "version": "1.0.0-beta.27",
   "description": "SearchLint CLI wrapper for the local developer SEO diagnostics tool",
   "license": "Apache-2.0",
   "sideEffects": false,

@@ -49,6 +49,7 @@ describe("deriveBadgeState", () => {
     expect(html).toContain('aria-label="SearchLint issues: 3"');
     expect(html).toContain(">3 issues</span>");
     expect(html).not.toContain(">3 errors</span>");
+    expect(html).not.toContain('class="sl-badge__label"');
   });
 
   it("snaps dragged badges to the nearest viewport corner", () => {
