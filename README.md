@@ -76,7 +76,7 @@ command above when testing a newly published beta.
 
 The current verified beta versions are:
 
-- `@searchlint/cli@1.0.0-beta.14`
+- `@searchlint/cli@1.0.0-beta.15`
 - `@searchlint/next@1.0.0-beta.8`
 - `@searchlint/core@1.0.0-beta.3`
 - `@searchlint/browser@1.0.0-beta.2`

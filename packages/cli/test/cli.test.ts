@@ -398,7 +398,7 @@ describe("runSearchLintCli", () => {
 
     expect(result).toMatchObject({
       exitCode: 0,
-      stdout: "searchlint 1.0.0-beta.14\n",
+      stdout: "searchlint 1.0.0-beta.15\n",
       stderr: ""
     });
   });
@@ -409,7 +409,7 @@ describe("runSearchLintCli", () => {
     expect(result.exitCode, result.stderr).toBe(0);
     expect(result.stderr).toBe("");
     expect(result.stdout).toContain("SearchLint doctor");
-    expect(result.stdout).toContain("version: 1.0.0-beta.14");
+    expect(result.stdout).toContain("version: 1.0.0-beta.15");
     expect(result.stdout).toContain("node: >=24.0.0 required");
     expect(result.stdout).toContain("status: local CLI runtime checks passed");
   });
@@ -665,6 +665,7 @@ describe("runSearchLintCli", () => {
     expect(result.stdout).toContain(
       "SearchLint initialized for local Next.js development."
     );
+    expect(result.stdout).toContain("  npm install");
     expect(result.stdout).toContain("npm run searchlint:verify");
     expect(files["searchlint.seo"]).toContain("language 1");
     expect(files["next.config.mjs"]).toContain(
@@ -772,6 +773,7 @@ describe("runSearchLintCli", () => {
     expect(files).toEqual(before);
     expect(result.stdout).toContain("Created: none");
     expect(result.stdout).toContain("Updated: none");
+    expect(result.stdout).not.toContain("npm install");
   });
 
   it("leaves pre-Next 16 dev scripts unchanged", async () => {

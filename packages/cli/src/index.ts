@@ -171,7 +171,7 @@ type CliParsedCommand =
       error: string;
     };
 
-export const searchLintCliVersion = "1.0.0-beta.14";
+export const searchLintCliVersion = "1.0.0-beta.15";
 const searchLintCliPackageRange = "beta";
 const searchLintNextPackageRange = "beta";
 
@@ -1444,8 +1444,9 @@ async function initializeLocalProject(
     changed.length > 0 ? `Updated: ${changed.join(", ")}` : "Updated: none",
     "",
     "Next step:",
-    "  npm run dev",
+    ...(packageUpdate.addedDependencies.length > 0 ? ["  npm install"] : []),
     "  npm run searchlint:verify",
+    "  npm run dev",
     "",
     "Open your local site and click the SearchLint badge to inspect the current page."
   ];
@@ -1626,6 +1627,7 @@ function isCommonJsNextConfig(source: string): boolean {
 
 function ensurePackageOnboarding(packageJson: Record<string, unknown>): {
   changed: boolean;
+  addedDependencies: string[];
 } {
   if (
     packageJson.scripts === undefined ||
@@ -1638,6 +1640,7 @@ function ensurePackageOnboarding(packageJson: Record<string, unknown>): {
 
   const scripts = packageJson.scripts as Record<string, unknown>;
   let changed = false;
+  const addedDependencies: string[] = [];
   const nextVersion = findPackageDependencyVersion(packageJson, "next");
   if (
     typeof scripts.dev === "string" &&
@@ -1660,25 +1663,25 @@ function ensurePackageOnboarding(packageJson: Record<string, unknown>): {
       "searchlint doctor && searchlint config validate --config searchlint.seo";
     changed = true;
   }
-  if (
-    ensureDevDependency(
-      packageJson,
-      "@searchlint/cli",
-      searchLintCliPackageRange
-    )
-  ) {
+  const addedCli = ensureDevDependency(
+    packageJson,
+    "@searchlint/cli",
+    searchLintCliPackageRange
+  );
+  if (addedCli) {
+    addedDependencies.push("@searchlint/cli");
     changed = true;
   }
-  if (
-    ensureDevDependency(
-      packageJson,
-      "@searchlint/next",
-      searchLintNextPackageRange
-    )
-  ) {
+  const addedNext = ensureDevDependency(
+    packageJson,
+    "@searchlint/next",
+    searchLintNextPackageRange
+  );
+  if (addedNext) {
+    addedDependencies.push("@searchlint/next");
     changed = true;
   }
-  return { changed };
+  return { changed, addedDependencies };
 }
 
 function ensureDevDependency(
