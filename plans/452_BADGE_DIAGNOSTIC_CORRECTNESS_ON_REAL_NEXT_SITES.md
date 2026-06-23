@@ -147,6 +147,10 @@ Initial real-site acceptance pages:
   conservative and preserves existing SearchLint package versions; the upgrade
   flag rewrites existing `@searchlint/cli` and `@searchlint/next` ranges to the
   `beta` dist-tag and prints the package-manager install command.
+- `searchlint@1.0.0-beta.23` is an unscoped npm wrapper around
+  `@searchlint/cli`, so local onboarding can use
+  `npx -y searchlint@beta init --site=https://example.com` while preserving the
+  scoped package as the implementation package.
 - A second real Next.js 16 project, `vpn-tg-app`, was smoke-tested from a
   temporary copy at `http://localhost:3010`.
   `npx searchlint init --site=https://outlivion.space` patched `next.config.ts`,
@@ -202,6 +206,8 @@ Initial real-site acceptance pages:
 - `pnpm --filter @searchlint/browser typecheck`
 - `pnpm --filter @searchlint/cli test`
 - `pnpm --filter @searchlint/cli typecheck`
+- `pnpm --filter searchlint typecheck`
+- `pnpm --filter searchlint build`
 - `pnpm --filter @searchlint/next test`
 - `pnpm --filter @searchlint/overlay test`
 - `pnpm pack` for `packages/core`, `packages/browser`, `packages/overlay`,

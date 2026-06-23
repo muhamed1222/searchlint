@@ -45,14 +45,14 @@ The current tested path is the local Next.js developer badge. It is published
 under the npm `beta` dist-tag:
 
 ```bash
-npx -y @searchlint/cli@beta init --site https://example.com
+npx -y searchlint@beta init --site https://example.com
 npm install
 npm run searchlint:verify
 npm run dev
 ```
 
 The equals form is also accepted:
-`npx -y @searchlint/cli@beta init --site=https://example.com`.
+`npx -y searchlint@beta init --site=https://example.com`.
 
 For a custom local port, prefer the framework-supported environment variable:
 `PORT=3013 npm run dev` or `PORT=3013 pnpm dev`.
@@ -73,7 +73,7 @@ If a project already has an older beta installed, update prerelease packages
 through init:
 
 ```bash
-npx -y @searchlint/cli@beta init --upgrade --site https://example.com
+npx -y searchlint@beta init --upgrade --site https://example.com
 npm install
 npm run searchlint:verify
 ```
@@ -85,6 +85,7 @@ updates existing `@searchlint/cli` and `@searchlint/next` entries to the current
 
 The current verified beta versions are:
 
+- `searchlint@1.0.0-beta.23`
 - `@searchlint/cli@1.0.0-beta.23`
 - `@searchlint/next@1.0.0-beta.10`
 - `@searchlint/core@1.0.0-beta.4`
@@ -149,7 +150,7 @@ documented in `docs/CLI_CI_USAGE.md`.
 Use the local onboarding command in a Next.js project:
 
 ```bash
-npx -y @searchlint/cli@beta init --site https://example.com
+npx -y searchlint@beta init --site https://example.com
 npm install
 npm run searchlint:verify
 npm run dev

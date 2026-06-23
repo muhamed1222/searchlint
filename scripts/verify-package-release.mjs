@@ -24,6 +24,7 @@ const publicPackages = [
   "packages/reporter-html",
   "packages/reporter-junit",
   "packages/reporter-sarif",
+  "packages/searchlint",
   "packages/source"
 ];
 
