@@ -247,8 +247,29 @@ function linkTags(html: string): readonly string[] {
   return [...html.matchAll(/<link\s+[^>]*>/gi)].map((match) => match[0] ?? "");
 }
 
+type ImageTagEntry = {
+  tag: string;
+  index: number;
+  src?: string;
+  alt?: string;
+};
+
 function imageTags(html: string): readonly string[] {
-  return [...html.matchAll(/<img\s+[^>]*>/gi)].map((match) => match[0] ?? "");
+  return imageTagEntries(html).map((entry) => entry.tag);
+}
+
+function imageTagEntries(html: string): readonly ImageTagEntry[] {
+  return [...html.matchAll(/<img\s+[^>]*>/gi)].map((match, index) => {
+    const tag = match[0] ?? "";
+    const src = attributeValue(tag, "src");
+    const alt = attributeValue(tag, "alt");
+    return {
+      tag,
+      index,
+      ...(src === undefined ? {} : { src }),
+      ...(alt === undefined ? {} : { alt })
+    };
+  });
 }
 
 function anchorTags(html: string): readonly { tag: string; text: string }[] {
@@ -2460,8 +2481,8 @@ function contentImageMissingAlt(context: RuleContext): readonly RuleReport[] {
     return [];
   }
 
-  const missing = imageTags(html).find(
-    (tag) => attributeValue(tag, "alt") === undefined
+  const missing = imageTagEntries(html).find(
+    (entry) => entry.alt === undefined
   );
   if (!missing) {
     return [];
@@ -2472,7 +2493,8 @@ function contentImageMissingAlt(context: RuleContext): readonly RuleReport[] {
       context,
       "rendered-dom",
       "Content image is missing alt text",
-      "Rendered DOM contains an image without an alt attribute."
+      imageAltEvidence("without an alt attribute", missing),
+      imageAltReportDetails(missing, "descriptive alt text")
     )
   ];
 }
@@ -2483,8 +2505,8 @@ function contentImageEmptyAlt(context: RuleContext): readonly RuleReport[] {
     return [];
   }
 
-  const empty = imageTags(html).find(
-    (tag) => attributeValue(tag, "alt")?.trim().length === 0
+  const empty = imageTagEntries(html).find(
+    (entry) => entry.alt?.trim().length === 0
   );
   if (!empty) {
     return [];
@@ -2495,9 +2517,52 @@ function contentImageEmptyAlt(context: RuleContext): readonly RuleReport[] {
       context,
       "rendered-dom",
       "Content image has empty alt text",
-      "Rendered DOM contains an image with an empty alt attribute."
+      imageAltEvidence("with an empty alt attribute", empty),
+      imageAltReportDetails(empty, "non-empty descriptive alt text")
     )
   ];
+}
+
+function imageAltEvidence(state: string, entry: ImageTagEntry): string {
+  const src = entry.src ? ` src '${entry.src}'` : "";
+  return `Rendered DOM contains image #${entry.index + 1}${src} ${state}.`;
+}
+
+function imageAltReportDetails(
+  entry: ImageTagEntry,
+  expected: string
+): Partial<RuleReport> {
+  return {
+    expected,
+    actual:
+      entry.alt === undefined ? "missing alt attribute" : `alt="${entry.alt}"`,
+    sourceLocation: {
+      confidence: "RUNTIME",
+      selector: imageSelector(entry)
+    },
+    structuredEvidence: [
+      {
+        type: "record",
+        label: "image alt state",
+        value: {
+          imageIndex: entry.index + 1,
+          src: entry.src ?? null,
+          alt: entry.alt ?? null
+        }
+      }
+    ]
+  };
+}
+
+function imageSelector(entry: ImageTagEntry): string {
+  if (entry.src) {
+    return `img[src="${cssString(entry.src)}"]`;
+  }
+  return `img:nth-of-type(${entry.index + 1})`;
+}
+
+function cssString(value: string): string {
+  return value.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
 }
 
 function pageImageNonSuccess(context: RuleContext): readonly RuleReport[] {

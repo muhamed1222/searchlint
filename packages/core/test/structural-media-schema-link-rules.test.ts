@@ -520,6 +520,44 @@ describe("createCoreStructuralMediaSchemaLinkRules", () => {
         "SL-IMG-011"
       ])
     );
+    const missingAlt = result.diagnostics.find(
+      (diagnostic) => diagnostic.ruleId === "SL-IMG-006"
+    );
+    const emptyAlt = result.diagnostics.find(
+      (diagnostic) => diagnostic.ruleId === "SL-IMG-007"
+    );
+
+    expect(missingAlt).toMatchObject({
+      evidence:
+        "Rendered DOM contains image #1 src '/missing-alt.png' without an alt attribute.",
+      expected: "descriptive alt text",
+      actual: "missing alt attribute",
+      sourceLocation: {
+        confidence: "RUNTIME",
+        selector: 'img[src="/missing-alt.png"]'
+      }
+    });
+    expect(emptyAlt).toMatchObject({
+      evidence:
+        "Rendered DOM contains image #2 src '/empty-alt.png' with an empty alt attribute.",
+      expected: "non-empty descriptive alt text",
+      actual: 'alt=""',
+      sourceLocation: {
+        confidence: "RUNTIME",
+        selector: 'img[src="/empty-alt.png"]'
+      }
+    });
+    expect(emptyAlt?.structuredEvidence).toEqual([
+      {
+        type: "record",
+        label: "image alt state",
+        value: {
+          imageIndex: 2,
+          src: "/empty-alt.png",
+          alt: ""
+        }
+      }
+    ]);
   });
 
   it("detects image targets from resolved URL observations", async () => {
