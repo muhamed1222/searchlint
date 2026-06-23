@@ -177,6 +177,20 @@ Initial real-site acceptance pages:
 - For multi-project local smoke tests, use `PORT=<port> npm run dev` or
   `PORT=<port> pnpm dev`. Passing `-- -p <port>` through an already patched
   `next dev --webpack` script can be interpreted by Next as a project directory.
+- A fourth real Next.js 16 project, `ag-detail`, was smoke-tested from a
+  temporary copy. With the correct site value, `site "https://ag-detail.ru"`,
+  `npx searchlint init --site=https://ag-detail.ru` patched `next.config.ts`,
+  `npm run searchlint:verify` passed, and `PORT=3015 npm run dev` rendered
+  `searchlint-dev-overlay` with no SearchLint runtime errors.
+- The `ag-detail` smoke rendered `SearchLint issues: 3`: `SL-IMG-007` for
+  `/assets/link-arrow.svg` with `alt=""`, `SL-LINK-007` for an icon/link without
+  accessible text, and `SL-META-009` for a 77-character title. Canonical
+  host/scheme diagnostics were absent when `searchlint.seo` used the real
+  production site URL.
+- A control `ag-detail` smoke using the wrong site value
+  `https://ag-detail.example` produced canonical host/scheme diagnostics against
+  localhost. This confirmed that the local canonical suppressor depends on the
+  configured `site` matching the production canonical host.
 
 ## Validation
 
