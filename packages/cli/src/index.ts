@@ -172,11 +172,11 @@ type CliParsedCommand =
       error: string;
     };
 
-export const searchLintCliVersion = "1.0.0-beta.25";
+export const searchLintCliVersion = "1.0.0-beta.26";
 const searchLintCliPackageRange = "beta";
 const searchLintNextPackageRange = "beta";
 const searchLintCliUpgradeVersion = searchLintCliVersion;
-const searchLintNextUpgradeVersion = "1.0.0-beta.11";
+const searchLintNextUpgradeVersion = "1.0.0-beta.12";
 const searchLintWrapperUpgradeVersion = searchLintCliVersion;
 
 const severityRank: Record<Severity, number> = {

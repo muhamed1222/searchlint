@@ -207,17 +207,45 @@ Initial real-site acceptance pages:
   `https://ag-detail.example` produced canonical host/scheme diagnostics against
   localhost. This confirmed that the local canonical suppressor depends on the
   configured `site` matching the production canonical host.
+- `@searchlint/core@1.0.0-beta.5` suppresses `SL-IMG-007` for empty-alt
+  duplicate image sources when another copy of the same normalized source is
+  already described with a non-empty `alt` on the rendered page. This keeps
+  unique content images actionable while avoiding duplicate logo/watermark
+  noise on real Next pages, including Next optimizer `/_next/image?url=...`
+  sources.
+- The fix was published through the local developer beta chain:
+  `@searchlint/browser@1.0.0-beta.4`, `@searchlint/next@1.0.0-beta.12`,
+  `@searchlint/cli@1.0.0-beta.26`, and `searchlint@1.0.0-beta.26`. The
+  unscoped `searchlint` npm `latest` and `beta` dist-tags both point to
+  `1.0.0-beta.26`.
+- Outlivion was upgraded through the public npm path with
+  `npm exec --package=searchlint@latest -- searchlint init --upgrade
+  --site=https://outlivion.space`, followed by `npm install` and
+  `npm run searchlint:verify`. The local project reported
+  `searchlint 1.0.0-beta.26`, `@searchlint/next@1.0.0-beta.12`, and
+  `@searchlint/core@1.0.0-beta.5`.
+- After restarting the Outlivion Next dev server, Playwright smoke checks on
+  `/`, `/blog`, `/pricing`, and `/locations/germany-vpn` confirmed the overlay
+  host attaches, the badge opens (`aria-expanded="false" -> "true"`), and no
+  console errors were emitted. The duplicate empty-alt logo no longer triggers
+  `SL-IMG-007`; the remaining homepage `SL-IMG-007` points to the unique
+  rendered image source `/_next/image?url=%2Ftrust-vpn-route.png...`, which is
+  still an actionable empty-alt content/decorative-classification issue for the
+  tested site rather than a duplicate-logo false positive.
 
 ## Validation
 
 - `pnpm --filter @searchlint/core typecheck`
 - `pnpm --filter @searchlint/core test`
 - `pnpm --filter @searchlint/browser typecheck`
+- `pnpm --filter @searchlint/browser test`
 - `pnpm --filter @searchlint/cli test`
 - `pnpm --filter @searchlint/cli typecheck`
 - `pnpm --filter searchlint typecheck`
 - `pnpm --filter searchlint build`
+- `pnpm --filter @searchlint/next typecheck`
 - `pnpm --filter @searchlint/next test`
+- `node scripts/verify-package-release.mjs`
 - `pnpm --filter @searchlint/overlay test`
 - `pnpm pack` for `packages/core`, `packages/browser`, `packages/overlay`,
   `packages/next`, and `packages/cli`

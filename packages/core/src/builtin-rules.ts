@@ -2550,9 +2550,18 @@ function contentImageEmptyAlt(context: RuleContext): readonly RuleReport[] {
     return [];
   }
 
-  const empty = imageTagEntries(html).find(
+  const entries = imageTagEntries(html);
+  const describedSources = new Set(
+    entries
+      .filter((entry) => entry.alt !== undefined && entry.alt.trim().length > 0)
+      .map((entry) => normalizedImageSource(entry.src))
+      .filter((source): source is string => source !== undefined)
+  );
+  const empty = entries.find(
     (entry) =>
-      entry.alt?.trim().length === 0 && !isDecorativeImageCandidate(entry)
+      entry.alt?.trim().length === 0 &&
+      !isDecorativeImageCandidate(entry) &&
+      !hasDescribedDuplicateImageSource(entry, describedSources)
   );
   if (!empty) {
     return [];
@@ -2586,6 +2595,14 @@ function isDecorativeImageCandidate(entry: ImageTagEntry): boolean {
   return isLikelyDecorativeImageSource(entry.src);
 }
 
+function hasDescribedDuplicateImageSource(
+  entry: ImageTagEntry,
+  describedSources: ReadonlySet<string>
+): boolean {
+  const source = normalizedImageSource(entry.src);
+  return source !== undefined && describedSources.has(source);
+}
+
 function hasBooleanishAttribute(
   tag: string,
   attributeName: string,
@@ -2596,16 +2613,23 @@ function hasBooleanishAttribute(
 }
 
 function isLikelyDecorativeImageSource(src: string | undefined): boolean {
-  if (!src) {
+  const path = normalizedImageSource(src);
+  if (!path) {
     return false;
   }
-  const decoded = decodeAttributeUrl(src).toLowerCase();
-  const target = nextImageSourceUrl(decoded) ?? decoded;
-  const path = target.split(/[?#]/, 1)[0] ?? target;
   const fileName = path.split("/").pop() ?? path;
   return /(?:^|[-_.@])(bg|background|decorative|decoration|ornament|pattern|texture|shape|shell-bg)(?:[-_.@]|$)/i.test(
     fileName
   );
+}
+
+function normalizedImageSource(src: string | undefined): string | undefined {
+  if (!src) {
+    return undefined;
+  }
+  const decoded = decodeAttributeUrl(src).toLowerCase();
+  const target = nextImageSourceUrl(decoded) ?? decoded;
+  return target.split(/[?#]/, 1)[0] ?? target;
 }
 
 function nextImageSourceUrl(decodedSrc: string): string | undefined {

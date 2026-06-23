@@ -85,11 +85,11 @@ to the current tested beta versions before the next install.
 
 The current verified beta versions are:
 
-- `searchlint@1.0.0-beta.25`
-- `@searchlint/cli@1.0.0-beta.25`
-- `@searchlint/next@1.0.0-beta.11`
-- `@searchlint/core@1.0.0-beta.4`
-- `@searchlint/browser@1.0.0-beta.3`
+- `searchlint@1.0.0-beta.26`
+- `@searchlint/cli@1.0.0-beta.26`
+- `@searchlint/next@1.0.0-beta.12`
+- `@searchlint/core@1.0.0-beta.5`
+- `@searchlint/browser@1.0.0-beta.4`
 - `@searchlint/overlay@1.0.0-beta.9`
 
 The broader package set is still prerelease. Stable 1.0 install commands will

@@ -1,6 +1,6 @@
 {
   "name": "@searchlint/browser",
-  "version": "1.0.0-beta.3",
+  "version": "1.0.0-beta.4",
   "description": "SearchLint browser collector helpers",
   "license": "Apache-2.0",
   "sideEffects": false,

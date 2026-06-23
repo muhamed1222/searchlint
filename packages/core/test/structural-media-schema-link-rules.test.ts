@@ -615,7 +615,9 @@ describe("createCoreStructuralMediaSchemaLinkRules", () => {
     );
 
     expect(
-      result.diagnostics.some((diagnostic) => diagnostic.ruleId === "SL-IMG-007")
+      result.diagnostics.some(
+        (diagnostic) => diagnostic.ruleId === "SL-IMG-007"
+      )
     ).toBe(false);
   });
 
@@ -635,7 +637,33 @@ describe("createCoreStructuralMediaSchemaLinkRules", () => {
     );
 
     expect(
-      result.diagnostics.some((diagnostic) => diagnostic.ruleId === "SL-IMG-007")
+      result.diagnostics.some(
+        (diagnostic) => diagnostic.ruleId === "SL-IMG-007"
+      )
+    ).toBe(false);
+  });
+
+  it("does not flag empty-alt duplicate image sources when another copy is described", async () => {
+    const result = await run(
+      snapshot(`<html><head>
+        <meta property="og:image" content="/og.png">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta name="twitter:image" content="/twitter.png">
+      </head><body>
+        <h1>Product Detail</h1>
+        <img src="/brand-logo.svg" alt="Brand">
+        <img src="/brand-logo.svg" alt="">
+        <img src="/_next/image?url=%2Fpartner-logo.svg&amp;w=64&amp;q=75" alt="Partner">
+        <img src="/_next/image?url=%2Fpartner-logo.svg&amp;w=384&amp;q=75" alt="">
+        <img src="/content.png" alt="Product photo">
+      </body></html>`)
+    );
+
+    expect(
+      result.diagnostics.some(
+        (diagnostic) => diagnostic.ruleId === "SL-IMG-007"
+      )
     ).toBe(false);
   });
 

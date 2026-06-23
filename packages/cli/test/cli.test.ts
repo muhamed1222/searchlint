@@ -398,7 +398,7 @@ describe("runSearchLintCli", () => {
 
     expect(result).toMatchObject({
       exitCode: 0,
-      stdout: "searchlint 1.0.0-beta.25\n",
+      stdout: "searchlint 1.0.0-beta.26\n",
       stderr: ""
     });
   });
@@ -409,7 +409,7 @@ describe("runSearchLintCli", () => {
     expect(result.exitCode, result.stderr).toBe(0);
     expect(result.stderr).toBe("");
     expect(result.stdout).toContain("SearchLint doctor");
-    expect(result.stdout).toContain("version: 1.0.0-beta.25");
+    expect(result.stdout).toContain("version: 1.0.0-beta.26");
     expect(result.stdout).toContain("node: >=24.0.0 required");
     expect(result.stdout).toContain("status: local CLI runtime checks passed");
   });
@@ -897,9 +897,9 @@ describe("runSearchLintCli", () => {
     expect(result.exitCode, result.stderr).toBe(0);
     expect(result.stdout).toContain("  npm install");
     const packageJson = JSON.parse(files["package.json"] ?? "{}");
-    expect(packageJson.dependencies["@searchlint/next"]).toBe("1.0.0-beta.11");
+    expect(packageJson.dependencies["@searchlint/next"]).toBe("1.0.0-beta.12");
     expect(packageJson.devDependencies["@searchlint/cli"]).toBe(
-      "1.0.0-beta.25"
+      "1.0.0-beta.26"
     );
   });
 
@@ -925,12 +925,12 @@ describe("runSearchLintCli", () => {
 
     expect(result.exitCode, result.stderr).toBe(0);
     const packageJson = JSON.parse(files["package.json"] ?? "{}");
-    expect(packageJson.devDependencies.searchlint).toBe("1.0.0-beta.25");
+    expect(packageJson.devDependencies.searchlint).toBe("1.0.0-beta.26");
     expect(packageJson.devDependencies["@searchlint/cli"]).toBe(
-      "1.0.0-beta.25"
+      "1.0.0-beta.26"
     );
     expect(packageJson.devDependencies["@searchlint/next"]).toBe(
-      "1.0.0-beta.11"
+      "1.0.0-beta.12"
     );
   });
 
