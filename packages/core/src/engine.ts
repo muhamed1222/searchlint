@@ -113,6 +113,7 @@ export async function runRuleEngine(
   for (const rule of orderedRules) {
     const context = {
       snapshot: input.snapshot,
+      ...(input.siteUrl === undefined ? {} : { siteUrl: input.siteUrl }),
       now: observedAt
     };
     const reports = await rule.run(

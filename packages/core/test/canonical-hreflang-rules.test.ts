@@ -123,6 +123,15 @@ async function run(page: PageSnapshot, routeContract?: RouteContract) {
   });
 }
 
+async function runWithSiteUrl(page: PageSnapshot, siteUrl: string) {
+  return runRuleEngine({
+    rules,
+    snapshot: page,
+    siteUrl,
+    options: { now: observedAt }
+  });
+}
+
 describe("createCoreCanonicalHreflangRules", () => {
   it("creates catalog-backed canonical rules in deterministic ID order", () => {
     expect(rules.map((rule) => rule.id)).toEqual(ruleIds.map(([id]) => id));
@@ -169,6 +178,31 @@ describe("createCoreCanonicalHreflangRules", () => {
     expect(host.diagnostics.map((diagnostic) => diagnostic.ruleId)).toContain(
       "SL-CANON-007"
     );
+  });
+
+  it("does not treat configured production canonicals as local dev host conflicts", async () => {
+    const result = await runWithSiteUrl(
+      {
+        ...snapshot(
+          '<head><link rel="canonical" href="https://example.com/products/1"></head>'
+        ),
+        pageUrl: "http://localhost:3001/products/1",
+        http: {
+          statusCode: 200,
+          finalUrl: "http://localhost:3001/products/1",
+          headers: { "content-type": "text/html" },
+          redirectChain: []
+        }
+      },
+      "https://example.com"
+    );
+
+    expect(
+      result.diagnostics.map((diagnostic) => diagnostic.ruleId)
+    ).not.toContain("SL-CANON-006");
+    expect(
+      result.diagnostics.map((diagnostic) => diagnostic.ruleId)
+    ).not.toContain("SL-CANON-007");
   });
 
   it("detects self-canonical policy violations only when policy is explicit", async () => {

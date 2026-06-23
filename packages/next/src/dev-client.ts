@@ -18,6 +18,7 @@ import {
 } from "@searchlint/overlay";
 
 declare const __SEARCHLINT_RULE_CATALOG__: string | undefined;
+declare const __SEARCHLINT_SITE_URL__: string | undefined;
 
 declare global {
   interface Window {
@@ -28,6 +29,7 @@ declare global {
 export type SearchLintDevClientOptions = {
   document: Document;
   catalogText: string;
+  siteUrl?: string;
   now?: () => string;
 };
 
@@ -47,6 +49,7 @@ export async function analyzeCurrentDocument(
   const result = await runRuleEngine({
     rules: createRules(registry),
     snapshot,
+    ...(options.siteUrl === undefined ? {} : { siteUrl: options.siteUrl }),
     options: { now: capturedAt }
   });
   return result.diagnostics;
@@ -68,6 +71,7 @@ export function initializeSearchLintDevClient(
   document.querySelector("searchlint-dev-overlay")?.remove();
 
   const catalogText = options.catalogText ?? __SEARCHLINT_RULE_CATALOG__;
+  const siteUrl = options.siteUrl ?? __SEARCHLINT_SITE_URL__;
   if (!catalogText) {
     throw new Error(
       "SearchLint dev client requires the real RULE_CATALOG.yaml injected by @searchlint/next."
@@ -77,7 +81,8 @@ export function initializeSearchLintDevClient(
   const runtime = createSearchLintOverlayRuntime({
     document: options.document ?? document,
     initialDiagnostics: [],
-    onRerun: () => rerun(runtime, options.document ?? document, catalogText)
+    onRerun: () =>
+      rerun(runtime, options.document ?? document, catalogText, siteUrl)
   });
   const destroy = runtime.destroy;
   const managedRuntime: SearchLintOverlayRuntime = {
@@ -90,17 +95,22 @@ export function initializeSearchLintDevClient(
     }
   };
   window.__SEARCHLINT_DEV_OVERLAY__ = managedRuntime;
-  void rerun(runtime, options.document ?? document, catalogText);
+  void rerun(runtime, options.document ?? document, catalogText, siteUrl);
   return managedRuntime;
 }
 
 async function rerun(
   runtime: SearchLintOverlayRuntime,
   document: Document,
-  catalogText: string
+  catalogText: string,
+  siteUrl?: string
 ): Promise<void> {
   runtime.update({ status: "checking" });
-  const diagnostics = await analyzeCurrentDocument({ document, catalogText });
+  const diagnostics = await analyzeCurrentDocument({
+    document,
+    catalogText,
+    ...(siteUrl === undefined ? {} : { siteUrl })
+  });
   runtime.update({
     status: deriveBadgeState(diagnostics),
     diagnostics,

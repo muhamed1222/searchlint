@@ -170,7 +170,7 @@ type CliParsedCommand =
       error: string;
     };
 
-export const searchLintCliVersion = "1.0.0-beta.2";
+export const searchLintCliVersion = "1.0.0-beta.3";
 
 const severityRank: Record<Severity, number> = {
   blocker: 4,
@@ -384,7 +384,10 @@ export async function analyzeSnapshot(
 
   const engineInput = {
     rules: createLocalCoreRules(registry),
-    snapshot
+    snapshot,
+    ...(compiledConfig?.siteUrl === undefined
+      ? {}
+      : { siteUrl: compiledConfig.siteUrl })
   };
   const input =
     routeContracts === undefined
@@ -462,6 +465,9 @@ export async function analyzeCrawl(
     const engineResult = await runRuleEngine({
       rules,
       snapshot,
+      ...(compiledConfig?.siteUrl === undefined
+        ? {}
+        : { siteUrl: compiledConfig.siteUrl }),
       ...(compiledConfig?.routeContracts === undefined
         ? {}
         : { routeContracts: compiledConfig.routeContracts }),

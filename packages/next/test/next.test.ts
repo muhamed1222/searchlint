@@ -133,6 +133,25 @@ describe("createSearchLintNextConfig", () => {
     expect(result.plugins).toHaveLength(1);
   });
 
+  it("passes configured siteUrl to the development client bundle", () => {
+    const configFactory = createSearchLintNextConfig(identityConfig(), {
+      catalogText: "categories: []\nrules: []\n",
+      siteUrl: "https://example.com"
+    });
+    const config = configFactory(nextDevelopmentServerPhase);
+    const result = config.webpack!(
+      { entry: { main: ["next-client"] }, plugins: [] },
+      { dev: true, isServer: false, webpack: webpackStub() }
+    );
+    const plugin = result.plugins?.at(0) as
+      | { definitions: Readonly<Record<string, string>> }
+      | undefined;
+
+    expect(plugin?.definitions.__SEARCHLINT_SITE_URL__).toBe(
+      JSON.stringify("https://example.com")
+    );
+  });
+
   it("reports zero production impact checks", () => {
     const report = createZeroImpactReport({
       clientBundleBytesDelta: 0,
@@ -180,6 +199,31 @@ describe("dev client analysis", () => {
 
     expect(diagnostics.map((diagnostic) => diagnostic.ruleId)).toContain(
       "SL-META-001"
+    );
+  });
+
+  it("uses siteUrl to avoid local dev canonical origin noise", async () => {
+    const diagnostics = await analyzeCurrentDocument({
+      catalogText: readFileSync("../../specs/RULE_CATALOG.yaml", "utf8"),
+      siteUrl: "https://example.com",
+      document: {
+        location: {
+          href: "http://localhost:3001/products/1",
+          pathname: "/products/1"
+        },
+        documentElement: {
+          outerHTML:
+            '<html><head><title>Product</title><meta name="description" content="Useful product page description."><link rel="canonical" href="https://example.com/products/1"></head><body><h1>Product</h1></body></html>'
+        }
+      } as Document,
+      now: () => "2026-06-21T00:00:00.000Z"
+    });
+
+    expect(diagnostics.map((diagnostic) => diagnostic.ruleId)).not.toContain(
+      "SL-CANON-006"
+    );
+    expect(diagnostics.map((diagnostic) => diagnostic.ruleId)).not.toContain(
+      "SL-CANON-007"
     );
   });
 });

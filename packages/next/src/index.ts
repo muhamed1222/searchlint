@@ -1,4 +1,11 @@
 import { bundledRuleCatalogText } from "./catalog.generated.js";
+import { existsSync, readFileSync } from "node:fs";
+import { resolve } from "node:path";
+import {
+  compileSearchLintDocument,
+  parseSearchLintDocument,
+  type SemanticDiagnostic
+} from "@searchlint/language";
 
 export type NextSourceFileKind =
   | "app-route"
@@ -94,6 +101,8 @@ export type NextConfigRouteEntry = {
 export type SearchLintNextIntegrationOptions = {
   catalogText?: string;
   catalogPath?: string;
+  configPath?: string;
+  siteUrl?: string;
   enabled?: boolean;
 };
 
@@ -187,11 +196,13 @@ function createSearchLintDevelopmentConfig<TConfig extends NextConfigLike>(
       }
 
       const catalogText = options.catalogText ?? readCatalogText(options);
+      const siteUrl = options.siteUrl ?? readConfigSiteUrl(options);
       if (context.webpack?.DefinePlugin) {
         resolvedConfig.plugins = [
           ...(resolvedConfig.plugins ?? []),
           new context.webpack.DefinePlugin({
-            __SEARCHLINT_RULE_CATALOG__: JSON.stringify(catalogText)
+            __SEARCHLINT_RULE_CATALOG__: JSON.stringify(catalogText),
+            __SEARCHLINT_SITE_URL__: JSON.stringify(siteUrl)
           })
         ];
       }
@@ -338,6 +349,41 @@ function readCatalogText(options: SearchLintNextIntegrationOptions): string {
   throw new Error(
     "SearchLint Next integration requires catalogText so development bundles can use the real RULE_CATALOG.yaml without shipping it to production."
   );
+}
+
+function readConfigSiteUrl(
+  options: SearchLintNextIntegrationOptions
+): string | undefined {
+  const configPath = resolve(options.configPath ?? "searchlint.seo");
+  if (!existsSync(configPath)) {
+    return undefined;
+  }
+
+  const source = readFileSync(configPath, "utf8");
+  const parsed = parseSearchLintDocument(source);
+  if (parsed.diagnostics.length > 0) {
+    throw new Error(formatConfigDiagnostics(configPath, parsed.diagnostics));
+  }
+
+  const compiled = compileSearchLintDocument(parsed.ast);
+  if (compiled.diagnostics.length > 0 || !compiled.config) {
+    throw new Error(formatConfigDiagnostics(configPath, compiled.diagnostics));
+  }
+
+  return compiled.config.siteUrl;
+}
+
+function formatConfigDiagnostics(
+  path: string,
+  diagnostics: readonly SemanticDiagnostic[]
+): string {
+  const details = diagnostics
+    .map(
+      (diagnostic) =>
+        `- ${diagnostic.code} at line ${diagnostic.span.start.line}, column ${diagnostic.span.start.column}: ${diagnostic.message}`
+    )
+    .join("\n");
+  return `SearchLint config '${path}' is invalid:\n${details}`;
 }
 
 export function discoverNextProjectSourceFiles(

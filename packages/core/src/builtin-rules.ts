@@ -4649,7 +4649,12 @@ function canonicalSchemeConflict(context: RuleContext): readonly RuleReport[] {
 
   const canonical = parseUrlAgainstPage(entry.href, context);
   const page = parseUrlAgainstPage(context.snapshot.pageUrl, context);
-  if (!canonical || !page || canonical.protocol === page.protocol) {
+  if (
+    !canonical ||
+    !page ||
+    canonical.protocol === page.protocol ||
+    canonicalMatchesConfiguredLocalSite(context, page, canonical)
+  ) {
     return [];
   }
 
@@ -4675,7 +4680,12 @@ function canonicalHostConflict(context: RuleContext): readonly RuleReport[] {
 
   const canonical = parseUrlAgainstPage(entry.href, context);
   const page = parseUrlAgainstPage(context.snapshot.pageUrl, context);
-  if (!canonical || !page || canonical.host === page.host) {
+  if (
+    !canonical ||
+    !page ||
+    canonical.host === page.host ||
+    canonicalMatchesConfiguredLocalSite(context, page, canonical)
+  ) {
     return [];
   }
 
@@ -4691,6 +4701,55 @@ function canonicalHostConflict(context: RuleContext): readonly RuleReport[] {
       }
     )
   ];
+}
+
+function canonicalMatchesConfiguredLocalSite(
+  context: RuleContext,
+  page: ParsedUrl,
+  canonical: ParsedUrl
+): boolean {
+  if (!isLocalDevelopmentUrl(page) || !context.siteUrl) {
+    return false;
+  }
+
+  const site = parseAbsoluteUrlOrUndefined(context.siteUrl);
+  return (
+    site !== undefined &&
+    canonical.protocol === site.protocol &&
+    canonical.host === site.host
+  );
+}
+
+function isLocalDevelopmentUrl(url: ParsedUrl): boolean {
+  const host = url.host.toLowerCase();
+  return (
+    host === "localhost" ||
+    host.startsWith("localhost:") ||
+    isLoopbackHost(host)
+  );
+}
+
+function isLoopbackHost(host: string): boolean {
+  return (
+    host === "127.0.0.1" ||
+    host.startsWith("127.0.0.1:") ||
+    host === "[::1]" ||
+    host.startsWith("[::1]:")
+  );
+}
+
+function parseAbsoluteUrlOrUndefined(
+  value: string
+): Pick<ParsedUrl, "protocol" | "host"> | undefined {
+  const match = value.match(/^(https?:)\/\/([^/?#]+)/i);
+  if (!match) {
+    return undefined;
+  }
+
+  return {
+    protocol: match[1]!,
+    host: match[2]!
+  };
 }
 
 function invalidHreflangCode(context: RuleContext): readonly RuleReport[] {

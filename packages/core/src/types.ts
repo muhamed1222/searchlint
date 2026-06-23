@@ -315,6 +315,7 @@ export type RouteContract = {
 export type RuleContext = {
   snapshot: PageSnapshot;
   routeContract?: RouteContract;
+  siteUrl?: string;
   now: string;
 };
 
@@ -357,6 +358,7 @@ export type RuleEngineOptions = {
 export type RuleEngineInput = {
   rules: readonly Rule[];
   snapshot: PageSnapshot;
+  siteUrl?: string;
   routeContract?: RouteContract;
   routeContracts?: readonly RouteContract[];
   options?: RuleEngineOptions;
