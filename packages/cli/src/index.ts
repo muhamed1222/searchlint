@@ -170,7 +170,7 @@ type CliParsedCommand =
       error: string;
     };
 
-export const searchLintCliVersion = "1.0.0-beta.6";
+export const searchLintCliVersion = "1.0.0-beta.8";
 
 const severityRank: Record<Severity, number> = {
   blocker: 4,
@@ -1479,12 +1479,6 @@ async function ensureNextConfig(
     return { created: ["next.config.mjs"], changed: [] };
   }
 
-  if (nextConfigPath.endsWith(".ts")) {
-    throw new Error(
-      "searchlint init found next.config.ts. Automatic TypeScript config patching is not supported yet; add withSearchLint manually or convert the config to next.config.mjs."
-    );
-  }
-
   const current = await io.readText(nextConfigPath);
   if (current.includes("withSearchLint(")) {
     return { created: [], changed: [] };
@@ -1497,6 +1491,9 @@ async function ensureNextConfig(
 
 function patchNextConfig(source: string, filePath: string): string {
   if (filePath.endsWith(".mjs")) {
+    return patchEsmNextConfig(source, filePath);
+  }
+  if (filePath.endsWith(".ts")) {
     return patchEsmNextConfig(source, filePath);
   }
   if (filePath.endsWith(".js")) {

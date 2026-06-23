@@ -1,6 +1,6 @@
 {
   "name": "@searchlint/next",
-  "version": "1.0.0-beta.5",
+  "version": "1.0.0-beta.6",
   "description": "SearchLint Next.js development integration",
   "license": "Apache-2.0",
   "sideEffects": false,
@@ -13,11 +13,13 @@
   "exports": {
     ".": {
       "types": "./dist/src/index.d.ts",
-      "import": "./dist/src/index.js"
+      "import": "./dist/src/index.js",
+      "default": "./dist/src/index.js"
     },
     "./dev-client": {
       "types": "./dist/src/dev-client.d.ts",
-      "import": "./dist/src/dev-client.js"
+      "import": "./dist/src/dev-client.js",
+      "default": "./dist/src/dev-client.js"
     }
   },
   "scripts": {

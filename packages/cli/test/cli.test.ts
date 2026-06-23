@@ -398,7 +398,7 @@ describe("runSearchLintCli", () => {
 
     expect(result).toMatchObject({
       exitCode: 0,
-      stdout: "searchlint 1.0.0-beta.6\n",
+      stdout: "searchlint 1.0.0-beta.8\n",
       stderr: ""
     });
   });
@@ -409,7 +409,7 @@ describe("runSearchLintCli", () => {
     expect(result.exitCode, result.stderr).toBe(0);
     expect(result.stderr).toBe("");
     expect(result.stdout).toContain("SearchLint doctor");
-    expect(result.stdout).toContain("version: 1.0.0-beta.6");
+    expect(result.stdout).toContain("version: 1.0.0-beta.8");
     expect(result.stdout).toContain("node: >=24.0.0 required");
     expect(result.stdout).toContain("status: local CLI runtime checks passed");
   });
@@ -623,7 +623,7 @@ describe("runSearchLintCli", () => {
   });
 
   it("keeps Next.js project initialization idempotent", async () => {
-    const files = {
+    const files: Record<string, string> = {
       "package.json": JSON.stringify({
         scripts: {
           dev: "next dev --webpack",
@@ -688,22 +688,25 @@ describe("runSearchLintCli", () => {
     );
   });
 
-  it("fails clearly for unsupported TypeScript Next.js config patching", async () => {
+  it("patches TypeScript Next.js configs created by create-next-app", async () => {
+    const files: Record<string, string> = {
+      "package.json": JSON.stringify({ dependencies: { next: "16.2.9" } }),
+      "next.config.ts":
+        'import type { NextConfig } from "next";\n\nconst nextConfig: NextConfig = {};\n\nexport default nextConfig;\n'
+    };
     const result = await runSearchLintCli(
       ["init"],
-      createIo(
-        {
-          "package.json": JSON.stringify({ dependencies: { next: "16.2.9" } }),
-          "next.config.ts": "export default {};\n"
-        },
-        undefined,
-        true
-      )
+      createIo(files, undefined, true)
     );
 
-    expect(result.exitCode).toBe(1);
-    expect(result.stderr).toContain("next.config.ts");
-    expect(result.stderr).toContain("not supported yet");
+    expect(result.exitCode, result.stderr).toBe(0);
+    expect(files["next.config.ts"]).toContain(
+      'import { withSearchLint } from "@searchlint/next";'
+    );
+    expect(files["next.config.ts"]).toContain(
+      "export default withSearchLint(nextConfig);"
+    );
+    expect(files["searchlint.seo"]).toContain("language 1");
   });
 
   it("validates explicit and discovered SearchLint configs", async () => {
