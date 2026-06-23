@@ -65,7 +65,7 @@ Initial real-site acceptance pages:
 
 ## Evidence Log
 
-- `@searchlint/cli@1.0.0-beta.23` and `@searchlint/next@1.0.0-beta.10` are the
+- `@searchlint/cli@1.0.0-beta.24` and `@searchlint/next@1.0.0-beta.10` are the
   current beta packages for the zero-manual-edit Next.js init path.
 - `http://localhost:3001/blog` rendered the badge with `SearchLint info: 2`. The
   two diagnostics were `SL-HEAD-005` and `SL-META-009`, both heuristic
@@ -147,7 +147,11 @@ Initial real-site acceptance pages:
   conservative and preserves existing SearchLint package versions; the upgrade
   flag rewrites existing `@searchlint/cli` and `@searchlint/next` ranges to the
   `beta` dist-tag and prints the package-manager install command.
-- `searchlint@1.0.0-beta.23` is an unscoped npm wrapper around
+- `@searchlint/cli@1.0.0-beta.24` changes `searchlint init --upgrade` to write
+  exact tested beta versions for `searchlint`, `@searchlint/cli`, and
+  `@searchlint/next`, because npm lockfiles can keep older beta versions when
+  the dependency specifier is only `beta`.
+- `searchlint@1.0.0-beta.24` is an unscoped npm wrapper around
   `@searchlint/cli`, so local onboarding can use
   `npx -y searchlint@beta init --site=https://example.com` while preserving the
   scoped package as the implementation package.

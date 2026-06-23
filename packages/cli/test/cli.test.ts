@@ -398,7 +398,7 @@ describe("runSearchLintCli", () => {
 
     expect(result).toMatchObject({
       exitCode: 0,
-      stdout: "searchlint 1.0.0-beta.23\n",
+      stdout: "searchlint 1.0.0-beta.24\n",
       stderr: ""
     });
   });
@@ -409,7 +409,7 @@ describe("runSearchLintCli", () => {
     expect(result.exitCode, result.stderr).toBe(0);
     expect(result.stderr).toBe("");
     expect(result.stdout).toContain("SearchLint doctor");
-    expect(result.stdout).toContain("version: 1.0.0-beta.23");
+    expect(result.stdout).toContain("version: 1.0.0-beta.24");
     expect(result.stdout).toContain("node: >=24.0.0 required");
     expect(result.stdout).toContain("status: local CLI runtime checks passed");
   });
@@ -897,8 +897,41 @@ describe("runSearchLintCli", () => {
     expect(result.exitCode, result.stderr).toBe(0);
     expect(result.stdout).toContain("  npm install");
     const packageJson = JSON.parse(files["package.json"] ?? "{}");
-    expect(packageJson.dependencies["@searchlint/next"]).toBe("beta");
-    expect(packageJson.devDependencies["@searchlint/cli"]).toBe("beta");
+    expect(packageJson.dependencies["@searchlint/next"]).toBe("1.0.0-beta.10");
+    expect(packageJson.devDependencies["@searchlint/cli"]).toBe(
+      "1.0.0-beta.24"
+    );
+  });
+
+  it("upgrades the unscoped wrapper package when present", async () => {
+    const files: Record<string, string> = {
+      "package.json": JSON.stringify({
+        scripts: { dev: "next dev" },
+        dependencies: {
+          next: "16.2.9"
+        },
+        devDependencies: {
+          searchlint: "1.0.0-beta.23",
+          "@searchlint/cli": "1.0.0-beta.23",
+          "@searchlint/next": "1.0.0-beta.8"
+        }
+      }),
+      "next.config.mjs": "const nextConfig = {};\nexport default nextConfig;\n"
+    };
+    const result = await runSearchLintCli(
+      ["init", "--upgrade"],
+      createIo(files, undefined, true)
+    );
+
+    expect(result.exitCode, result.stderr).toBe(0);
+    const packageJson = JSON.parse(files["package.json"] ?? "{}");
+    expect(packageJson.devDependencies.searchlint).toBe("1.0.0-beta.24");
+    expect(packageJson.devDependencies["@searchlint/cli"]).toBe(
+      "1.0.0-beta.24"
+    );
+    expect(packageJson.devDependencies["@searchlint/next"]).toBe(
+      "1.0.0-beta.10"
+    );
   });
 
   it("rejects invalid init site URLs", async () => {

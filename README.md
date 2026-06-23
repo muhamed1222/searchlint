@@ -80,13 +80,13 @@ npm run searchlint:verify
 
 Without `--upgrade`, `searchlint init` preserves existing SearchLint package
 versions so stable projects do not drift unexpectedly. With `--upgrade`, it
-updates existing `@searchlint/cli` and `@searchlint/next` entries to the current
-`beta` dist-tag before the next install.
+updates existing `searchlint`, `@searchlint/cli`, and `@searchlint/next` entries
+to the current tested beta versions before the next install.
 
 The current verified beta versions are:
 
-- `searchlint@1.0.0-beta.23`
-- `@searchlint/cli@1.0.0-beta.23`
+- `searchlint@1.0.0-beta.24`
+- `@searchlint/cli@1.0.0-beta.24`
 - `@searchlint/next@1.0.0-beta.10`
 - `@searchlint/core@1.0.0-beta.4`
 - `@searchlint/browser@1.0.0-beta.3`

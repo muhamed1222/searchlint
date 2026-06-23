@@ -172,9 +172,12 @@ type CliParsedCommand =
       error: string;
     };
 
-export const searchLintCliVersion = "1.0.0-beta.23";
+export const searchLintCliVersion = "1.0.0-beta.24";
 const searchLintCliPackageRange = "beta";
 const searchLintNextPackageRange = "beta";
+const searchLintCliUpgradeVersion = searchLintCliVersion;
+const searchLintNextUpgradeVersion = "1.0.0-beta.10";
+const searchLintWrapperUpgradeVersion = searchLintCliVersion;
 
 const severityRank: Record<Severity, number> = {
   blocker: 4,
@@ -1780,7 +1783,7 @@ function ensurePackageOnboarding(
     const upgradedCli = setExistingDependencyVersion(
       packageJson,
       "@searchlint/cli",
-      searchLintCliPackageRange
+      searchLintCliUpgradeVersion
     );
     if (upgradedCli) {
       upgradedDependencies.push("@searchlint/cli");
@@ -1790,10 +1793,20 @@ function ensurePackageOnboarding(
     const upgradedNext = setExistingDependencyVersion(
       packageJson,
       "@searchlint/next",
-      searchLintNextPackageRange
+      searchLintNextUpgradeVersion
     );
     if (upgradedNext) {
       upgradedDependencies.push("@searchlint/next");
+      changed = true;
+    }
+
+    const upgradedWrapper = setExistingDependencyVersion(
+      packageJson,
+      "searchlint",
+      searchLintWrapperUpgradeVersion
+    );
+    if (upgradedWrapper) {
+      upgradedDependencies.push("searchlint");
       changed = true;
     }
   }
