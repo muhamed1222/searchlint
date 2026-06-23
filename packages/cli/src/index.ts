@@ -170,7 +170,7 @@ type CliParsedCommand =
       error: string;
     };
 
-export const searchLintCliVersion = "1.0.0-beta.11";
+export const searchLintCliVersion = "1.0.0-beta.12";
 
 const severityRank: Record<Severity, number> = {
   blocker: 4,
@@ -1396,6 +1396,7 @@ async function initializeLocalProject(io: CliIo): Promise<CliRunResult> {
     "",
     "Next step:",
     "  npm run dev",
+    "  npm run searchlint:verify",
     "",
     "Open your local site and click the SearchLint badge to inspect the current page."
   ];
@@ -1603,6 +1604,11 @@ function ensurePackageScripts(packageJson: Record<string, unknown>): {
   if (scripts["searchlint:config"] === undefined) {
     scripts["searchlint:config"] =
       "searchlint config validate --config searchlint.seo";
+    changed = true;
+  }
+  if (scripts["searchlint:verify"] === undefined) {
+    scripts["searchlint:verify"] =
+      "searchlint doctor && searchlint config validate --config searchlint.seo";
     changed = true;
   }
   return { changed };

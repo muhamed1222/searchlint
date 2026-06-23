@@ -398,7 +398,7 @@ describe("runSearchLintCli", () => {
 
     expect(result).toMatchObject({
       exitCode: 0,
-      stdout: "searchlint 1.0.0-beta.11\n",
+      stdout: "searchlint 1.0.0-beta.12\n",
       stderr: ""
     });
   });
@@ -409,7 +409,7 @@ describe("runSearchLintCli", () => {
     expect(result.exitCode, result.stderr).toBe(0);
     expect(result.stderr).toBe("");
     expect(result.stdout).toContain("SearchLint doctor");
-    expect(result.stdout).toContain("version: 1.0.0-beta.11");
+    expect(result.stdout).toContain("version: 1.0.0-beta.12");
     expect(result.stdout).toContain("node: >=24.0.0 required");
     expect(result.stdout).toContain("status: local CLI runtime checks passed");
   });
@@ -654,6 +654,7 @@ describe("runSearchLintCli", () => {
     expect(result.stdout).toContain(
       "SearchLint initialized for local Next.js development."
     );
+    expect(result.stdout).toContain("npm run searchlint:verify");
     expect(files["searchlint.seo"]).toContain("language 1");
     expect(files["next.config.mjs"]).toContain(
       'import { withSearchLint } from "@searchlint/next";'
@@ -664,7 +665,9 @@ describe("runSearchLintCli", () => {
     expect(JSON.parse(files["package.json"] ?? "{}").scripts).toMatchObject({
       dev: "next dev --webpack",
       searchlint: "searchlint doctor",
-      "searchlint:config": "searchlint config validate --config searchlint.seo"
+      "searchlint:config": "searchlint config validate --config searchlint.seo",
+      "searchlint:verify":
+        "searchlint doctor && searchlint config validate --config searchlint.seo"
     });
   });
 
@@ -675,7 +678,9 @@ describe("runSearchLintCli", () => {
           dev: "next dev --webpack",
           searchlint: "searchlint doctor",
           "searchlint:config":
-            "searchlint config validate --config searchlint.seo"
+            "searchlint config validate --config searchlint.seo",
+          "searchlint:verify":
+            "searchlint doctor && searchlint config validate --config searchlint.seo"
         },
         dependencies: { next: "16.2.9" }
       }),

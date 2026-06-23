@@ -48,7 +48,7 @@ under the npm `beta` dist-tag:
 npm install -D @searchlint/cli@beta @searchlint/next@beta
 npx searchlint init
 npm run dev
-npx searchlint doctor
+npm run searchlint:verify
 ```
 
 Expected `doctor` output in a patched Next.js project includes:
@@ -76,7 +76,7 @@ command above when testing a newly published beta.
 
 The current verified beta versions are:
 
-- `@searchlint/cli@1.0.0-beta.11`
+- `@searchlint/cli@1.0.0-beta.12`
 - `@searchlint/next@1.0.0-beta.8`
 - `@searchlint/core@1.0.0-beta.3`
 - `@searchlint/browser@1.0.0-beta.2`
@@ -143,7 +143,7 @@ Use the local onboarding command in a Next.js project:
 npm install -D @searchlint/cli@beta @searchlint/next@beta
 searchlint init
 npm run dev
-npx searchlint doctor
+npm run searchlint:verify
 ```
 
 Open the local site and click the SearchLint badge to inspect the current page.

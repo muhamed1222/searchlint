@@ -65,7 +65,7 @@ Initial real-site acceptance pages:
 
 ## Evidence Log
 
-- `@searchlint/cli@1.0.0-beta.11` and `@searchlint/next@1.0.0-beta.8` are the
+- `@searchlint/cli@1.0.0-beta.12` and `@searchlint/next@1.0.0-beta.8` are the
   current beta packages for the zero-manual-edit Next.js init path.
 - `http://localhost:3001/blog` rendered the badge with `SearchLint info: 2`. The
   two diagnostics were `SL-HEAD-005` and `SL-META-009`, both heuristic
@@ -84,7 +84,7 @@ Initial real-site acceptance pages:
 - The improved local developer chain was published to npm with tag `beta`:
   `@searchlint/core@1.0.0-beta.3`, `@searchlint/browser@1.0.0-beta.2`,
   `@searchlint/overlay@1.0.0-beta.6`, `@searchlint/next@1.0.0-beta.8`, and
-  `@searchlint/cli@1.0.0-beta.11`.
+  `@searchlint/cli@1.0.0-beta.12`.
 - Reinstalling `@searchlint/cli@beta` and `@searchlint/next@beta` in the
   Outlivion test site from npm preserved the improved `SL-IMG-007` evidence.
 - `SL-META-009` now tolerates minor title-length overage up to 65 characters so
@@ -106,9 +106,14 @@ Initial real-site acceptance pages:
   without manual edits.
 - The fresh smoke project rendered `searchlint-dev-overlay` at
   `http://localhost:3010` with the badge visible.
-- `@searchlint/cli@1.0.0-beta.11` extends `searchlint doctor` with local project
+- `@searchlint/cli@1.0.0-beta.11` extended `searchlint doctor` with local project
   status: `package.json found`, `searchlint.seo found`, and
   `next.config.ts uses withSearchLint`.
+- `@searchlint/cli@1.0.0-beta.12` adds `npm run searchlint:verify` during
+  `searchlint init`. The script runs `searchlint doctor` and
+  `searchlint config validate --config searchlint.seo`.
+- Fresh `create-next-app` smoke verification confirmed that
+  `npm run searchlint:verify` passes after `npx searchlint init`.
 
 ## Validation
 
