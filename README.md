@@ -5,8 +5,9 @@ SearchLint is a deterministic, rule-based SEO diagnostics product described in
 
 SearchLint 1.0 is not released. This repository currently contains local
 developer-product evidence, package candidates, documentation, and cloud/SaaS
-foundations. Public npm packages, the VS Code Marketplace extension, the public
-website, and the production cloud platform are not launched yet.
+foundations. Public npm beta packages for the local developer product are
+published for testing. The VS Code Marketplace extension, public website, and
+production cloud platform are not launched yet.
 
 ## Current Status
 
@@ -30,23 +31,59 @@ Still blocked for SearchLint 1.0:
 
 - OD-023 independent reviewer sign-off for blocker precision;
 - public/private repository boundary and legal release review;
-- npm publication, trusted publishing, provenance, and real registry install;
+- stable npm `latest` publication, trusted publishing, provenance, and full
+  release registry install;
 - VS Code Marketplace publication and clean install E2E;
 - production cloud, dashboard, auth/RBAC, Google/Yandex integrations, billing,
   hosted reports, notifications, agency mode, observability, security audit,
   penetration test, public website, onboarding, release candidate, and `v1.0.0`
   tag.
 
-## Install and Quick Start
+## Beta Install and Quick Start
 
-Start with `docs/INSTALLATION.md`.
+The current tested path is the local Next.js developer badge. It is published
+under the npm `beta` dist-tag:
 
-Current pre-release install evidence uses local `pnpm pack` tarballs generated
-from this repository. Public registry commands are documented as the intended
-post-publication shape only; they are not release evidence until packages are
-published and verified from the approved registry.
+```bash
+npm install -D @searchlint/cli@beta @searchlint/next@beta
+npx searchlint init
+npm run dev
+npx searchlint doctor
+```
 
-After publication, the intended local install shape is:
+Expected `doctor` output in a patched Next.js project includes:
+
+```text
+project: package.json found
+config: searchlint.seo found
+next: next.config.ts uses withSearchLint
+```
+
+Open the local site and click the SearchLint badge. The badge is injected only
+in local development through the Next.js config wrapper; it does not require a
+component in the application source.
+
+If a project already has an older beta installed, update prerelease packages
+explicitly:
+
+```bash
+npm install -D @searchlint/cli@beta @searchlint/next@beta
+```
+
+Depending on the existing semver range, npm may keep an older prerelease such as
+`1.0.0-beta.10` when using a caret range. Use the explicit `@beta` install
+command above when testing a newly published beta.
+
+The current verified beta versions are:
+
+- `@searchlint/cli@1.0.0-beta.11`
+- `@searchlint/next@1.0.0-beta.8`
+- `@searchlint/core@1.0.0-beta.3`
+- `@searchlint/browser@1.0.0-beta.2`
+- `@searchlint/overlay@1.0.0-beta.6`
+
+The broader package set is still prerelease. Stable 1.0 install commands will
+use the normal package names after final release:
 
 ```bash
 npm install -D @searchlint/cli @searchlint/core
@@ -103,8 +140,10 @@ documented in `docs/CLI_CI_USAGE.md`.
 Use the local onboarding command in a Next.js project:
 
 ```bash
+npm install -D @searchlint/cli@beta @searchlint/next@beta
 searchlint init
 npm run dev
+npx searchlint doctor
 ```
 
 Open the local site and click the SearchLint badge to inspect the current page.

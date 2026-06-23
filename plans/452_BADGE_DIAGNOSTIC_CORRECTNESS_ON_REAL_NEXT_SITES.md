@@ -84,7 +84,7 @@ Initial real-site acceptance pages:
 - The improved local developer chain was published to npm with tag `beta`:
   `@searchlint/core@1.0.0-beta.3`, `@searchlint/browser@1.0.0-beta.2`,
   `@searchlint/overlay@1.0.0-beta.6`, `@searchlint/next@1.0.0-beta.8`, and
-  `@searchlint/cli@1.0.0-beta.10`.
+  `@searchlint/cli@1.0.0-beta.11`.
 - Reinstalling `@searchlint/cli@beta` and `@searchlint/next@beta` in the
   Outlivion test site from npm preserved the improved `SL-IMG-007` evidence.
 - `SL-META-009` now tolerates minor title-length overage up to 65 characters so
