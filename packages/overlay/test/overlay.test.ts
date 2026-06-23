@@ -85,14 +85,24 @@ describe("diagnostic filtering and rendering", () => {
     });
 
     expect(html).toContain("SEO diagnostics");
+    expect(html).toContain("Diagnostic summary");
+    expect(html).toContain("<strong>1</strong> Error");
     expect(html).toContain("Description is required");
     expect(html).toContain("Expected");
     expect(html).toContain("Actual");
     expect(html).toContain("Raw HTML");
     expect(html).toContain("Rendered DOM");
+    expect(html).toContain("Title &amp; metadata");
+    expect(html).toContain("Source type</strong> Raw HTML");
+    expect(html).toContain("All severities");
+    expect(html).toContain("All categories");
+    expect(html).toContain("All sources");
     expect(html).toContain("Copy diagnostic");
     expect(html).toContain("Suppress");
     expect(html).toContain("Rerun analysis");
+    expect(html).toContain('class="sl-icon-button"');
+    expect(html).toContain('aria-label="Close SearchLint diagnostics"');
+    expect(html).not.toContain(">Close</button>");
   });
 
   it("renders deterministic badge positions, RTL direction, and fallback errors", () => {
@@ -155,6 +165,17 @@ describe("diagnostic filtering and rendering", () => {
     expect(html).not.toContain("RELATED");
     expect(html).toContain("Highlight");
     expect(html).toContain("meta[name=description]");
+  });
+
+  it("renders a product empty state when the page has no diagnostics", () => {
+    const html = renderOverlayHtml({
+      status: "clean",
+      diagnostics: []
+    });
+
+    expect(html).toContain("No SEO diagnostics found");
+    expect(html).toContain("No issues found.");
+    expect(html).toContain("passes the local SearchLint checks");
   });
 });
 

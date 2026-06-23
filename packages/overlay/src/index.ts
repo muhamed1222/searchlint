@@ -94,6 +94,36 @@ const severityOrder: Record<Severity, number> = {
   error: 3,
   blocker: 4
 };
+const severityLabels: Record<Severity, string> = {
+  blocker: "Blocker",
+  error: "Error",
+  warning: "Warning",
+  info: "Note"
+};
+const categoryLabels: Record<DiagnosticCategory, string> = {
+  "http-rendering": "HTTP & rendering",
+  indexability: "Indexability",
+  "title-metadata": "Title & metadata",
+  "canonical-hreflang": "Canonical & hreflang",
+  "headings-structure": "Headings & structure",
+  "images-social-preview": "Images & social preview",
+  "schema-org": "Schema.org",
+  "links-site-graph": "Links & site graph",
+  "robots-sitemaps": "Robots & sitemaps",
+  performance: "Performance",
+  unknown: "Unknown"
+};
+const sourceLabels: Record<Diagnostic["source"], string> = {
+  "source-code": "Source code",
+  "raw-html": "Raw HTML",
+  "rendered-dom": "Rendered DOM",
+  "http-header": "HTTP header",
+  "robots-txt": "robots.txt",
+  sitemap: "Sitemap",
+  crawler: "Crawler",
+  google: "Google",
+  yandex: "Yandex"
+};
 
 export function deriveBadgeState(
   diagnostics: readonly Pick<Diagnostic, "severity">[],
@@ -170,10 +200,10 @@ export function renderBadgeLabel(state: BadgeState, count: number): string {
 function renderBadgeVisibleText(state: BadgeState, count: number): string {
   if (state === "checking") return "checking";
   if (count === 0 || state === "clean") return "";
-  if (state === "blocked") return `${count} blockers`;
-  if (state === "warnings") return `${count} warnings`;
-  if (state === "info") return `${count} notes`;
-  return `${count} errors`;
+  if (state === "blocked") return formatCount(count, "blocker");
+  if (state === "warnings") return formatCount(count, "warning");
+  if (state === "info") return formatCount(count, "note");
+  return formatCount(count, "error");
 }
 
 export function nearestOverlayPosition(
@@ -209,15 +239,20 @@ export function renderOverlayHtml(state: SearchLintOverlayState): string {
     </div>
     <div class="sl-header-actions">
       <button type="button" data-action="rerun">Rerun analysis</button>
-      <button type="button" aria-label="Close SearchLint diagnostics" data-action="close">Close</button>
+      <button class="sl-icon-button" type="button" aria-label="Close SearchLint diagnostics" title="Close" data-action="close">
+        <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+          <path d="M5.25 5.25L14.75 14.75M14.75 5.25L5.25 14.75" />
+        </svg>
+      </button>
     </div>
   </header>
+  ${renderDiagnosticSummary(state.diagnostics)}
   ${state.runtimeError ? renderRuntimeError(state.runtimeError) : ""}
   ${renderFilters(state.filters)}
   <div class="sl-list" role="list" aria-label="Diagnostics">
     ${
       diagnostics.length === 0
-        ? '<p class="sl-empty">No diagnostics match the current filters.</p>'
+        ? renderEmptyState(total)
         : diagnostics.map(renderDiagnosticCard).join("")
     }
   </div>
@@ -635,47 +670,109 @@ export function clearHighlights(document: Document): void {
 
 function renderFilters(filters: OverlayFilters = {}): string {
   return `<form class="sl-filters" aria-label="Diagnostic filters">
-    ${renderSelect("severity", filters.severity ?? "all", ["all", "blocker", "error", "warning", "info"])}
-    ${renderSelect("category", filters.category ?? "all", [
-      "all",
-      "http-rendering",
-      "indexability",
-      "title-metadata",
-      "canonical-hreflang",
-      "headings-structure",
-      "images-social-preview",
-      "schema-org",
-      "links-site-graph",
-      "robots-sitemaps",
-      "performance",
-      "unknown"
+    ${renderSelect("severity", "Severity", filters.severity ?? "all", [
+      ["all", "All severities"],
+      ["blocker", severityLabels.blocker],
+      ["error", severityLabels.error],
+      ["warning", severityLabels.warning],
+      ["info", severityLabels.info]
     ])}
-    ${renderSelect("source", filters.source ?? "all", [
-      "all",
-      "source-code",
-      "raw-html",
-      "rendered-dom",
-      "http-header",
-      "robots-txt",
-      "sitemap",
-      "crawler",
-      "google",
-      "yandex"
+    ${renderSelect("category", "Category", filters.category ?? "all", [
+      ["all", "All categories"],
+      ["http-rendering", categoryLabels["http-rendering"]],
+      ["indexability", categoryLabels.indexability],
+      ["title-metadata", categoryLabels["title-metadata"]],
+      ["canonical-hreflang", categoryLabels["canonical-hreflang"]],
+      ["headings-structure", categoryLabels["headings-structure"]],
+      ["images-social-preview", categoryLabels["images-social-preview"]],
+      ["schema-org", categoryLabels["schema-org"]],
+      ["links-site-graph", categoryLabels["links-site-graph"]],
+      ["robots-sitemaps", categoryLabels["robots-sitemaps"]],
+      ["performance", categoryLabels.performance],
+      ["unknown", categoryLabels.unknown]
+    ])}
+    ${renderSelect("source", "Source", filters.source ?? "all", [
+      ["all", "All sources"],
+      ["source-code", sourceLabels["source-code"]],
+      ["raw-html", sourceLabels["raw-html"]],
+      ["rendered-dom", sourceLabels["rendered-dom"]],
+      ["http-header", sourceLabels["http-header"]],
+      ["robots-txt", sourceLabels["robots-txt"]],
+      ["sitemap", sourceLabels.sitemap],
+      ["crawler", sourceLabels.crawler],
+      ["google", sourceLabels.google],
+      ["yandex", sourceLabels.yandex]
     ])}
   </form>`;
 }
 
-function renderSelect(name: string, value: string, options: readonly string[]) {
-  return `<label>${escapeHtml(name)}
+function renderSelect(
+  name: string,
+  label: string,
+  value: string,
+  options: readonly (readonly [string, string])[]
+): string {
+  return `<label>${escapeHtml(label)}
     <select name="${escapeHtml(name)}" aria-label="Filter by ${escapeHtml(name)}">
       ${options
         .map(
-          (option) =>
-            `<option value="${escapeHtml(option)}"${option === value ? " selected" : ""}>${escapeHtml(option)}</option>`
+          ([optionValue, optionLabel]) =>
+            `<option value="${escapeHtml(optionValue)}"${optionValue === value ? " selected" : ""}>${escapeHtml(optionLabel)}</option>`
         )
         .join("")}
     </select>
   </label>`;
+}
+
+function renderDiagnosticSummary(
+  diagnostics: readonly OverlayRenderDiagnostic[]
+): string {
+  const counts = countDiagnosticsBySeverity(diagnostics);
+  if (diagnostics.length === 0) {
+    return `<div class="sl-summary sl-summary--clean" aria-label="Diagnostic summary">
+      <strong>No SEO diagnostics found</strong>
+      <span>This page currently passes the local SearchLint checks.</span>
+    </div>`;
+  }
+  return `<div class="sl-summary" aria-label="Diagnostic summary">
+    ${renderSummaryPill("blocker", counts.blocker)}
+    ${renderSummaryPill("error", counts.error)}
+    ${renderSummaryPill("warning", counts.warning)}
+    ${renderSummaryPill("info", counts.info)}
+  </div>`;
+}
+
+function countDiagnosticsBySeverity(
+  diagnostics: readonly Pick<Diagnostic, "severity">[]
+): Record<Severity, number> {
+  return diagnostics.reduce<Record<Severity, number>>(
+    (counts, diagnostic) => ({
+      ...counts,
+      [diagnostic.severity]: counts[diagnostic.severity] + 1
+    }),
+    { blocker: 0, error: 0, warning: 0, info: 0 }
+  );
+}
+
+function renderSummaryPill(severity: Severity, count: number): string {
+  return `<span class="sl-summary__pill sl-summary__pill--${severity}">
+    <strong>${String(count)}</strong> ${escapeHtml(pluralize(count, severityLabels[severity]))}
+  </span>`;
+}
+
+function pluralize(count: number, singular: string): string {
+  return count === 1 ? singular : `${singular}s`;
+}
+
+function formatCount(count: number, singular: string): string {
+  return `${String(count)} ${pluralize(count, singular)}`;
+}
+
+function renderEmptyState(totalDiagnostics: number): string {
+  if (totalDiagnostics === 0) {
+    return `<p class="sl-empty"><strong>No issues found.</strong><span>SearchLint did not find diagnostics for this page.</span></p>`;
+  }
+  return `<p class="sl-empty"><strong>No matching diagnostics.</strong><span>Change filters to see the remaining SearchLint findings.</span></p>`;
 }
 
 function renderRuntimeError(message: string): string {
@@ -697,8 +794,8 @@ function renderDiagnosticCard(diagnostic: OverlayRenderDiagnostic): string {
       : "";
   return `<article class="sl-card sl-card--${diagnostic.severity}" role="listitem" tabindex="0" data-fingerprint="${escapeHtml(diagnostic.fingerprint)}">
     <div class="sl-card__head">
-      <span class="sl-severity">${escapeHtml(diagnostic.severity)}</span>
-      <span>${escapeHtml(categoryForRuleId(diagnostic.ruleId))}</span>
+      <span class="sl-severity">${escapeHtml(severityLabels[diagnostic.severity])}</span>
+      <span>${escapeHtml(categoryLabels[categoryForRuleId(diagnostic.ruleId)])}</span>
       <span>${escapeHtml(diagnostic.ruleId)}</span>
     </div>
     <h3>${escapeHtml(diagnostic.title)}</h3>
@@ -709,7 +806,7 @@ function renderDiagnosticCard(diagnostic: OverlayRenderDiagnostic): string {
     <p><strong>URL</strong> ${escapeHtml(diagnostic.pageUrl)}</p>
     ${diagnostic.route ? `<p><strong>Route</strong> ${escapeHtml(diagnostic.route)}</p>` : ""}
     <p><strong>Confidence</strong> ${escapeHtml(diagnostic.confidence)}</p>
-    <p><strong>Source type</strong> ${escapeHtml(diagnostic.source)}</p>
+    <p><strong>Source type</strong> ${escapeHtml(sourceLabels[diagnostic.source])}</p>
     ${exactLocation}
     ${selector}
     ${diagnostic.rawHtmlSnippet ? `<details><summary>Raw HTML</summary><pre>${escapeHtml(diagnostic.rawHtmlSnippet)}</pre></details>` : ""}
@@ -750,9 +847,18 @@ function renderStyles(): string {
     h3 { font-size: 15px; line-height: 1.25; margin: 8px 0; }
     button, select { font: inherit; }
     button { border: 1px solid #d1d5db; border-radius: 6px; background: #fff; padding: 6px 8px; color: #111827; cursor: pointer; }
+    .sl-icon-button { display: inline-grid; place-items: center; width: 34px; height: 34px; padding: 0; }
+    .sl-icon-button svg { display: block; width: 18px; height: 18px; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
     button:focus-visible, select:focus-visible, .sl-panel:focus-visible, .sl-card:focus-visible { outline: 3px solid #2563eb; outline-offset: 2px; }
     .sl-header-actions, .sl-card__actions, .sl-filters, .sl-card__head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
     .sl-context { color: #4b5563; margin-top: 4px; overflow-wrap: anywhere; }
+    .sl-summary { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px 16px; border-bottom: 1px solid #e5e7eb; background: #f9fafb; }
+    .sl-summary--clean { display: grid; gap: 2px; color: #166534; }
+    .sl-summary__pill { display: inline-flex; align-items: center; gap: 4px; min-height: 26px; padding: 0 10px; border: 1px solid #e5e7eb; border-radius: 999px; background: #fff; color: #374151; }
+    .sl-summary__pill--blocker { border-color: #fecaca; color: #991b1b; }
+    .sl-summary__pill--error { border-color: #fecaca; color: #b91c1c; }
+    .sl-summary__pill--warning { border-color: #fde68a; color: #92400e; }
+    .sl-summary__pill--info { border-color: #bfdbfe; color: #1d4ed8; }
     .sl-filters { padding: 12px 16px; border-bottom: 1px solid #e5e7eb; }
     .sl-filters label { display: grid; gap: 4px; color: #4b5563; font-size: 12px; }
     .sl-list { display: grid; gap: 10px; padding: 12px; }
@@ -763,7 +869,8 @@ function renderStyles(): string {
     .sl-card--warning { border-left-color: #f59e0b; }
     .sl-card--info { border-left-color: #3b82f6; }
     .sl-card__head span, .sl-severity { display: inline-flex; align-items: center; min-height: 20px; border-radius: 999px; padding: 0 8px; background: #f3f4f6; font-size: 12px; }
-    .sl-empty { padding: 16px; color: #4b5563; }
+    .sl-empty { display: grid; gap: 4px; padding: 16px; color: #4b5563; }
+    .sl-empty strong { color: #111827; }
     .sl-runtime-error { display: grid; gap: 4px; margin: 12px 16px 0; padding: 10px 12px; border: 1px solid #991b1b; border-radius: 8px; background: #fef2f2; color: #7f1d1d; overflow-wrap: anywhere; }
     pre { max-height: 160px; overflow: auto; padding: 8px; background: #f9fafb; border-radius: 6px; white-space: pre-wrap; overflow-wrap: anywhere; }
     code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
