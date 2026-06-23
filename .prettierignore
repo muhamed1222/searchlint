@@ -1,0 +1,6 @@
+node_modules/
+pnpm-lock.yaml
+.git/
+.vscode-test/
+specs/searchlint.ebnf
+packages/next/src/catalog.generated.ts

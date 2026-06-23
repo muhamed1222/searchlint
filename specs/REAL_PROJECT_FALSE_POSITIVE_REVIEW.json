@@ -1,0 +1,137 @@
+{
+  "schemaVersion": 1,
+  "benchmarkVersion": "real-project-fp-2026-06-23",
+  "sourceReport": "reports/real-site-regression-corpus-report.json",
+  "sourceCommand": "pnpm core:real-corpus",
+  "reviewStatus": "reviewed-current-corpus",
+  "reviewedAt": "2026-06-23T00:00:00.000Z",
+  "reviewer": "searchlint-release-governance",
+  "policy": {
+    "releaseBlockingSeveritiesAllowed": false,
+    "allowedSeverities": ["info"],
+    "newDiagnosticsRequireReview": true,
+    "missingDiagnosticsRequireLedgerUpdate": true,
+    "severityDriftRequiresReview": true
+  },
+  "reviewedDiagnostics": [
+    {
+      "caseId": "nextjs-docs-home",
+      "ruleId": "SL-IMG-011",
+      "severity": "info",
+      "fingerprint": "f3e37ee13f06dadf",
+      "classification": "accepted-nonblocking-guidance"
+    },
+    {
+      "caseId": "nextjs-docs-home",
+      "ruleId": "SL-META-010",
+      "severity": "info",
+      "fingerprint": "73c0be86ee5d6ec9",
+      "classification": "accepted-nonblocking-guidance"
+    },
+    {
+      "caseId": "nextjs-docs-home",
+      "ruleId": "SL-META-014",
+      "severity": "info",
+      "fingerprint": "3bbab9f3f835b3b1",
+      "classification": "accepted-nonblocking-guidance"
+    },
+    {
+      "caseId": "nextjs-docs-home",
+      "ruleId": "SL-META-017",
+      "severity": "info",
+      "fingerprint": "f11706787d842fec",
+      "classification": "accepted-nonblocking-guidance"
+    },
+    {
+      "caseId": "mdn-web-docs-html",
+      "ruleId": "SL-IMG-011",
+      "severity": "info",
+      "fingerprint": "6b0efa7cdbf6a30b",
+      "classification": "accepted-nonblocking-guidance"
+    },
+    {
+      "caseId": "mdn-web-docs-html",
+      "ruleId": "SL-META-014",
+      "severity": "info",
+      "fingerprint": "87b87f314340accb",
+      "classification": "accepted-nonblocking-guidance"
+    },
+    {
+      "caseId": "mdn-web-docs-html",
+      "ruleId": "SL-META-017",
+      "severity": "info",
+      "fingerprint": "9c274ad3fa64bdb8",
+      "classification": "accepted-nonblocking-guidance"
+    },
+    {
+      "caseId": "wikipedia-seo-page",
+      "ruleId": "SL-IMG-011",
+      "severity": "info",
+      "fingerprint": "fe9740deb2cb9bc7",
+      "classification": "accepted-nonblocking-guidance"
+    },
+    {
+      "caseId": "wikipedia-seo-page",
+      "ruleId": "SL-META-010",
+      "severity": "info",
+      "fingerprint": "a7ff471d72579d23",
+      "classification": "accepted-nonblocking-guidance"
+    },
+    {
+      "caseId": "wikipedia-seo-page",
+      "ruleId": "SL-META-014",
+      "severity": "info",
+      "fingerprint": "0bad85df2e9bf031",
+      "classification": "accepted-nonblocking-guidance"
+    },
+    {
+      "caseId": "wikipedia-seo-page",
+      "ruleId": "SL-META-017",
+      "severity": "info",
+      "fingerprint": "c985eb16e31539dc",
+      "classification": "accepted-nonblocking-guidance"
+    },
+    {
+      "caseId": "usa-gov-home",
+      "ruleId": "SL-IMG-011",
+      "severity": "info",
+      "fingerprint": "a7650a83f845176f",
+      "classification": "accepted-nonblocking-guidance"
+    },
+    {
+      "caseId": "usa-gov-home",
+      "ruleId": "SL-META-014",
+      "severity": "info",
+      "fingerprint": "160005f24aa58d93",
+      "classification": "accepted-nonblocking-guidance"
+    },
+    {
+      "caseId": "usa-gov-home",
+      "ruleId": "SL-META-017",
+      "severity": "info",
+      "fingerprint": "ec2b0c87a322477c",
+      "classification": "accepted-nonblocking-guidance"
+    },
+    {
+      "caseId": "github-docs-actions",
+      "ruleId": "SL-IMG-011",
+      "severity": "info",
+      "fingerprint": "17090c0b136b4fc0",
+      "classification": "accepted-nonblocking-guidance"
+    },
+    {
+      "caseId": "github-docs-actions",
+      "ruleId": "SL-META-014",
+      "severity": "info",
+      "fingerprint": "59abc2d0fe40ad32",
+      "classification": "accepted-nonblocking-guidance"
+    },
+    {
+      "caseId": "github-docs-actions",
+      "ruleId": "SL-META-017",
+      "severity": "info",
+      "fingerprint": "387a0409f78b817f",
+      "classification": "accepted-nonblocking-guidance"
+    }
+  ]
+}

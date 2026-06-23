@@ -1,0 +1,103 @@
+(* SearchLint DSL language version 1.
+
+This grammar is the public syntax contract for searchlint.seo. The shared
+@searchlint/language AST, parser, formatter, semantic validator, compiler, and
+LSP diagnostics use this model.
+*)
+
+document        = spacing, { top_level, spacing }, eof ;
+
+top_level       = language_decl
+                | import_decl
+                | site_decl
+                | variable_decl
+                | policy_decl
+                | group_decl
+                | route_decl
+                | environment_decl ;
+
+language_decl   = "language", spacing1, version ;
+version         = "1" ;
+
+import_decl     = "import", spacing1, string ;
+site_decl       = "site", spacing1, string ;
+variable_decl   = ( "let" | "variable" ), spacing1, identifier, spacing1, value ;
+
+environment_decl = "environment", spacing1, identifier, spacing,
+                   "{", spacing, { environment_member, spacing }, "}" ;
+environment_member = language_decl
+                   | import_decl
+                   | site_decl
+                   | variable_decl
+                   | policy_decl
+                   | group_decl
+                   | route_decl ;
+
+policy_decl     = "policy", spacing1, identifier, spacing,
+                  "{", spacing, { route_member, spacing }, "}" ;
+
+group_decl      = "group", spacing1, string, spacing,
+                  "{", spacing, { route_decl, spacing }, "}" ;
+
+route_decl      = "route", spacing1, route_pattern, spacing,
+                  "{", spacing, { route_member, spacing }, "}" ;
+
+route_pattern   = string ;
+route_member    = property_decl | block_decl ;
+property_decl   = identifier, spacing1, value, { spacing1, value } ;
+block_decl      = identifier, [ spacing1, value ], spacing,
+                  "{", spacing, { route_member, spacing }, "}" ;
+
+value           = string | number | boolean | list | variable_ref | identifier ;
+list            = "[", spacing, [ value, { spacing, ",", spacing, value } ],
+                  spacing, "]" ;
+variable_ref    = "$", identifier ;
+
+boolean         = "true" | "false" ;
+number          = digit, { digit } ;
+string          = '"', { string_char | escape }, '"' ;
+escape          = "\\", ( '"' | "\\" | "n" | "t" ) ;
+string_char     = ? any non-newline character except " and \ ? ;
+
+identifier      = identifier_start, { identifier_part } ;
+identifier_start = "A".."Z" | "a".."z" | "_" ;
+identifier_part = identifier_start | digit | "-" ;
+digit           = "0".."9" ;
+
+comment         = "#", { not_newline }
+                | "//", { not_newline } ;
+spacing         = { whitespace | comment } ;
+spacing1        = whitespace, { whitespace | comment } ;
+whitespace      = " " | "\t" | "\r" | "\n" ;
+not_newline     = ? any character except newline ? ;
+eof             = ? end of file ? ;
+
+(* Language version 1 route members.
+
+Properties:
+  type <identifier|string>
+  indexable <boolean>
+  canonical self | <string>
+  schema <identifier|string|list>
+  severity <rule-id> <blocker|error|warning|info>
+  use <policy-name>
+  important <boolean>
+  crawlDepth <number>
+
+Blocks:
+  title { required <boolean> }
+  description { required <boolean> }
+  metadata { <field> <value> }
+  canonical { policy self | custom; url <string> }
+  hreflang { required <boolean>; locales <list> }
+  schema { required <list> }
+  pagination { required <boolean> }
+  source <string> { line <number>; column <number> }
+  suppress <rule-id> { reason <string> }
+  provider google|yandex { rule <rule-id>; require <string|list>; severity <rule-id> <severity> }
+  custom <string> { severity <severity> }
+
+Route patterns are slash-prefixed strings. Supported pattern segments are
+literal segments, "*", "**", Next.js dynamic segments like "[slug]", and Next.js
+catch-all segments like "[...slug]" or "[[...slug]]".
+*)

@@ -1,0 +1,6 @@
+language 1
+site "https://example.com"
+
+route "/broken" {
+  indexable @
+}

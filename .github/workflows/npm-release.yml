@@ -1,0 +1,84 @@
+name: npm release
+
+on:
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: "Publish public SearchLint packages to npm"
+        required: true
+        default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
+      tag:
+        description: "npm dist-tag to publish"
+        required: true
+        default: "beta"
+        type: choice
+        options:
+          - "beta"
+          - "latest"
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    name: Trusted npm publishing
+    runs-on: ubuntu-latest
+    environment: npm-release
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify package candidates
+        run: |
+          pnpm verify:release
+          pnpm package:dry-run
+          pnpm package:registry-install
+
+      - name: Publish public packages with provenance
+        if: ${{ github.event.inputs.publish == 'true' }}
+        run: |
+          set -euo pipefail
+          for package_dir in \
+            packages/browser \
+            packages/core \
+            packages/crawler \
+            packages/html \
+            packages/http \
+            packages/language \
+            packages/language-server \
+            packages/lsp \
+            packages/next \
+            packages/overlay \
+            packages/reporter-html \
+            packages/reporter-junit \
+            packages/reporter-sarif \
+            packages/source \
+            packages/cli
+          do
+            npm publish "$package_dir" \
+              --access public \
+              --provenance \
+              --tag "${{ github.event.inputs.tag }}"
+          done
+
+      - name: Publish skipped
+        if: ${{ github.event.inputs.publish != 'true' }}
+        run: |
+          echo "npm publish skipped because workflow_dispatch publish=false."

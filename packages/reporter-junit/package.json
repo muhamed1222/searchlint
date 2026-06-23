@@ -1,0 +1,45 @@
+{
+  "name": "@searchlint/reporter-junit",
+  "version": "1.0.0-beta.0",
+  "description": "SearchLint JUnit reporter",
+  "license": "Apache-2.0",
+  "sideEffects": false,
+  "type": "module",
+  "files": [
+    "dist/src",
+    "package.json"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
+    }
+  },
+  "scripts": {
+    "build": "node ../../scripts/build-package.mjs",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@searchlint/core": "workspace:*"
+  },
+  "engines": {
+    "node": ">=24.0.0",
+    "pnpm": ">=11.0.0 <12.0.0"
+  },
+  "keywords": [
+    "searchlint",
+    "seo",
+    "technical-seo",
+    "nextjs",
+    "diagnostics",
+    "reporter"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "searchlint": {
+    "layer": "reporter"
+  }
+}

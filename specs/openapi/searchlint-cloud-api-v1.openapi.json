@@ -1,0 +1,1362 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "SearchLint Cloud API",
+    "version": "1.0.0-beta.0",
+    "description": "Versioned SearchLint Cloud API contract generated from checked route contracts."
+  },
+  "servers": [
+    {
+      "url": "https://api.searchlint.example/v1",
+      "description": "Placeholder production API base URL pending deployment."
+    }
+  ],
+  "paths": {
+    "/v1/organizations": {
+      "post": {
+        "operationId": "createOrganization",
+        "summary": "createOrganization",
+        "tags": ["Core"],
+        "x-searchlint-api-version": "v1",
+        "x-searchlint-stability": "stable",
+        "x-searchlint-request-schema-version": "cloud.createOrganization.v1",
+        "x-searchlint-response-schema-version": "cloud.organizationWithMembership.v1",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CloudCreateOrganizationV1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "cloud.organizationWithMembership.v1",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CloudOrganizationWithMembershipV1"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "cloud.organizationWithMembership.v1",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CloudOrganizationWithMembershipV1"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "cloud.organizationWithMembership.v1",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CloudOrganizationWithMembershipV1"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "401": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "402": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "403": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "404": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "405": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "413": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "429": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "504": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/organizations/{organizationId}/members": {
+      "post": {
+        "operationId": "addMember",
+        "summary": "addMember",
+        "tags": ["Core"],
+        "x-searchlint-api-version": "v1",
+        "x-searchlint-stability": "stable",
+        "x-searchlint-request-schema-version": "cloud.addMember.v1",
+        "x-searchlint-response-schema-version": "cloud.membership.v1",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CloudAddMemberV1" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "cloud.membership.v1",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudMembershipV1" }
+              }
+            }
+          },
+          "201": {
+            "description": "cloud.membership.v1",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudMembershipV1" }
+              }
+            }
+          },
+          "202": {
+            "description": "cloud.membership.v1",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudMembershipV1" }
+              }
+            }
+          },
+          "400": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "401": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "402": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "403": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "404": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "405": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "413": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "429": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "504": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/organizations/{organizationId}/projects": {
+      "post": {
+        "operationId": "createProject",
+        "summary": "createProject",
+        "tags": ["Core"],
+        "x-searchlint-api-version": "v1",
+        "x-searchlint-stability": "stable",
+        "x-searchlint-request-schema-version": "cloud.createProject.v1",
+        "x-searchlint-response-schema-version": "cloud.project.v1",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CloudCreateProjectV1" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "cloud.project.v1",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudProjectV1" }
+              }
+            }
+          },
+          "201": {
+            "description": "cloud.project.v1",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudProjectV1" }
+              }
+            }
+          },
+          "202": {
+            "description": "cloud.project.v1",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudProjectV1" }
+              }
+            }
+          },
+          "400": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "401": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "402": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "403": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "404": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "405": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "413": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "429": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "504": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/organizations/{organizationId}/projects/{projectId}/environments": {
+      "post": {
+        "operationId": "createEnvironment",
+        "summary": "createEnvironment",
+        "tags": ["Core"],
+        "x-searchlint-api-version": "v1",
+        "x-searchlint-stability": "stable",
+        "x-searchlint-request-schema-version": "cloud.createEnvironment.v1",
+        "x-searchlint-response-schema-version": "cloud.environment.v1",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CloudCreateEnvironmentV1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "cloud.environment.v1",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudEnvironmentV1" }
+              }
+            }
+          },
+          "201": {
+            "description": "cloud.environment.v1",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudEnvironmentV1" }
+              }
+            }
+          },
+          "202": {
+            "description": "cloud.environment.v1",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudEnvironmentV1" }
+              }
+            }
+          },
+          "400": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "401": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "402": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "403": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "404": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "405": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "413": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "429": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "504": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/organizations/{organizationId}/projects/{projectId}/environments/{environmentId}/dashboard-snapshot": {
+      "get": {
+        "operationId": "getDashboardSnapshot",
+        "summary": "getDashboardSnapshot",
+        "tags": ["Dashboard"],
+        "x-searchlint-api-version": "v1",
+        "x-searchlint-stability": "stable",
+        "x-searchlint-request-schema-version": "cloud.getDashboardSnapshot.v1",
+        "x-searchlint-response-schema-version": "cloud.dashboardSnapshot.v1",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "environmentId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "cloud.dashboardSnapshot.v1",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CloudDashboardSnapshotV1"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "cloud.dashboardSnapshot.v1",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CloudDashboardSnapshotV1"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "cloud.dashboardSnapshot.v1",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CloudDashboardSnapshotV1"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "401": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "402": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "403": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "404": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "405": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "413": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "429": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "504": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/organizations/{organizationId}/projects/{projectId}/environments/{environmentId}/crawl-requests": {
+      "post": {
+        "operationId": "requestCrawl",
+        "summary": "requestCrawl",
+        "tags": ["Crawls"],
+        "x-searchlint-api-version": "v1",
+        "x-searchlint-stability": "stable",
+        "x-searchlint-request-schema-version": "cloud.requestCrawl.v1",
+        "x-searchlint-response-schema-version": "cloud.crawlRequestQueued.v1",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "environmentId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CloudRequestCrawlV1" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "cloud.crawlRequestQueued.v1",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CloudCrawlRequestQueuedV1"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "cloud.crawlRequestQueued.v1",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CloudCrawlRequestQueuedV1"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "cloud.crawlRequestQueued.v1",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CloudCrawlRequestQueuedV1"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "401": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "402": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "403": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "404": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "405": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "413": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "429": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "504": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/organizations/{organizationId}/projects/{projectId}/environments/{environmentId}/external-providers/{provider}/oauth/start": {
+      "post": {
+        "operationId": "startExternalProviderOAuthConnection",
+        "summary": "startExternalProviderOAuthConnection",
+        "tags": ["External provider OAuth"],
+        "x-searchlint-api-version": "v1",
+        "x-searchlint-stability": "stable",
+        "x-searchlint-request-schema-version": "cloud.startExternalProviderOAuthConnection.v1",
+        "x-searchlint-response-schema-version": "cloud.externalProviderOAuthAuthorization.v1",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "environmentId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "provider",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CloudStartExternalProviderOAuthConnectionV1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "cloud.externalProviderOAuthAuthorization.v1",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CloudExternalProviderOAuthAuthorizationV1"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "cloud.externalProviderOAuthAuthorization.v1",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CloudExternalProviderOAuthAuthorizationV1"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "cloud.externalProviderOAuthAuthorization.v1",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CloudExternalProviderOAuthAuthorizationV1"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "401": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "402": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "403": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "404": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "405": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "413": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "429": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "504": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/organizations/{organizationId}/projects/{projectId}/environments/{environmentId}/external-providers/{provider}/oauth/callback": {
+      "post": {
+        "operationId": "completeExternalProviderOAuthConnection",
+        "summary": "completeExternalProviderOAuthConnection",
+        "tags": ["External provider OAuth"],
+        "x-searchlint-api-version": "v1",
+        "x-searchlint-stability": "stable",
+        "x-searchlint-request-schema-version": "cloud.completeExternalProviderOAuthConnection.v1",
+        "x-searchlint-response-schema-version": "cloud.oauthConnection.v1",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "environmentId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "provider",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CloudCompleteExternalProviderOAuthConnectionV1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "cloud.oauthConnection.v1",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CloudOauthConnectionV1"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "cloud.oauthConnection.v1",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CloudOauthConnectionV1"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "cloud.oauthConnection.v1",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CloudOauthConnectionV1"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "401": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "402": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "403": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "404": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "405": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "413": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "429": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "504": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/billing/stripe/webhook": {
+      "post": {
+        "operationId": "acceptStripeWebhook",
+        "summary": "acceptStripeWebhook",
+        "tags": ["Billing"],
+        "x-searchlint-api-version": "v1",
+        "x-searchlint-stability": "stable",
+        "x-searchlint-request-schema-version": "stripe.webhook.rawPayload.v1",
+        "x-searchlint-response-schema-version": "stripe.webhook.accepted.v1",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StripeWebhookRawPayloadV1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "stripe.webhook.accepted.v1",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StripeWebhookAcceptedV1"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "stripe.webhook.accepted.v1",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StripeWebhookAcceptedV1"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "stripe.webhook.accepted.v1",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StripeWebhookAcceptedV1"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "401": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "402": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "403": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "404": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "405": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "413": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "429": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          },
+          "504": {
+            "description": "Deterministic error envelope",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CloudErrorEnvelope" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "cognitoBearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      },
+      "stripeSignature": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "stripe-signature"
+      }
+    },
+    "parameters": {
+      "PaginationFirst": {
+        "name": "first",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 25
+        }
+      },
+      "PaginationAfter": {
+        "name": "after",
+        "in": "query",
+        "required": false,
+        "schema": { "type": "string", "minLength": 1 }
+      }
+    },
+    "schemas": {
+      "CloudAddMemberV1": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "Schema placeholder for cloud.addMember.v1; canonical field validation lives in typed API contracts and tests."
+      },
+      "CloudCompleteExternalProviderOAuthConnectionV1": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "Schema placeholder for cloud.completeExternalProviderOAuthConnection.v1; canonical field validation lives in typed API contracts and tests."
+      },
+      "CloudCrawlRequestQueuedV1": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "Schema placeholder for cloud.crawlRequestQueued.v1; canonical field validation lives in typed API contracts and tests."
+      },
+      "CloudCreateEnvironmentV1": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "Schema placeholder for cloud.createEnvironment.v1; canonical field validation lives in typed API contracts and tests."
+      },
+      "CloudCreateOrganizationV1": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "Schema placeholder for cloud.createOrganization.v1; canonical field validation lives in typed API contracts and tests."
+      },
+      "CloudCreateProjectV1": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "Schema placeholder for cloud.createProject.v1; canonical field validation lives in typed API contracts and tests."
+      },
+      "CloudDashboardSnapshotV1": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "Schema placeholder for cloud.dashboardSnapshot.v1; canonical field validation lives in typed API contracts and tests."
+      },
+      "CloudEnvironmentV1": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "Schema placeholder for cloud.environment.v1; canonical field validation lives in typed API contracts and tests."
+      },
+      "CloudExternalProviderOAuthAuthorizationV1": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "Schema placeholder for cloud.externalProviderOAuthAuthorization.v1; canonical field validation lives in typed API contracts and tests."
+      },
+      "CloudGetDashboardSnapshotV1": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "Schema placeholder for cloud.getDashboardSnapshot.v1; canonical field validation lives in typed API contracts and tests."
+      },
+      "CloudMembershipV1": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "Schema placeholder for cloud.membership.v1; canonical field validation lives in typed API contracts and tests."
+      },
+      "CloudOauthConnectionV1": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "Schema placeholder for cloud.oauthConnection.v1; canonical field validation lives in typed API contracts and tests."
+      },
+      "CloudOrganizationWithMembershipV1": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "Schema placeholder for cloud.organizationWithMembership.v1; canonical field validation lives in typed API contracts and tests."
+      },
+      "CloudProjectV1": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "Schema placeholder for cloud.project.v1; canonical field validation lives in typed API contracts and tests."
+      },
+      "CloudRequestCrawlV1": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "Schema placeholder for cloud.requestCrawl.v1; canonical field validation lives in typed API contracts and tests."
+      },
+      "CloudStartExternalProviderOAuthConnectionV1": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "Schema placeholder for cloud.startExternalProviderOAuthConnection.v1; canonical field validation lives in typed API contracts and tests."
+      },
+      "StripeWebhookAcceptedV1": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "Schema placeholder for stripe.webhook.accepted.v1; canonical field validation lives in typed API contracts and tests."
+      },
+      "StripeWebhookRawPayloadV1": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "Schema placeholder for stripe.webhook.rawPayload.v1; canonical field validation lives in typed API contracts and tests."
+      },
+      "PageInfo": {
+        "type": "object",
+        "required": ["hasNextPage"],
+        "properties": {
+          "hasNextPage": { "type": "boolean" },
+          "endCursor": { "type": "string" }
+        }
+      }
+    }
+  }
+}

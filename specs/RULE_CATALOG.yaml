@@ -1,0 +1,2107 @@
+version: 1
+status: defined
+source: SEARCHLINT_1_0_DEVELOPMENT_PLAN.md
+targetRuleCount: 120
+ruleIdPattern: "SL-{CATEGORY}-{NNN}"
+requiredRuleFields:
+  - id
+  - name
+  - category
+  - defaultSeverity
+  - confidence
+  - scope
+  - sources
+  - providerScope
+  - description
+  - checkingAlgorithm
+  - requiredEvidence
+  - fix
+  - testExamples
+  - documentation
+  - version
+qualityConstraints:
+  - blocker cannot be based on subjective heuristic
+  - title length is not a hard error
+  - meta keywords is not checked
+  - noindex is evaluated according to route purpose
+  - Google and Yandex rules are not mixed
+  - user can change severity through DSL
+categories:
+  - id: http-rendering
+    title: HTTP and rendering
+    targetCount: 12
+  - id: indexability
+    title: Indexability
+    targetCount: 14
+  - id: title-metadata
+    title: Title and metadata
+    targetCount: 18
+  - id: canonical-hreflang
+    title: Canonical and hreflang
+    targetCount: 16
+  - id: headings-structure
+    title: Headings and structure
+    targetCount: 8
+  - id: images-social-preview
+    title: Images and social preview
+    targetCount: 12
+  - id: schema-org
+    title: Schema.org
+    targetCount: 10
+  - id: links-site-graph
+    title: Links and site graph
+    targetCount: 14
+  - id: robots-sitemap
+    title: robots.txt and sitemap
+    targetCount: 10
+  - id: performance-technical
+    title: Performance and technical signals
+    targetCount: 6
+rules:
+  - id: SL-HTTP-001
+    name: non-success-indexable-response
+    category: http-rendering
+    defaultSeverity: blocker
+    confidence: certain
+    scope: page
+    sources: [http-header, crawler]
+    providerScope: core
+    description: "An indexable route returns a non-2xx HTTP response."
+    checkingAlgorithm:
+      "Compare route indexability contract with final HTTP status after
+      redirects."
+    requiredEvidence: [route-contract, final-status-code, final-url]
+    fix:
+      "Return a 2xx response for indexable pages or mark the route
+      non-indexable."
+    testExamples: [fixtures/http/non-success-indexable]
+    documentation: docs/rules/SL-HTTP-001.md
+    version: 1.0.0
+  - id: SL-HTTP-002
+    name: redirect-chain-too-long
+    category: http-rendering
+    defaultSeverity: error
+    confidence: certain
+    scope: page
+    sources: [http-header, crawler]
+    providerScope: core
+    description: "A URL resolves through more redirects than policy allows."
+    checkingAlgorithm:
+      "Count redirect hops in the normalized redirect chain and compare with
+      policy."
+    requiredEvidence: [redirect-chain, redirect-hop-count, policy-limit]
+    fix:
+      "Link directly to the final canonical destination or shorten the redirect
+      chain."
+    testExamples: [fixtures/http/redirect-chain-too-long]
+    documentation: docs/rules/SL-HTTP-002.md
+    version: 1.0.0
+  - id: SL-HTTP-003
+    name: redirect-loop
+    category: http-rendering
+    defaultSeverity: blocker
+    confidence: certain
+    scope: page
+    sources: [http-header, crawler]
+    providerScope: core
+    description: "A redirect chain loops back to a previously observed URL."
+    checkingAlgorithm:
+      "Normalize each redirect target and detect repeated URLs in one chain."
+    requiredEvidence: [redirect-chain, repeated-url]
+    fix: "Fix redirect rules so the URL resolves to one final destination."
+    testExamples: [fixtures/http/redirect-loop]
+    documentation: docs/rules/SL-HTTP-003.md
+    version: 1.0.0
+  - id: SL-HTTP-004
+    name: html-route-wrong-content-type
+    category: http-rendering
+    defaultSeverity: error
+    confidence: certain
+    scope: page
+    sources: [http-header]
+    providerScope: core
+    description:
+      "A route expected to serve HTML returns a non-HTML content type."
+    checkingAlgorithm: "Compare route type with Content-Type header."
+    requiredEvidence: [route-contract, content-type]
+    fix: "Serve text/html for HTML routes or update the route contract."
+    testExamples: [fixtures/http/wrong-content-type]
+    documentation: docs/rules/SL-HTTP-004.md
+    version: 1.0.0
+  - id: SL-HTTP-005
+    name: missing-raw-html-head
+    category: http-rendering
+    defaultSeverity: blocker
+    confidence: certain
+    scope: page
+    sources: [raw-html]
+    providerScope: core
+    description: "Initial HTML lacks a usable head element."
+    checkingAlgorithm:
+      "Parse raw HTML and require exactly one head element for HTML pages."
+    requiredEvidence: [raw-html-snapshot, html-parse-result]
+    fix: "Ensure the HTML document includes a valid head element."
+    testExamples: [fixtures/http/missing-raw-head]
+    documentation: docs/rules/SL-HTTP-005.md
+    version: 1.0.0
+  - id: SL-HTTP-006
+    name: missing-rendered-dom-head
+    category: http-rendering
+    defaultSeverity: blocker
+    confidence: certain
+    scope: page
+    sources: [rendered-dom]
+    providerScope: core
+    description: "Rendered DOM lacks a usable head element."
+    checkingAlgorithm: "Inspect rendered DOM and require one document head."
+    requiredEvidence: [rendered-dom-snapshot, dom-selector]
+    fix: "Fix rendering so the final document preserves a valid head element."
+    testExamples: [fixtures/http/missing-rendered-head]
+    documentation: docs/rules/SL-HTTP-006.md
+    version: 1.0.0
+  - id: SL-HTTP-007
+    name: raw-rendered-title-mismatch
+    category: http-rendering
+    defaultSeverity: warning
+    confidence: likely
+    scope: page
+    sources: [raw-html, rendered-dom]
+    providerScope: core
+    description: "Raw HTML title differs from rendered DOM title."
+    checkingAlgorithm:
+      "Extract title from raw HTML and rendered DOM and compare normalized
+      values."
+    requiredEvidence: [raw-title, rendered-title]
+    fix:
+      "Make server and rendered metadata agree unless the route is intentionally
+      dynamic."
+    testExamples: [fixtures/http/raw-rendered-title-mismatch]
+    documentation: docs/rules/SL-HTTP-007.md
+    version: 1.0.0
+  - id: SL-HTTP-008
+    name: raw-rendered-description-mismatch
+    category: http-rendering
+    defaultSeverity: warning
+    confidence: likely
+    scope: page
+    sources: [raw-html, rendered-dom]
+    providerScope: core
+    description:
+      "Raw HTML meta description differs from rendered DOM description."
+    checkingAlgorithm:
+      "Extract description from raw HTML and rendered DOM and compare normalized
+      values."
+    requiredEvidence: [raw-description, rendered-description]
+    fix:
+      "Make server and rendered descriptions agree unless the route is
+      intentionally dynamic."
+    testExamples: [fixtures/http/raw-rendered-description-mismatch]
+    documentation: docs/rules/SL-HTTP-008.md
+    version: 1.0.0
+  - id: SL-HTTP-009
+    name: required-metadata-rendered-only
+    category: http-rendering
+    defaultSeverity: error
+    confidence: likely
+    scope: page
+    sources: [raw-html, rendered-dom]
+    providerScope: core
+    description:
+      "Required metadata is missing from raw HTML and appears only after
+      rendering."
+    checkingAlgorithm:
+      "Compare route-required metadata presence in raw HTML and rendered DOM."
+    requiredEvidence:
+      [route-contract, raw-metadata-state, rendered-metadata-state]
+    fix: "Emit required SEO metadata in server-rendered HTML."
+    testExamples: [fixtures/http/metadata-rendered-only]
+    documentation: docs/rules/SL-HTTP-009.md
+    version: 1.0.0
+  - id: SL-HTTP-010
+    name: response-time-over-policy
+    category: http-rendering
+    defaultSeverity: info
+    confidence: heuristic
+    scope: page
+    sources: [http-header]
+    providerScope: core
+    description: "HTTP response timing exceeds the configured technical policy."
+    checkingAlgorithm:
+      "Compare measured response timing with route or site timing policy."
+    requiredEvidence: [response-timing, policy-threshold]
+    fix:
+      "Investigate slow server response, cache behavior, or route rendering
+      path."
+    testExamples: [fixtures/http/response-time-over-policy]
+    documentation: docs/rules/SL-HTTP-010.md
+    version: 1.0.0
+  - id: SL-HTTP-011
+    name: rendered-html-lang-missing
+    category: http-rendering
+    defaultSeverity: warning
+    confidence: certain
+    scope: page
+    sources: [rendered-dom]
+    providerScope: core
+    description: "Rendered html element has no lang attribute."
+    checkingAlgorithm: "Inspect rendered documentElement lang attribute."
+    requiredEvidence: [dom-selector, lang-value]
+    fix: "Set a language on the html element."
+    testExamples: [fixtures/http/rendered-lang-missing]
+    documentation: docs/rules/SL-HTTP-011.md
+    version: 1.0.0
+  - id: SL-HTTP-012
+    name: hydration-removes-required-metadata
+    category: http-rendering
+    defaultSeverity: error
+    confidence: certain
+    scope: page
+    sources: [raw-html, rendered-dom]
+    providerScope: core
+    description:
+      "Required metadata exists in raw HTML but is removed after rendering."
+    checkingAlgorithm:
+      "Compare required metadata keys before and after rendering."
+    requiredEvidence:
+      [route-contract, raw-metadata-state, rendered-metadata-state]
+    fix:
+      "Fix client rendering or framework metadata configuration so required
+      metadata remains present."
+    testExamples: [fixtures/http/hydration-removes-metadata]
+    documentation: docs/rules/SL-HTTP-012.md
+    version: 1.0.0
+  - id: SL-INDEX-001
+    name: unexpected-noindex
+    category: indexability
+    defaultSeverity: blocker
+    confidence: certain
+    scope: page
+    sources: [raw-html, rendered-dom, http-header]
+    providerScope: core
+    description: "An indexable route contains a noindex directive."
+    checkingAlgorithm:
+      "Resolve route indexability and detect noindex in meta robots or
+      X-Robots-Tag."
+    requiredEvidence: [route-contract, discovered-directive]
+    fix: "Remove noindex from indexable routes or update the route contract."
+    testExamples: [fixtures/indexability/unexpected-noindex]
+    documentation: docs/rules/SL-INDEX-001.md
+    version: 1.0.0
+  - id: SL-INDEX-002
+    name: missing-noindex
+    category: indexability
+    defaultSeverity: blocker
+    confidence: certain
+    scope: page
+    sources: [raw-html, rendered-dom, http-header]
+    providerScope: core
+    description: "A non-indexable route lacks a noindex directive."
+    checkingAlgorithm:
+      "Resolve route indexability and require noindex in HTML or headers."
+    requiredEvidence: [route-contract, discovered-directive]
+    fix: "Add noindex to non-indexable routes or update the route contract."
+    testExamples: [fixtures/indexability/missing-noindex]
+    documentation: docs/rules/SL-INDEX-002.md
+    version: 1.0.0
+  - id: SL-INDEX-003
+    name: conflicting-index-directives
+    category: indexability
+    defaultSeverity: blocker
+    confidence: certain
+    scope: page
+    sources: [raw-html, rendered-dom, http-header]
+    providerScope: core
+    description: "A page contains conflicting index and noindex directives."
+    checkingAlgorithm:
+      "Collect robots directives from HTML and headers and detect contradictory
+      values."
+    requiredEvidence: [meta-robots, x-robots-tag]
+    fix:
+      "Use one consistent indexability directive across HTML and HTTP headers."
+    testExamples: [fixtures/indexability/conflicting-directives]
+    documentation: docs/rules/SL-INDEX-003.md
+    version: 1.0.0
+  - id: SL-INDEX-004
+    name: robots-blocks-indexable-route
+    category: indexability
+    defaultSeverity: blocker
+    confidence: certain
+    scope: page
+    sources: [robots-txt, crawler]
+    providerScope: core
+    description: "robots.txt blocks crawling for a route declared indexable."
+    checkingAlgorithm:
+      "Match URL against robots rules for configured user agents and compare
+      with route contract."
+    requiredEvidence: [route-contract, robots-rule, matched-url]
+    fix: "Allow crawling for indexable URLs or mark the route non-indexable."
+    testExamples: [fixtures/indexability/robots-blocks-indexable]
+    documentation: docs/rules/SL-INDEX-004.md
+    version: 1.0.0
+  - id: SL-INDEX-005
+    name: sitemap-includes-noindex-url
+    category: indexability
+    defaultSeverity: error
+    confidence: certain
+    scope: site
+    sources: [sitemap, raw-html, http-header]
+    providerScope: core
+    description: "A sitemap includes a URL that declares noindex."
+    checkingAlgorithm:
+      "Join sitemap URLs with collected indexability directives."
+    requiredEvidence: [sitemap-entry, discovered-directive]
+    fix: "Remove noindex URLs from sitemap or make them indexable."
+    testExamples: [fixtures/indexability/sitemap-noindex]
+    documentation: docs/rules/SL-INDEX-005.md
+    version: 1.0.0
+  - id: SL-INDEX-006
+    name: noindex-rendered-only
+    category: indexability
+    defaultSeverity: error
+    confidence: likely
+    scope: page
+    sources: [raw-html, rendered-dom]
+    providerScope: core
+    description: "A noindex directive appears only after JavaScript rendering."
+    checkingAlgorithm: "Compare robots directives in raw HTML and rendered DOM."
+    requiredEvidence: [raw-directives, rendered-directives]
+    fix: "Emit indexability directives consistently in server-rendered HTML."
+    testExamples: [fixtures/indexability/noindex-rendered-only]
+    documentation: docs/rules/SL-INDEX-006.md
+    version: 1.0.0
+  - id: SL-INDEX-007
+    name: x-robots-none-on-indexable-route
+    category: indexability
+    defaultSeverity: blocker
+    confidence: certain
+    scope: page
+    sources: [http-header]
+    providerScope: core
+    description: "X-Robots-Tag contains none for an indexable route."
+    checkingAlgorithm:
+      "Parse X-Robots-Tag and compare none/noindex semantics with route
+      contract."
+    requiredEvidence: [route-contract, x-robots-tag]
+    fix: "Remove X-Robots-Tag none from indexable responses."
+    testExamples: [fixtures/indexability/x-robots-none]
+    documentation: docs/rules/SL-INDEX-007.md
+    version: 1.0.0
+  - id: SL-INDEX-008
+    name: unavailable-after-expired
+    category: indexability
+    defaultSeverity: blocker
+    confidence: certain
+    scope: page
+    sources: [http-header, raw-html]
+    providerScope: core
+    description: "An indexable route has an unavailable_after date in the past."
+    checkingAlgorithm:
+      "Parse unavailable_after directive and compare with observedAt."
+    requiredEvidence: [route-contract, unavailable-after-date, observed-at]
+    fix: "Remove or update expired unavailable_after on indexable routes."
+    testExamples: [fixtures/indexability/unavailable-after-expired]
+    documentation: docs/rules/SL-INDEX-008.md
+    version: 1.0.0
+  - id: SL-INDEX-009
+    name: canonical-target-noindex
+    category: indexability
+    defaultSeverity: error
+    confidence: certain
+    scope: page
+    sources: [crawler, raw-html, http-header]
+    providerScope: core
+    description: "A page canonicalizes to a URL that is noindex."
+    checkingAlgorithm:
+      "Resolve canonical target snapshot and inspect its indexability
+      directives."
+    requiredEvidence: [canonical-url, target-directive]
+    fix:
+      "Canonicalize to an indexable target or remove noindex from the target."
+    testExamples: [fixtures/indexability/canonical-target-noindex]
+    documentation: docs/rules/SL-INDEX-009.md
+    version: 1.0.0
+  - id: SL-INDEX-010
+    name: critical-assets-blocked-by-robots
+    category: indexability
+    defaultSeverity: warning
+    confidence: heuristic
+    scope: page
+    sources: [robots-txt, rendered-dom]
+    providerScope: core
+    description: "Critical rendered assets appear blocked by robots.txt."
+    checkingAlgorithm:
+      "Identify critical linked assets and match them against robots rules."
+    requiredEvidence: [asset-url, robots-rule]
+    fix:
+      "Allow crawling of critical render assets when they affect indexable
+      content."
+    testExamples: [fixtures/indexability/blocked-assets]
+    documentation: docs/rules/SL-INDEX-010.md
+    version: 1.0.0
+  - id: SL-INDEX-011
+    name: google-indexable-url-not-indexed
+    category: indexability
+    defaultSeverity: error
+    confidence: certain
+    scope: page
+    sources: [google]
+    providerScope: google
+    description: "Google reports that an indexable route is not indexed."
+    checkingAlgorithm:
+      "Compare route contract with latest Google URL Inspection coverage state."
+    requiredEvidence:
+      [route-contract, google-observation, observed-at, fetched-at]
+    fix:
+      "Review Google exclusion reason and fix crawl, canonical, quality, or
+      indexing blockers."
+    testExamples: [fixtures/indexability/google-not-indexed]
+    documentation: docs/rules/SL-INDEX-011.md
+    version: 1.0.0
+  - id: SL-INDEX-012
+    name: yandex-indexable-url-not-searchable
+    category: indexability
+    defaultSeverity: error
+    confidence: certain
+    scope: page
+    sources: [yandex]
+    providerScope: yandex
+    description: "Yandex reports that an indexable route is not searchable."
+    checkingAlgorithm:
+      "Compare route contract with latest Yandex searchable state."
+    requiredEvidence:
+      [route-contract, yandex-observation, observed-at, fetched-at]
+    fix:
+      "Review Yandex exclusion reason and fix crawl, canonical, or indexing
+      blockers."
+    testExamples: [fixtures/indexability/yandex-not-searchable]
+    documentation: docs/rules/SL-INDEX-012.md
+    version: 1.0.0
+  - id: SL-INDEX-013
+    name: indexable-parameter-url
+    category: indexability
+    defaultSeverity: warning
+    confidence: likely
+    scope: page
+    sources: [crawler, raw-html]
+    providerScope: core
+    description:
+      "A query-parameter URL is indexable without an explicit route contract."
+    checkingAlgorithm:
+      "Detect indexable crawled URLs with query strings and no matching allow
+      policy."
+    requiredEvidence: [matched-url, route-contract, discovered-directive]
+    fix: "Canonicalize, noindex, block, or explicitly allow parameter URLs."
+    testExamples: [fixtures/indexability/indexable-parameter-url]
+    documentation: docs/rules/SL-INDEX-013.md
+    version: 1.0.0
+  - id: SL-INDEX-014
+    name: soft-404-indexable
+    category: indexability
+    defaultSeverity: error
+    confidence: likely
+    scope: page
+    sources: [rendered-dom, crawler, google]
+    providerScope: core
+    description: "A page appears to be a soft 404 while remaining indexable."
+    checkingAlgorithm:
+      "Combine status, route contract, content signals, and optional provider
+      observations."
+    requiredEvidence: [status-code, content-signal, route-contract]
+    fix:
+      "Return a real 404/410 for missing pages or provide substantial indexable
+      content."
+    testExamples: [fixtures/indexability/soft-404-indexable]
+    documentation: docs/rules/SL-INDEX-014.md
+    version: 1.0.0
+  - id: SL-META-001
+    name: missing-title
+    category: title-metadata
+    defaultSeverity: blocker
+    confidence: certain
+    scope: page
+    sources: [raw-html, rendered-dom, source-code]
+    providerScope: core
+    description: "A route requiring a title has no title."
+    checkingAlgorithm:
+      "Resolve title requirement and inspect source, raw HTML, and rendered DOM
+      title state."
+    requiredEvidence: [route-contract, title-state]
+    fix:
+      "Define a route title through Next.js metadata or equivalent server
+      metadata."
+    testExamples: [fixtures/meta/missing-title]
+    documentation: docs/rules/SL-META-001.md
+    version: 1.0.0
+  - id: SL-META-002
+    name: empty-title
+    category: title-metadata
+    defaultSeverity: blocker
+    confidence: certain
+    scope: page
+    sources: [raw-html, rendered-dom]
+    providerScope: core
+    description: "The title element exists but is empty."
+    checkingAlgorithm: "Normalize title text and detect empty value."
+    requiredEvidence: [title-state]
+    fix: "Provide non-empty title text."
+    testExamples: [fixtures/meta/empty-title]
+    documentation: docs/rules/SL-META-002.md
+    version: 1.0.0
+  - id: SL-META-003
+    name: multiple-title-elements
+    category: title-metadata
+    defaultSeverity: error
+    confidence: certain
+    scope: page
+    sources: [raw-html, rendered-dom]
+    providerScope: core
+    description: "A page contains more than one title element."
+    checkingAlgorithm:
+      "Count title elements in head for raw and rendered snapshots."
+    requiredEvidence: [title-elements]
+    fix: "Emit exactly one title element."
+    testExamples: [fixtures/meta/multiple-title-elements]
+    documentation: docs/rules/SL-META-003.md
+    version: 1.0.0
+  - id: SL-META-004
+    name: duplicate-title-across-indexable-pages
+    category: title-metadata
+    defaultSeverity: warning
+    confidence: likely
+    scope: site
+    sources: [crawler]
+    providerScope: core
+    description: "Multiple indexable pages share the same title."
+    checkingAlgorithm:
+      "Group crawled indexable pages by normalized title value."
+    requiredEvidence: [title-value, matched-urls]
+    fix: "Give each indexable page a route-specific title."
+    testExamples: [fixtures/meta/duplicate-title-site]
+    documentation: docs/rules/SL-META-004.md
+    version: 1.0.0
+  - id: SL-META-005
+    name: missing-description
+    category: title-metadata
+    defaultSeverity: error
+    confidence: certain
+    scope: page
+    sources: [raw-html, rendered-dom, source-code]
+    providerScope: core
+    description: "A route requiring a meta description has none."
+    checkingAlgorithm:
+      "Resolve description requirement and inspect source, raw HTML, and
+      rendered DOM."
+    requiredEvidence: [route-contract, description-state]
+    fix: "Define a server-rendered meta description."
+    testExamples: [fixtures/meta/missing-description]
+    documentation: docs/rules/SL-META-005.md
+    version: 1.0.0
+  - id: SL-META-006
+    name: empty-description
+    category: title-metadata
+    defaultSeverity: error
+    confidence: certain
+    scope: page
+    sources: [raw-html, rendered-dom]
+    providerScope: core
+    description: "Meta description exists but is empty."
+    checkingAlgorithm: "Normalize description content and detect empty value."
+    requiredEvidence: [description-state]
+    fix: "Provide non-empty description content."
+    testExamples: [fixtures/meta/empty-description]
+    documentation: docs/rules/SL-META-006.md
+    version: 1.0.0
+  - id: SL-META-007
+    name: multiple-meta-descriptions
+    category: title-metadata
+    defaultSeverity: error
+    confidence: certain
+    scope: page
+    sources: [raw-html, rendered-dom]
+    providerScope: core
+    description: "A page contains more than one meta description."
+    checkingAlgorithm: "Count meta name=description elements in head."
+    requiredEvidence: [description-elements]
+    fix: "Emit exactly one meta description."
+    testExamples: [fixtures/meta/multiple-descriptions]
+    documentation: docs/rules/SL-META-007.md
+    version: 1.0.0
+  - id: SL-META-008
+    name: duplicate-description-across-indexable-pages
+    category: title-metadata
+    defaultSeverity: warning
+    confidence: likely
+    scope: site
+    sources: [crawler]
+    providerScope: core
+    description: "Multiple indexable pages share the same meta description."
+    checkingAlgorithm:
+      "Group crawled indexable pages by normalized description."
+    requiredEvidence: [description-value, matched-urls]
+    fix: "Give each indexable page a route-specific description."
+    testExamples: [fixtures/meta/duplicate-description-site]
+    documentation: docs/rules/SL-META-008.md
+    version: 1.0.0
+  - id: SL-META-009
+    name: title-length-outside-guidance
+    category: title-metadata
+    defaultSeverity: info
+    confidence: heuristic
+    scope: page
+    sources: [raw-html, rendered-dom]
+    providerScope: core
+    description: "Title length is outside configured guidance."
+    checkingAlgorithm:
+      "Compare normalized title length with non-blocking policy thresholds."
+    requiredEvidence: [title-value, policy-threshold]
+    fix:
+      "Review title length for search result readability; this is never a hard
+      error."
+    testExamples: [fixtures/meta/title-length-guidance]
+    documentation: docs/rules/SL-META-009.md
+    version: 1.0.0
+  - id: SL-META-010
+    name: description-length-outside-guidance
+    category: title-metadata
+    defaultSeverity: info
+    confidence: heuristic
+    scope: page
+    sources: [raw-html, rendered-dom]
+    providerScope: core
+    description: "Meta description length is outside configured guidance."
+    checkingAlgorithm:
+      "Compare normalized description length with non-blocking policy
+      thresholds."
+    requiredEvidence: [description-value, policy-threshold]
+    fix:
+      "Review description length for search result readability; this is never a
+      hard error."
+    testExamples: [fixtures/meta/description-length-guidance]
+    documentation: docs/rules/SL-META-010.md
+    version: 1.0.0
+  - id: SL-META-011
+    name: missing-open-graph-title
+    category: title-metadata
+    defaultSeverity: warning
+    confidence: certain
+    scope: page
+    sources: [raw-html, rendered-dom]
+    providerScope: core
+    description: "A route requiring social preview lacks og:title."
+    checkingAlgorithm:
+      "Resolve social preview policy and inspect Open Graph title."
+    requiredEvidence: [route-contract, og-title-state]
+    fix: "Add og:title or disable social preview requirement for the route."
+    testExamples: [fixtures/meta/missing-og-title]
+    documentation: docs/rules/SL-META-011.md
+    version: 1.0.0
+  - id: SL-META-012
+    name: missing-open-graph-description
+    category: title-metadata
+    defaultSeverity: warning
+    confidence: certain
+    scope: page
+    sources: [raw-html, rendered-dom]
+    providerScope: core
+    description: "A route requiring social preview lacks og:description."
+    checkingAlgorithm:
+      "Resolve social preview policy and inspect Open Graph description."
+    requiredEvidence: [route-contract, og-description-state]
+    fix:
+      "Add og:description or disable social preview requirement for the route."
+    testExamples: [fixtures/meta/missing-og-description]
+    documentation: docs/rules/SL-META-012.md
+    version: 1.0.0
+  - id: SL-META-013
+    name: missing-twitter-title
+    category: title-metadata
+    defaultSeverity: info
+    confidence: certain
+    scope: page
+    sources: [raw-html, rendered-dom]
+    providerScope: core
+    description: "A route requiring Twitter Card metadata lacks twitter:title."
+    checkingAlgorithm: "Resolve Twitter card policy and inspect twitter:title."
+    requiredEvidence: [route-contract, twitter-title-state]
+    fix: "Add twitter:title or allow Open Graph fallback in policy."
+    testExamples: [fixtures/meta/missing-twitter-title]
+    documentation: docs/rules/SL-META-013.md
+    version: 1.0.0
+  - id: SL-META-014
+    name: missing-twitter-description
+    category: title-metadata
+    defaultSeverity: info
+    confidence: certain
+    scope: page
+    sources: [raw-html, rendered-dom]
+    providerScope: core
+    description:
+      "A route requiring Twitter Card metadata lacks twitter:description."
+    checkingAlgorithm:
+      "Resolve Twitter card policy and inspect twitter:description."
+    requiredEvidence: [route-contract, twitter-description-state]
+    fix: "Add twitter:description or allow Open Graph fallback in policy."
+    testExamples: [fixtures/meta/missing-twitter-description]
+    documentation: docs/rules/SL-META-014.md
+    version: 1.0.0
+  - id: SL-META-015
+    name: missing-viewport
+    category: title-metadata
+    defaultSeverity: warning
+    confidence: certain
+    scope: page
+    sources: [raw-html, rendered-dom]
+    providerScope: core
+    description: "A page lacks viewport metadata."
+    checkingAlgorithm:
+      "Inspect head for meta viewport in raw and rendered snapshots."
+    requiredEvidence: [viewport-state]
+    fix: "Add a viewport meta tag or framework viewport configuration."
+    testExamples: [fixtures/meta/missing-viewport]
+    documentation: docs/rules/SL-META-015.md
+    version: 1.0.0
+  - id: SL-META-016
+    name: missing-charset
+    category: title-metadata
+    defaultSeverity: warning
+    confidence: certain
+    scope: page
+    sources: [raw-html, http-header]
+    providerScope: core
+    description:
+      "Initial HTML lacks charset metadata and response headers do not provide
+      one."
+    checkingAlgorithm:
+      "Check Content-Type charset and raw HTML charset declaration."
+    requiredEvidence: [content-type, raw-html-charset]
+    fix: "Declare charset in response headers or raw HTML."
+    testExamples: [fixtures/meta/missing-charset]
+    documentation: docs/rules/SL-META-016.md
+    version: 1.0.0
+  - id: SL-META-017
+    name: metadata-source-location-unresolved
+    category: title-metadata
+    defaultSeverity: info
+    confidence: likely
+    scope: page
+    sources: [source-code, rendered-dom]
+    providerScope: core
+    description:
+      "A metadata diagnostic cannot be mapped to an exact source location."
+    checkingAlgorithm:
+      "Classify localization confidence when source analyzer cannot prove an
+      exact origin."
+    requiredEvidence: [diagnostic-id, localization-confidence]
+    fix:
+      "Review related source files or make metadata definition statically
+      analyzable."
+    testExamples: [fixtures/meta/source-location-unresolved]
+    documentation: docs/rules/SL-META-017.md
+    version: 1.0.0
+  - id: SL-META-018
+    name: duplicate-social-metadata
+    category: title-metadata
+    defaultSeverity: warning
+    confidence: certain
+    scope: page
+    sources: [raw-html, rendered-dom]
+    providerScope: core
+    description:
+      "A social metadata property appears multiple times with conflicting
+      values."
+    checkingAlgorithm:
+      "Group Open Graph and Twitter metadata by property/name and detect
+      conflicting values."
+    requiredEvidence: [metadata-key, metadata-values]
+    fix: "Emit one canonical value for each social metadata field."
+    testExamples: [fixtures/meta/duplicate-social-metadata]
+    documentation: docs/rules/SL-META-018.md
+    version: 1.0.0
+  - id: SL-CANON-001
+    name: missing-canonical
+    category: canonical-hreflang
+    defaultSeverity: error
+    confidence: certain
+    scope: page
+    sources: [raw-html, rendered-dom, source-code]
+    providerScope: core
+    description: "A route requiring canonical metadata has no canonical URL."
+    checkingAlgorithm:
+      "Resolve canonical policy and inspect source, raw HTML, and rendered DOM."
+    requiredEvidence: [route-contract, canonical-state]
+    fix: "Add canonical metadata or change the route canonical policy."
+    testExamples: [fixtures/canonical/missing-canonical]
+    documentation: docs/rules/SL-CANON-001.md
+    version: 1.0.0
+  - id: SL-CANON-002
+    name: multiple-canonicals
+    category: canonical-hreflang
+    defaultSeverity: blocker
+    confidence: certain
+    scope: page
+    sources: [raw-html, rendered-dom, http-header]
+    providerScope: core
+    description: "A page declares multiple canonical URLs."
+    checkingAlgorithm:
+      "Collect link rel=canonical and canonical headers and count unique
+      declarations."
+    requiredEvidence: [canonical-elements, canonical-headers]
+    fix: "Emit exactly one canonical URL."
+    testExamples: [fixtures/canonical/multiple-canonicals]
+    documentation: docs/rules/SL-CANON-002.md
+    version: 1.0.0
+  - id: SL-CANON-003
+    name: self-canonical-expected
+    category: canonical-hreflang
+    defaultSeverity: error
+    confidence: certain
+    scope: page
+    sources: [raw-html, rendered-dom]
+    providerScope: core
+    description: "A route requiring self canonical points to a different URL."
+    checkingAlgorithm:
+      "Compare normalized page URL with declared canonical URL when policy is
+      self."
+    requiredEvidence: [route-contract, page-url, canonical-url]
+    fix: "Set canonical to the page URL or update canonical policy."
+    testExamples: [fixtures/canonical/self-canonical-expected]
+    documentation: docs/rules/SL-CANON-003.md
+    version: 1.0.0
+  - id: SL-CANON-004
+    name: canonical-target-non-success
+    category: canonical-hreflang
+    defaultSeverity: error
+    confidence: certain
+    scope: page
+    sources: [http-header, crawler]
+    providerScope: core
+    description: "Canonical target does not return a 2xx HTTP response."
+    checkingAlgorithm:
+      "Fetch or resolve canonical target and inspect final status."
+    requiredEvidence: [canonical-url, final-status-code]
+    fix: "Point canonical to a successful indexable URL."
+    testExamples: [fixtures/canonical/target-non-success]
+    documentation: docs/rules/SL-CANON-004.md
+    version: 1.0.0
+  - id: SL-CANON-005
+    name: canonical-target-redirects
+    category: canonical-hreflang
+    defaultSeverity: warning
+    confidence: certain
+    scope: page
+    sources: [http-header, crawler]
+    providerScope: core
+    description: "Canonical URL redirects before reaching its final target."
+    checkingAlgorithm:
+      "Resolve canonical URL and detect non-empty redirect chain."
+    requiredEvidence: [canonical-url, redirect-chain]
+    fix: "Use the final destination URL as canonical."
+    testExamples: [fixtures/canonical/target-redirects]
+    documentation: docs/rules/SL-CANON-005.md
+    version: 1.0.0
+  - id: SL-CANON-006
+    name: canonical-scheme-conflict
+    category: canonical-hreflang
+    defaultSeverity: error
+    confidence: certain
+    scope: page
+    sources: [raw-html, rendered-dom]
+    providerScope: core
+    description:
+      "Canonical URL scheme conflicts with the configured route or site policy."
+    checkingAlgorithm:
+      "Compare canonical URL scheme with page URL and site scheme policy."
+    requiredEvidence: [canonical-url, page-url, site-policy]
+    fix: "Use the expected canonical scheme."
+    testExamples: [fixtures/canonical/scheme-conflict]
+    documentation: docs/rules/SL-CANON-006.md
+    version: 1.0.0
+  - id: SL-CANON-007
+    name: canonical-host-conflict
+    category: canonical-hreflang
+    defaultSeverity: error
+    confidence: certain
+    scope: page
+    sources: [raw-html, rendered-dom]
+    providerScope: core
+    description:
+      "Canonical URL host conflicts with the configured site host policy."
+    checkingAlgorithm:
+      "Compare canonical host with configured site host and allowed cross-domain
+      policy."
+    requiredEvidence: [site-policy, canonical-url]
+    fix:
+      "Use the configured canonical host or explicitly allow cross-domain
+      canonicalization."
+    testExamples: [fixtures/canonical/host-conflict]
+    documentation: docs/rules/SL-CANON-007.md
+    version: 1.0.0
+  - id: SL-CANON-008
+    name: canonical-loop
+    category: canonical-hreflang
+    defaultSeverity: blocker
+    confidence: certain
+    scope: site
+    sources: [crawler]
+    providerScope: core
+    description: "Canonical relationships form a loop."
+    checkingAlgorithm: "Build canonical graph and detect cycles."
+    requiredEvidence: [canonical-graph, cycle-path]
+    fix: "Break the canonical loop by choosing one final canonical target."
+    testExamples: [fixtures/canonical/canonical-loop]
+    documentation: docs/rules/SL-CANON-008.md
+    version: 1.0.0
+  - id: SL-CANON-009
+    name: hreflang-missing-return-link
+    category: canonical-hreflang
+    defaultSeverity: error
+    confidence: certain
+    scope: site
+    sources: [crawler, raw-html, rendered-dom]
+    providerScope: core
+    description: "A hreflang alternate does not link back to the source page."
+    checkingAlgorithm: "Build hreflang graph and require reciprocal alternates."
+    requiredEvidence: [hreflang-source, hreflang-target]
+    fix: "Add reciprocal hreflang links between alternates."
+    testExamples: [fixtures/canonical/hreflang-missing-return]
+    documentation: docs/rules/SL-CANON-009.md
+    version: 1.0.0
+  - id: SL-CANON-010
+    name: invalid-hreflang-code
+    category: canonical-hreflang
+    defaultSeverity: error
+    confidence: certain
+    scope: page
+    sources: [raw-html, rendered-dom]
+    providerScope: core
+    description: "A hreflang value is not a valid language or locale code."
+    checkingAlgorithm:
+      "Validate hreflang values against supported language/region syntax."
+    requiredEvidence: [hreflang-value]
+    fix: "Use valid hreflang language, region, or x-default values."
+    testExamples: [fixtures/canonical/invalid-hreflang]
+    documentation: docs/rules/SL-CANON-010.md
+    version: 1.0.0
+  - id: SL-CANON-011
+    name: missing-x-default
+    category: canonical-hreflang
+    defaultSeverity: warning
+    confidence: certain
+    scope: site
+    sources: [raw-html, rendered-dom, crawler]
+    providerScope: core
+    description: "A route group requiring x-default has no x-default hreflang."
+    checkingAlgorithm:
+      "Resolve hreflang policy and inspect alternate set for x-default."
+    requiredEvidence: [route-contract, hreflang-set]
+    fix: "Add x-default alternate or change the route group policy."
+    testExamples: [fixtures/canonical/missing-x-default]
+    documentation: docs/rules/SL-CANON-011.md
+    version: 1.0.0
+  - id: SL-CANON-012
+    name: hreflang-target-non-indexable
+    category: canonical-hreflang
+    defaultSeverity: error
+    confidence: certain
+    scope: site
+    sources: [crawler, raw-html, http-header]
+    providerScope: core
+    description: "A hreflang target is non-indexable."
+    checkingAlgorithm:
+      "Resolve each hreflang target snapshot and inspect indexability
+      directives."
+    requiredEvidence: [hreflang-target, discovered-directive]
+    fix: "Point hreflang to indexable alternates."
+    testExamples: [fixtures/canonical/hreflang-target-noindex]
+    documentation: docs/rules/SL-CANON-012.md
+    version: 1.0.0
+  - id: SL-CANON-013
+    name: hreflang-target-non-success
+    category: canonical-hreflang
+    defaultSeverity: error
+    confidence: certain
+    scope: site
+    sources: [crawler, http-header]
+    providerScope: core
+    description: "A hreflang target does not return a 2xx HTTP response."
+    checkingAlgorithm: "Resolve hreflang target URLs and inspect final status."
+    requiredEvidence: [hreflang-target, final-status-code]
+    fix: "Point hreflang to successful alternate URLs."
+    testExamples: [fixtures/canonical/hreflang-target-non-success]
+    documentation: docs/rules/SL-CANON-013.md
+    version: 1.0.0
+  - id: SL-CANON-014
+    name: raw-rendered-canonical-mismatch
+    category: canonical-hreflang
+    defaultSeverity: error
+    confidence: certain
+    scope: page
+    sources: [raw-html, rendered-dom]
+    providerScope: core
+    description: "Canonical URL differs between raw HTML and rendered DOM."
+    checkingAlgorithm:
+      "Extract canonical URL from raw and rendered snapshots and compare
+      normalized values."
+    requiredEvidence: [raw-canonical, rendered-canonical]
+    fix: "Make server and rendered canonical metadata agree."
+    testExamples: [fixtures/canonical/raw-rendered-mismatch]
+    documentation: docs/rules/SL-CANON-014.md
+    version: 1.0.0
+  - id: SL-CANON-015
+    name: canonical-to-parameter-url
+    category: canonical-hreflang
+    defaultSeverity: warning
+    confidence: likely
+    scope: page
+    sources: [raw-html, rendered-dom]
+    providerScope: core
+    description:
+      "Canonical URL includes query parameters without explicit policy
+      allowance."
+    checkingAlgorithm:
+      "Detect query parameters in canonical URL and compare with route policy."
+    requiredEvidence: [canonical-url, route-contract]
+    fix:
+      "Canonicalize to a clean URL or explicitly allow parameter
+      canonicalization."
+    testExamples: [fixtures/canonical/canonical-parameter-url]
+    documentation: docs/rules/SL-CANON-015.md
+    version: 1.0.0
+  - id: SL-CANON-016
+    name: google-selected-canonical-differs
+    category: canonical-hreflang
+    defaultSeverity: warning
+    confidence: certain
+    scope: page
+    sources: [google]
+    providerScope: google
+    description:
+      "Google selected a canonical different from the user-declared canonical."
+    checkingAlgorithm:
+      "Compare declared canonical with latest Google URL Inspection selected
+      canonical."
+    requiredEvidence:
+      [declared-canonical, google-canonical, observed-at, fetched-at]
+    fix:
+      "Review canonical signals and align declared canonical, internal links,
+      sitemap, and content."
+    testExamples: [fixtures/canonical/google-canonical-differs]
+    documentation: docs/rules/SL-CANON-016.md
+    version: 1.0.0
+  - id: SL-HEAD-001
+    name: missing-h1
+    category: headings-structure
+    defaultSeverity: warning
+    confidence: certain
+    scope: page
+    sources: [rendered-dom]
+    providerScope: core
+    description: "A route requiring an H1 has no H1 element."
+    checkingAlgorithm:
+      "Resolve heading policy and inspect rendered DOM for h1 elements."
+    requiredEvidence: [route-contract, heading-state]
+    fix: "Add one meaningful H1 or update the route heading policy."
+    testExamples: [fixtures/headings/missing-h1]
+    documentation: docs/rules/SL-HEAD-001.md
+    version: 1.0.0
+  - id: SL-HEAD-002
+    name: multiple-h1
+    category: headings-structure
+    defaultSeverity: warning
+    confidence: heuristic
+    scope: page
+    sources: [rendered-dom]
+    providerScope: core
+    description: "A page contains multiple H1 elements."
+    checkingAlgorithm:
+      "Count visible H1 elements and compare with heading policy."
+    requiredEvidence: [h1-elements]
+    fix:
+      "Use one primary H1 unless the route policy explicitly permits multiple."
+    testExamples: [fixtures/headings/multiple-h1]
+    documentation: docs/rules/SL-HEAD-002.md
+    version: 1.0.0
+  - id: SL-HEAD-003
+    name: empty-heading
+    category: headings-structure
+    defaultSeverity: warning
+    confidence: certain
+    scope: page
+    sources: [rendered-dom]
+    providerScope: core
+    description: "A heading element is empty after text normalization."
+    checkingAlgorithm:
+      "Inspect rendered heading text content and accessible label."
+    requiredEvidence: [dom-selector, heading-level]
+    fix: "Remove empty headings or provide meaningful heading text."
+    testExamples: [fixtures/headings/empty-heading]
+    documentation: docs/rules/SL-HEAD-003.md
+    version: 1.0.0
+  - id: SL-HEAD-004
+    name: skipped-heading-level
+    category: headings-structure
+    defaultSeverity: info
+    confidence: heuristic
+    scope: page
+    sources: [rendered-dom]
+    providerScope: core
+    description: "Heading hierarchy skips an intermediate level."
+    checkingAlgorithm:
+      "Build rendered heading sequence and detect level jumps greater than one."
+    requiredEvidence: [heading-sequence]
+    fix:
+      "Review heading hierarchy and avoid skipped levels where route policy
+      requires structure."
+    testExamples: [fixtures/headings/skipped-level]
+    documentation: docs/rules/SL-HEAD-004.md
+    version: 1.0.0
+  - id: SL-HEAD-005
+    name: title-h1-token-mismatch
+    category: headings-structure
+    defaultSeverity: info
+    confidence: heuristic
+    scope: page
+    sources: [rendered-dom]
+    providerScope: core
+    description:
+      "Title and H1 have low deterministic token overlap where policy expects
+      alignment."
+    checkingAlgorithm:
+      "Compare normalized title and H1 token sets against configured overlap
+      guidance."
+    requiredEvidence: [title-value, h1-value, policy-threshold]
+    fix: "Review title and H1 alignment for the route intent."
+    testExamples: [fixtures/headings/title-h1-token-mismatch]
+    documentation: docs/rules/SL-HEAD-005.md
+    version: 1.0.0
+  - id: SL-HEAD-006
+    name: h1-rendered-only
+    category: headings-structure
+    defaultSeverity: warning
+    confidence: likely
+    scope: page
+    sources: [raw-html, rendered-dom]
+    providerScope: core
+    description: "The H1 exists only after JavaScript rendering."
+    checkingAlgorithm: "Compare H1 presence in raw HTML and rendered DOM."
+    requiredEvidence: [raw-heading-state, rendered-heading-state]
+    fix: "Render primary headings in the initial HTML for indexable pages."
+    testExamples: [fixtures/headings/h1-rendered-only]
+    documentation: docs/rules/SL-HEAD-006.md
+    version: 1.0.0
+  - id: SL-HEAD-007
+    name: hidden-primary-heading
+    category: headings-structure
+    defaultSeverity: warning
+    confidence: likely
+    scope: page
+    sources: [rendered-dom]
+    providerScope: core
+    description:
+      "The primary heading is hidden from visual rendering or accessibility."
+    checkingAlgorithm:
+      "Inspect primary heading visibility and accessibility state."
+    requiredEvidence: [dom-selector, computed-visibility, accessibility-state]
+    fix:
+      "Make the primary heading available or provide an accessible equivalent."
+    testExamples: [fixtures/headings/hidden-primary-heading]
+    documentation: docs/rules/SL-HEAD-007.md
+    version: 1.0.0
+  - id: SL-HEAD-008
+    name: required-heading-pattern-missing
+    category: headings-structure
+    defaultSeverity: warning
+    confidence: certain
+    scope: page
+    sources: [rendered-dom]
+    providerScope: core
+    description: "A route-required heading pattern is missing."
+    checkingAlgorithm:
+      "Resolve route heading requirements and match rendered heading
+      text/levels."
+    requiredEvidence: [route-contract, heading-pattern, heading-sequence]
+    fix: "Add the required heading pattern or update route policy."
+    testExamples: [fixtures/headings/required-pattern-missing]
+    documentation: docs/rules/SL-HEAD-008.md
+    version: 1.0.0
+  - id: SL-IMG-001
+    name: missing-og-image
+    category: images-social-preview
+    defaultSeverity: warning
+    confidence: certain
+    scope: page
+    sources: [raw-html, rendered-dom]
+    providerScope: core
+    description: "A route requiring Open Graph image metadata has no og:image."
+    checkingAlgorithm:
+      "Resolve social image policy and inspect Open Graph image metadata."
+    requiredEvidence: [route-contract, og-image-state]
+    fix: "Add og:image metadata or update social preview policy."
+    testExamples: [fixtures/images/missing-og-image]
+    documentation: docs/rules/SL-IMG-001.md
+    version: 1.0.0
+  - id: SL-IMG-002
+    name: og-image-non-success
+    category: images-social-preview
+    defaultSeverity: error
+    confidence: certain
+    scope: page
+    sources: [http-header, raw-html]
+    providerScope: core
+    description: "Open Graph image URL does not return a 2xx response."
+    checkingAlgorithm:
+      "Fetch declared og:image URL and inspect final HTTP status."
+    requiredEvidence: [og-image-url, final-status-code]
+    fix: "Point og:image to a reachable image URL."
+    testExamples: [fixtures/images/og-image-non-success]
+    documentation: docs/rules/SL-IMG-002.md
+    version: 1.0.0
+  - id: SL-IMG-003
+    name: og-image-not-absolute
+    category: images-social-preview
+    defaultSeverity: error
+    confidence: certain
+    scope: page
+    sources: [raw-html, rendered-dom]
+    providerScope: core
+    description: "Open Graph image URL is not absolute."
+    checkingAlgorithm: "Parse og:image values and require absolute URLs."
+    requiredEvidence: [og-image-url]
+    fix: "Use an absolute URL for og:image."
+    testExamples: [fixtures/images/og-image-relative]
+    documentation: docs/rules/SL-IMG-003.md
+    version: 1.0.0
+  - id: SL-IMG-004
+    name: missing-twitter-image
+    category: images-social-preview
+    defaultSeverity: info
+    confidence: certain
+    scope: page
+    sources: [raw-html, rendered-dom]
+    providerScope: core
+    description:
+      "A route requiring Twitter Card image metadata has no twitter:image."
+    checkingAlgorithm:
+      "Resolve Twitter image policy and inspect twitter:image metadata."
+    requiredEvidence: [route-contract, twitter-image-state]
+    fix: "Add twitter:image metadata or configure Open Graph fallback."
+    testExamples: [fixtures/images/missing-twitter-image]
+    documentation: docs/rules/SL-IMG-004.md
+    version: 1.0.0
+  - id: SL-IMG-005
+    name: twitter-image-non-success
+    category: images-social-preview
+    defaultSeverity: warning
+    confidence: certain
+    scope: page
+    sources: [http-header, raw-html]
+    providerScope: core
+    description: "Twitter image URL does not return a 2xx response."
+    checkingAlgorithm:
+      "Fetch declared twitter:image URL and inspect final HTTP status."
+    requiredEvidence: [twitter-image-url, final-status-code]
+    fix: "Point twitter:image to a reachable image URL."
+    testExamples: [fixtures/images/twitter-image-non-success]
+    documentation: docs/rules/SL-IMG-005.md
+    version: 1.0.0
+  - id: SL-IMG-006
+    name: content-image-missing-alt
+    category: images-social-preview
+    defaultSeverity: warning
+    confidence: certain
+    scope: page
+    sources: [rendered-dom]
+    providerScope: core
+    description: "A content image is missing alt text."
+    checkingAlgorithm:
+      "Classify rendered images and require alt text for content images."
+    requiredEvidence: [dom-selector, image-role]
+    fix: "Add descriptive alt text or mark the image as decorative."
+    testExamples: [fixtures/images/missing-alt]
+    documentation: docs/rules/SL-IMG-006.md
+    version: 1.0.0
+  - id: SL-IMG-007
+    name: content-image-empty-alt
+    category: images-social-preview
+    defaultSeverity: warning
+    confidence: likely
+    scope: page
+    sources: [rendered-dom]
+    providerScope: core
+    description: "A likely content image has an empty alt attribute."
+    checkingAlgorithm:
+      "Classify likely content images and detect empty alt values."
+    requiredEvidence: [dom-selector, image-role, alt-value]
+    fix:
+      "Provide meaningful alt text or mark the image as decorative by policy."
+    testExamples: [fixtures/images/empty-alt-content]
+    documentation: docs/rules/SL-IMG-007.md
+    version: 1.0.0
+  - id: SL-IMG-008
+    name: page-image-non-success
+    category: images-social-preview
+    defaultSeverity: warning
+    confidence: certain
+    scope: page
+    sources: [http-header, rendered-dom]
+    providerScope: core
+    description: "A rendered page image does not return a 2xx response."
+    checkingAlgorithm: "Resolve image URLs and inspect final HTTP status."
+    requiredEvidence: [image-url, final-status-code]
+    fix: "Serve the image successfully or remove the broken image reference."
+    testExamples: [fixtures/images/page-image-non-success]
+    documentation: docs/rules/SL-IMG-008.md
+    version: 1.0.0
+  - id: SL-IMG-009
+    name: social-image-size-outside-guidance
+    category: images-social-preview
+    defaultSeverity: info
+    confidence: heuristic
+    scope: page
+    sources: [http-header, raw-html]
+    providerScope: core
+    description: "Social preview image size is outside configured guidance."
+    checkingAlgorithm:
+      "Compare social image content length or dimensions with non-blocking
+      policy."
+    requiredEvidence: [image-url, image-size, policy-threshold]
+    fix:
+      "Review social image dimensions and file size for provider compatibility."
+    testExamples: [fixtures/images/social-image-size-guidance]
+    documentation: docs/rules/SL-IMG-009.md
+    version: 1.0.0
+  - id: SL-IMG-010
+    name: unsupported-social-image-type
+    category: images-social-preview
+    defaultSeverity: warning
+    confidence: certain
+    scope: page
+    sources: [http-header, raw-html]
+    providerScope: core
+    description:
+      "Social image content type is not supported by configured provider policy."
+    checkingAlgorithm:
+      "Fetch social image and validate Content-Type against provider policy."
+    requiredEvidence: [image-url, content-type, provider-policy]
+    fix: "Use a supported social image format."
+    testExamples: [fixtures/images/unsupported-social-type]
+    documentation: docs/rules/SL-IMG-010.md
+    version: 1.0.0
+  - id: SL-IMG-011
+    name: missing-og-image-dimensions
+    category: images-social-preview
+    defaultSeverity: info
+    confidence: certain
+    scope: page
+    sources: [raw-html, rendered-dom]
+    providerScope: core
+    description:
+      "Open Graph image width or height metadata is missing where policy
+      requires it."
+    checkingAlgorithm:
+      "Inspect og:image:width and og:image:height for routes that require
+      dimensions."
+    requiredEvidence: [route-contract, og-image-url, dimension-metadata]
+    fix: "Add Open Graph image dimensions or update policy."
+    testExamples: [fixtures/images/missing-og-dimensions]
+    documentation: docs/rules/SL-IMG-011.md
+    version: 1.0.0
+  - id: SL-IMG-012
+    name: next-image-unoptimized-indexable
+    category: images-social-preview
+    defaultSeverity: info
+    confidence: likely
+    scope: page
+    sources: [source-code, rendered-dom]
+    providerScope: core
+    description:
+      "A Next.js image on an indexable route is configured unoptimized without
+      policy allowance."
+    checkingAlgorithm:
+      "Detect unoptimized Next.js image usage and compare with route policy."
+    requiredEvidence: [source-location, route-contract, image-component-state]
+    fix: "Use optimized images or document the external optimization policy."
+    testExamples: [fixtures/images/next-image-unoptimized]
+    documentation: docs/rules/SL-IMG-012.md
+    version: 1.0.0
+  - id: SL-SCHEMA-001
+    name: missing-required-schema
+    category: schema-org
+    defaultSeverity: error
+    confidence: certain
+    scope: page
+    sources: [raw-html, rendered-dom]
+    providerScope: core
+    description: "A route requiring structured data has no matching schema."
+    checkingAlgorithm:
+      "Resolve route schema requirements and inspect JSON-LD graph types."
+    requiredEvidence: [route-contract, json-ld-state]
+    fix: "Add required JSON-LD schema or update route type policy."
+    testExamples: [fixtures/schema/missing-required-schema]
+    documentation: docs/rules/SL-SCHEMA-001.md
+    version: 1.0.0
+  - id: SL-SCHEMA-002
+    name: invalid-json-ld
+    category: schema-org
+    defaultSeverity: error
+    confidence: certain
+    scope: page
+    sources: [raw-html, rendered-dom]
+    providerScope: core
+    description: "A JSON-LD script cannot be parsed as JSON."
+    checkingAlgorithm:
+      "Parse application/ld+json script contents and capture parse errors."
+    requiredEvidence: [json-ld-fragment, parse-error]
+    fix: "Fix JSON syntax in JSON-LD."
+    testExamples: [fixtures/schema/invalid-json-ld]
+    documentation: docs/rules/SL-SCHEMA-002.md
+    version: 1.0.0
+  - id: SL-SCHEMA-003
+    name: schema-type-mismatch
+    category: schema-org
+    defaultSeverity: error
+    confidence: certain
+    scope: page
+    sources: [raw-html, rendered-dom]
+    providerScope: core
+    description: "Structured data type does not match the route contract."
+    checkingAlgorithm:
+      "Compare route page type and required schema types with parsed JSON-LD
+      types."
+    requiredEvidence: [route-contract, schema-type]
+    fix: "Emit schema matching the route page type."
+    testExamples: [fixtures/schema/type-mismatch]
+    documentation: docs/rules/SL-SCHEMA-003.md
+    version: 1.0.0
+  - id: SL-SCHEMA-004
+    name: product-schema-missing-offers
+    category: schema-org
+    defaultSeverity: warning
+    confidence: certain
+    scope: page
+    sources: [raw-html, rendered-dom]
+    providerScope: core
+    description:
+      "Product schema is missing offers where route policy requires offers."
+    checkingAlgorithm:
+      "Inspect Product JSON-LD nodes for offers when policy requires sellable
+      product data."
+    requiredEvidence: [schema-fragment, route-contract]
+    fix: "Add offers to Product schema or update route policy."
+    testExamples: [fixtures/schema/product-missing-offers]
+    documentation: docs/rules/SL-SCHEMA-004.md
+    version: 1.0.0
+  - id: SL-SCHEMA-005
+    name: article-schema-missing-date
+    category: schema-org
+    defaultSeverity: warning
+    confidence: certain
+    scope: page
+    sources: [raw-html, rendered-dom]
+    providerScope: core
+    description: "Article schema is missing required date fields."
+    checkingAlgorithm:
+      "Inspect Article JSON-LD nodes for route-required date properties."
+    requiredEvidence: [schema-fragment, route-contract]
+    fix: "Add required Article date fields."
+    testExamples: [fixtures/schema/article-missing-date]
+    documentation: docs/rules/SL-SCHEMA-005.md
+    version: 1.0.0
+  - id: SL-SCHEMA-006
+    name: breadcrumb-schema-incomplete
+    category: schema-org
+    defaultSeverity: warning
+    confidence: certain
+    scope: page
+    sources: [raw-html, rendered-dom]
+    providerScope: core
+    description: "BreadcrumbList schema is incomplete."
+    checkingAlgorithm:
+      "Validate BreadcrumbList itemListElement entries for required
+      position/name/item data."
+    requiredEvidence: [schema-fragment]
+    fix: "Complete BreadcrumbList entries."
+    testExamples: [fixtures/schema/breadcrumb-incomplete]
+    documentation: docs/rules/SL-SCHEMA-006.md
+    version: 1.0.0
+  - id: SL-SCHEMA-007
+    name: schema-url-conflicts-page
+    category: schema-org
+    defaultSeverity: warning
+    confidence: likely
+    scope: page
+    sources: [raw-html, rendered-dom]
+    providerScope: core
+    description:
+      "Structured data URL conflicts with the page URL or canonical policy."
+    checkingAlgorithm:
+      "Compare schema url/mainEntityOfPage values with page URL and canonical
+      URL."
+    requiredEvidence: [schema-url, page-url, canonical-url]
+    fix: "Align schema URL with the canonical entity URL."
+    testExamples: [fixtures/schema/url-conflict]
+    documentation: docs/rules/SL-SCHEMA-007.md
+    version: 1.0.0
+  - id: SL-SCHEMA-008
+    name: duplicate-json-ld-node
+    category: schema-org
+    defaultSeverity: info
+    confidence: likely
+    scope: page
+    sources: [raw-html, rendered-dom]
+    providerScope: core
+    description:
+      "JSON-LD graph contains duplicate nodes with the same identity."
+    checkingAlgorithm:
+      "Group JSON-LD nodes by @id/url/type identity and detect conflicting
+      duplicates."
+    requiredEvidence: [schema-node-id, duplicate-fragments]
+    fix: "Merge duplicate structured data nodes or make identities distinct."
+    testExamples: [fixtures/schema/duplicate-node]
+    documentation: docs/rules/SL-SCHEMA-008.md
+    version: 1.0.0
+  - id: SL-SCHEMA-009
+    name: required-schema-rendered-only
+    category: schema-org
+    defaultSeverity: warning
+    confidence: likely
+    scope: page
+    sources: [raw-html, rendered-dom]
+    providerScope: core
+    description: "Required structured data appears only after rendering."
+    checkingAlgorithm:
+      "Compare required schema presence in raw HTML and rendered DOM."
+    requiredEvidence:
+      [raw-json-ld-state, rendered-json-ld-state, route-contract]
+    fix: "Emit required JSON-LD in server-rendered HTML."
+    testExamples: [fixtures/schema/rendered-only]
+    documentation: docs/rules/SL-SCHEMA-009.md
+    version: 1.0.0
+  - id: SL-SCHEMA-010
+    name: google-rich-result-unavailable
+    category: schema-org
+    defaultSeverity: info
+    confidence: certain
+    scope: page
+    sources: [google]
+    providerScope: google
+    description:
+      "Google rich-result observation is unavailable for a route that requires
+      it."
+    checkingAlgorithm:
+      "Compare rich-result policy with latest Google observation availability
+      and quota state."
+    requiredEvidence:
+      [route-contract, google-observation-state, observed-at, fetched-at]
+    fix:
+      "Check Google quota/freshness and ensure eligible structured data is
+      available."
+    testExamples: [fixtures/schema/google-rich-result-unavailable]
+    documentation: docs/rules/SL-SCHEMA-010.md
+    version: 1.0.0
+  - id: SL-LINK-001
+    name: broken-internal-link
+    category: links-site-graph
+    defaultSeverity: error
+    confidence: certain
+    scope: site
+    sources: [crawler, http-header]
+    providerScope: core
+    description: "An internal link resolves to a non-2xx target."
+    checkingAlgorithm:
+      "Crawl internal links and inspect target final HTTP status."
+    requiredEvidence: [source-url, target-url, final-status-code]
+    fix: "Update or remove broken internal links."
+    testExamples: [fixtures/links/broken-internal-link]
+    documentation: docs/rules/SL-LINK-001.md
+    version: 1.0.0
+  - id: SL-LINK-002
+    name: internal-link-redirects
+    category: links-site-graph
+    defaultSeverity: warning
+    confidence: certain
+    scope: site
+    sources: [crawler, http-header]
+    providerScope: core
+    description: "An internal link redirects before reaching the final target."
+    checkingAlgorithm:
+      "Resolve internal links and detect non-empty redirect chains."
+    requiredEvidence: [source-url, target-url, redirect-chain]
+    fix: "Link directly to the final target URL."
+    testExamples: [fixtures/links/internal-link-redirects]
+    documentation: docs/rules/SL-LINK-002.md
+    version: 1.0.0
+  - id: SL-LINK-003
+    name: orphan-indexable-page
+    category: links-site-graph
+    defaultSeverity: warning
+    confidence: likely
+    scope: site
+    sources: [crawler, sitemap]
+    providerScope: core
+    description: "An indexable page has no discovered internal incoming links."
+    checkingAlgorithm:
+      "Build crawl graph and identify indexable URLs with zero internal
+      in-degree."
+    requiredEvidence: [page-url, crawl-graph]
+    fix:
+      "Add internal links to important indexable pages or update route policy."
+    testExamples: [fixtures/links/orphan-indexable-page]
+    documentation: docs/rules/SL-LINK-003.md
+    version: 1.0.0
+  - id: SL-LINK-004
+    name: linked-nonindexable-page
+    category: links-site-graph
+    defaultSeverity: info
+    confidence: certain
+    scope: site
+    sources: [crawler, raw-html]
+    providerScope: core
+    description: "Internal navigation links to a route declared non-indexable."
+    checkingAlgorithm:
+      "Join crawl graph targets with route indexability contracts."
+    requiredEvidence: [source-url, target-url, route-contract]
+    fix: "Review links to non-indexable pages or update route contract."
+    testExamples: [fixtures/links/linked-nonindexable]
+    documentation: docs/rules/SL-LINK-004.md
+    version: 1.0.0
+  - id: SL-LINK-005
+    name: excessive-internal-nofollow
+    category: links-site-graph
+    defaultSeverity: warning
+    confidence: heuristic
+    scope: site
+    sources: [crawler, rendered-dom]
+    providerScope: core
+    description: "Internal nofollow usage exceeds configured policy."
+    checkingAlgorithm:
+      "Calculate ratio/count of internal nofollow links and compare with policy."
+    requiredEvidence: [link-sample, policy-threshold]
+    fix: "Remove nofollow from normal internal links unless policy requires it."
+    testExamples: [fixtures/links/excessive-internal-nofollow]
+    documentation: docs/rules/SL-LINK-005.md
+    version: 1.0.0
+  - id: SL-LINK-006
+    name: invalid-anchor-href
+    category: links-site-graph
+    defaultSeverity: warning
+    confidence: certain
+    scope: page
+    sources: [rendered-dom]
+    providerScope: core
+    description: "A crawlable anchor has a malformed or unsupported href."
+    checkingAlgorithm:
+      "Parse rendered anchor href values and validate against allowed URL
+      schemes."
+    requiredEvidence: [dom-selector, href-value]
+    fix: "Fix malformed href values or explicitly allow the scheme."
+    testExamples: [fixtures/links/invalid-anchor-href]
+    documentation: docs/rules/SL-LINK-006.md
+    version: 1.0.0
+  - id: SL-LINK-007
+    name: empty-link-text
+    category: links-site-graph
+    defaultSeverity: warning
+    confidence: certain
+    scope: page
+    sources: [rendered-dom]
+    providerScope: core
+    description: "A crawlable link has no accessible text."
+    checkingAlgorithm:
+      "Inspect rendered anchors for text, aria-label, title, or labelledby
+      content."
+    requiredEvidence: [dom-selector]
+    fix: "Provide meaningful link text or accessible label."
+    testExamples: [fixtures/links/empty-link-text]
+    documentation: docs/rules/SL-LINK-007.md
+    version: 1.0.0
+  - id: SL-LINK-008
+    name: trailing-slash-duplicate
+    category: links-site-graph
+    defaultSeverity: warning
+    confidence: likely
+    scope: site
+    sources: [crawler]
+    providerScope: core
+    description:
+      "Trailing-slash and non-trailing-slash variants are both reachable."
+    checkingAlgorithm:
+      "Normalize URL path variants and detect successful duplicate variants."
+    requiredEvidence: [url-variants, status-codes]
+    fix: "Choose one URL style and redirect or canonicalize the other."
+    testExamples: [fixtures/links/trailing-slash-duplicate]
+    documentation: docs/rules/SL-LINK-008.md
+    version: 1.0.0
+  - id: SL-LINK-009
+    name: case-variant-duplicate
+    category: links-site-graph
+    defaultSeverity: warning
+    confidence: likely
+    scope: site
+    sources: [crawler]
+    providerScope: core
+    description: "Case variants of the same path are reachable."
+    checkingAlgorithm:
+      "Normalize path casing and detect successful duplicate variants."
+    requiredEvidence: [url-variants, status-codes]
+    fix: "Canonicalize or redirect path case variants."
+    testExamples: [fixtures/links/case-variant-duplicate]
+    documentation: docs/rules/SL-LINK-009.md
+    version: 1.0.0
+  - id: SL-LINK-010
+    name: external-target-blank-missing-rel
+    category: links-site-graph
+    defaultSeverity: info
+    confidence: certain
+    scope: page
+    sources: [rendered-dom]
+    providerScope: core
+    description:
+      "An external target=_blank link is missing rel security attributes."
+    checkingAlgorithm:
+      "Inspect external target=_blank anchors for noopener/noreferrer policy."
+    requiredEvidence: [dom-selector, rel-value]
+    fix: "Add rel=noopener or configured security rel attributes."
+    testExamples: [fixtures/links/target-blank-missing-rel]
+    documentation: docs/rules/SL-LINK-010.md
+    version: 1.0.0
+  - id: SL-LINK-011
+    name: sitemap-url-not-linked
+    category: links-site-graph
+    defaultSeverity: warning
+    confidence: likely
+    scope: site
+    sources: [sitemap, crawler]
+    providerScope: core
+    description: "A sitemap URL is not reachable through internal crawl links."
+    checkingAlgorithm:
+      "Compare sitemap URL set with crawl-discovered URL graph."
+    requiredEvidence: [sitemap-entry, crawl-graph]
+    fix:
+      "Add internal links to sitemap URLs or remove unintended sitemap entries."
+    testExamples: [fixtures/links/sitemap-url-not-linked]
+    documentation: docs/rules/SL-LINK-011.md
+    version: 1.0.0
+  - id: SL-LINK-012
+    name: canonical-target-not-linked
+    category: links-site-graph
+    defaultSeverity: info
+    confidence: likely
+    scope: site
+    sources: [crawler]
+    providerScope: core
+    description: "A canonical target is not linked internally."
+    checkingAlgorithm:
+      "Compare canonical targets with internal link graph targets."
+    requiredEvidence: [canonical-url, crawl-graph]
+    fix: "Review internal linking to canonical pages."
+    testExamples: [fixtures/links/canonical-target-not-linked]
+    documentation: docs/rules/SL-LINK-012.md
+    version: 1.0.0
+  - id: SL-LINK-013
+    name: paginated-series-links-missing
+    category: links-site-graph
+    defaultSeverity: warning
+    confidence: likely
+    scope: site
+    sources: [crawler, rendered-dom]
+    providerScope: core
+    description:
+      "A paginated route group lacks expected next or previous links."
+    checkingAlgorithm:
+      "Resolve pagination policy and inspect rendered/crawled links across the
+      series."
+    requiredEvidence: [route-contract, pagination-links]
+    fix: "Add crawlable pagination links or update route group policy."
+    testExamples: [fixtures/links/pagination-links-missing]
+    documentation: docs/rules/SL-LINK-013.md
+    version: 1.0.0
+  - id: SL-LINK-014
+    name: important-page-excessive-crawl-depth
+    category: links-site-graph
+    defaultSeverity: info
+    confidence: heuristic
+    scope: site
+    sources: [crawler]
+    providerScope: core
+    description:
+      "Important indexable pages are deeper than configured crawl-depth
+      guidance."
+    checkingAlgorithm:
+      "Compute shortest internal path depth and compare with route importance
+      policy."
+    requiredEvidence: [page-url, crawl-depth, policy-threshold]
+    fix: "Improve internal linking to important pages."
+    testExamples: [fixtures/links/excessive-crawl-depth]
+    documentation: docs/rules/SL-LINK-014.md
+    version: 1.0.0
+  - id: SL-ROBOTS-001
+    name: robots-txt-unavailable
+    category: robots-sitemap
+    defaultSeverity: error
+    confidence: certain
+    scope: site
+    sources: [robots-txt, http-header]
+    providerScope: core
+    description:
+      "robots.txt cannot be fetched successfully where policy requires it."
+    checkingAlgorithm: "Fetch robots.txt and compare status with site policy."
+    requiredEvidence: [robots-url, final-status-code]
+    fix: "Serve robots.txt successfully or update site policy."
+    testExamples: [fixtures/robots/robots-unavailable]
+    documentation: docs/rules/SL-ROBOTS-001.md
+    version: 1.0.0
+  - id: SL-ROBOTS-002
+    name: robots-syntax-error
+    category: robots-sitemap
+    defaultSeverity: error
+    confidence: certain
+    scope: site
+    sources: [robots-txt]
+    providerScope: core
+    description: "robots.txt contains syntax that cannot be parsed."
+    checkingAlgorithm: "Parse robots.txt and collect syntax errors."
+    requiredEvidence: [robots-line, parse-error]
+    fix: "Fix robots.txt syntax."
+    testExamples: [fixtures/robots/syntax-error]
+    documentation: docs/rules/SL-ROBOTS-002.md
+    version: 1.0.0
+  - id: SL-ROBOTS-003
+    name: robots-disallows-sitemap-url
+    category: robots-sitemap
+    defaultSeverity: error
+    confidence: certain
+    scope: site
+    sources: [robots-txt, sitemap]
+    providerScope: core
+    description: "robots.txt disallows a URL included in sitemap."
+    checkingAlgorithm: "Match sitemap URLs against robots rules."
+    requiredEvidence: [robots-rule, sitemap-entry]
+    fix: "Allow sitemap URLs in robots.txt or remove them from sitemap."
+    testExamples: [fixtures/robots/disallows-sitemap-url]
+    documentation: docs/rules/SL-ROBOTS-003.md
+    version: 1.0.0
+  - id: SL-ROBOTS-004
+    name: sitemap-missing
+    category: robots-sitemap
+    defaultSeverity: warning
+    confidence: certain
+    scope: site
+    sources: [robots-txt, sitemap]
+    providerScope: core
+    description: "No sitemap is discoverable where policy requires one."
+    checkingAlgorithm:
+      "Check configured sitemap URLs, robots sitemap directives, and
+      conventional sitemap locations."
+    requiredEvidence: [site-contract, sitemap-state]
+    fix: "Expose a sitemap or update site policy."
+    testExamples: [fixtures/robots/sitemap-missing]
+    documentation: docs/rules/SL-ROBOTS-004.md
+    version: 1.0.0
+  - id: SL-ROBOTS-005
+    name: sitemap-non-success
+    category: robots-sitemap
+    defaultSeverity: error
+    confidence: certain
+    scope: site
+    sources: [sitemap, http-header]
+    providerScope: core
+    description: "Sitemap URL does not return a 2xx response."
+    checkingAlgorithm: "Fetch sitemap URL and inspect final HTTP status."
+    requiredEvidence: [sitemap-url, final-status-code]
+    fix: "Serve sitemap successfully or update sitemap location."
+    testExamples: [fixtures/robots/sitemap-non-success]
+    documentation: docs/rules/SL-ROBOTS-005.md
+    version: 1.0.0
+  - id: SL-ROBOTS-006
+    name: sitemap-invalid-xml
+    category: robots-sitemap
+    defaultSeverity: error
+    confidence: certain
+    scope: site
+    sources: [sitemap]
+    providerScope: core
+    description: "Sitemap XML cannot be parsed."
+    checkingAlgorithm: "Parse sitemap XML and capture parser errors."
+    requiredEvidence: [sitemap-url, parse-error]
+    fix: "Fix sitemap XML syntax."
+    testExamples: [fixtures/robots/sitemap-invalid-xml]
+    documentation: docs/rules/SL-ROBOTS-006.md
+    version: 1.0.0
+  - id: SL-ROBOTS-007
+    name: sitemap-url-non-success
+    category: robots-sitemap
+    defaultSeverity: error
+    confidence: certain
+    scope: site
+    sources: [sitemap, http-header]
+    providerScope: core
+    description: "A URL listed in sitemap does not return a 2xx response."
+    checkingAlgorithm: "Fetch sitemap entries and inspect final HTTP status."
+    requiredEvidence: [sitemap-entry, final-status-code]
+    fix: "Remove failing URLs from sitemap or restore successful responses."
+    testExamples: [fixtures/robots/sitemap-url-non-success]
+    documentation: docs/rules/SL-ROBOTS-007.md
+    version: 1.0.0
+  - id: SL-ROBOTS-008
+    name: sitemap-canonical-mismatch
+    category: robots-sitemap
+    defaultSeverity: warning
+    confidence: certain
+    scope: site
+    sources: [sitemap, raw-html, rendered-dom]
+    providerScope: core
+    description:
+      "A sitemap URL canonicalizes to a different URL without explicit policy."
+    checkingAlgorithm:
+      "Compare sitemap entry URL with declared canonical URL for the page."
+    requiredEvidence: [sitemap-entry, canonical-url]
+    fix:
+      "List canonical URLs in sitemap or explicitly allow alternate sitemap
+      entries."
+    testExamples: [fixtures/robots/sitemap-canonical-mismatch]
+    documentation: docs/rules/SL-ROBOTS-008.md
+    version: 1.0.0
+  - id: SL-ROBOTS-009
+    name: robots-missing-sitemap-directive
+    category: robots-sitemap
+    defaultSeverity: info
+    confidence: certain
+    scope: site
+    sources: [robots-txt]
+    providerScope: core
+    description:
+      "robots.txt lacks a sitemap directive where policy requires one."
+    checkingAlgorithm: "Parse robots.txt and inspect Sitemap directives."
+    requiredEvidence: [site-contract, robots-txt]
+    fix: "Add Sitemap directive to robots.txt or update policy."
+    testExamples: [fixtures/robots/missing-sitemap-directive]
+    documentation: docs/rules/SL-ROBOTS-009.md
+    version: 1.0.0
+  - id: SL-ROBOTS-010
+    name: sitemap-lastmod-future
+    category: robots-sitemap
+    defaultSeverity: warning
+    confidence: certain
+    scope: site
+    sources: [sitemap]
+    providerScope: core
+    description: "A sitemap lastmod value is in the future."
+    checkingAlgorithm:
+      "Parse sitemap lastmod dates and compare with observedAt."
+    requiredEvidence: [sitemap-entry, lastmod, observed-at]
+    fix: "Correct future lastmod dates."
+    testExamples: [fixtures/robots/lastmod-future]
+    documentation: docs/rules/SL-ROBOTS-010.md
+    version: 1.0.0
+  - id: SL-PERF-001
+    name: google-lcp-poor
+    category: performance-technical
+    defaultSeverity: warning
+    confidence: certain
+    scope: page
+    sources: [google]
+    providerScope: google
+    description: "PageSpeed or CrUX reports poor LCP for the page or origin."
+    checkingAlgorithm:
+      "Compare latest Google LCP observation with provider thresholds and
+      freshness."
+    requiredEvidence: [lcp-value, data-source, observed-at, fetched-at]
+    fix:
+      "Investigate LCP bottlenecks and distinguish page-level from origin-level
+      data."
+    testExamples: [fixtures/performance/google-lcp-poor]
+    documentation: docs/rules/SL-PERF-001.md
+    version: 1.0.0
+  - id: SL-PERF-002
+    name: google-cls-poor
+    category: performance-technical
+    defaultSeverity: warning
+    confidence: certain
+    scope: page
+    sources: [google]
+    providerScope: google
+    description: "PageSpeed or CrUX reports poor CLS for the page or origin."
+    checkingAlgorithm:
+      "Compare latest Google CLS observation with provider thresholds and
+      freshness."
+    requiredEvidence: [cls-value, data-source, observed-at, fetched-at]
+    fix:
+      "Investigate layout shifts and distinguish page-level from origin-level
+      data."
+    testExamples: [fixtures/performance/google-cls-poor]
+    documentation: docs/rules/SL-PERF-002.md
+    version: 1.0.0
+  - id: SL-PERF-003
+    name: google-inp-poor
+    category: performance-technical
+    defaultSeverity: warning
+    confidence: certain
+    scope: page
+    sources: [google]
+    providerScope: google
+    description: "PageSpeed or CrUX reports poor INP for the page or origin."
+    checkingAlgorithm:
+      "Compare latest Google INP observation with provider thresholds and
+      freshness."
+    requiredEvidence: [inp-value, data-source, observed-at, fetched-at]
+    fix:
+      "Investigate interaction latency and distinguish page-level from
+      origin-level data."
+    testExamples: [fixtures/performance/google-inp-poor]
+    documentation: docs/rules/SL-PERF-003.md
+    version: 1.0.0
+  - id: SL-PERF-004
+    name: metadata-render-delay-over-policy
+    category: performance-technical
+    defaultSeverity: info
+    confidence: heuristic
+    scope: page
+    sources: [rendered-dom, http-header]
+    providerScope: core
+    description:
+      "Required metadata appears after the configured render-delay guidance."
+    checkingAlgorithm:
+      "Measure metadata availability timing and compare with non-blocking
+      policy."
+    requiredEvidence: [metadata-timing, policy-threshold]
+    fix: "Move required metadata earlier in server rendering when practical."
+    testExamples: [fixtures/performance/metadata-render-delay]
+    documentation: docs/rules/SL-PERF-004.md
+    version: 1.0.0
+  - id: SL-PERF-005
+    name: html-size-over-guidance
+    category: performance-technical
+    defaultSeverity: info
+    confidence: heuristic
+    scope: page
+    sources: [http-header, raw-html]
+    providerScope: core
+    description: "Initial HTML size exceeds configured technical guidance."
+    checkingAlgorithm:
+      "Measure raw HTML byte size and compare with non-blocking policy."
+    requiredEvidence: [content-length, raw-html-size, policy-threshold]
+    fix:
+      "Review excessive inline data, duplicated metadata, or oversized HTML
+      payloads."
+    testExamples: [fixtures/performance/html-size-guidance]
+    documentation: docs/rules/SL-PERF-005.md
+    version: 1.0.0
+  - id: SL-PERF-006
+    name: external-observation-sampled
+    category: performance-technical
+    defaultSeverity: info
+    confidence: certain
+    scope: site
+    sources: [google, yandex]
+    providerScope: external
+    description:
+      "External performance or analytics data is sampled and must be interpreted
+      with caution."
+    checkingAlgorithm:
+      "Inspect provider observation metadata for sampling status."
+    requiredEvidence: [provider, sampling-state, observed-at, fetched-at]
+    fix: "Display sampling state and avoid treating sampled data as exact."
+    testExamples: [fixtures/performance/external-observation-sampled]
+    documentation: docs/rules/SL-PERF-006.md
+    version: 1.0.0

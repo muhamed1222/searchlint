@@ -1,0 +1,36 @@
+language 1
+import "./shared-policy.seo"
+
+site "https://example.com"
+let schemas ["Product", "BreadcrumbList"]
+
+policy productPage {
+  schema $schemas
+  title {
+    required true
+  }
+}
+
+group "catalog" {
+  route "/products/[slug]" {
+    use sharedPolicy
+    use productPage
+    indexable true
+    canonical self
+    hreflang ["en", "ru"]
+    provider google {
+      require ["rich-result"]
+      rule SL-GOOGLE-RICH-001
+    }
+    custom "@acme/searchlint-rule" {
+      severity warning
+    }
+  }
+}
+
+environment production {
+  site "https://www.example.com"
+  route "/admin/**" {
+    indexable false
+  }
+}

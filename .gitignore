@@ -1,0 +1,17 @@
+node_modules/
+dist/
+coverage/
+.turbo/
+.next/
+.cache/
+.vscode-test/
+reports/
+.DS_Store
+*.log
+.env
+.env.*
+!.env.example
+
+# Keep deterministic fixtures and sanitized documentation examples in source.
+!docs/examples/
+!docs/examples/**

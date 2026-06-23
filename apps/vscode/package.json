@@ -1,0 +1,92 @@
+{
+  "name": "searchlint-vscode",
+  "publisher": "searchlint",
+  "displayName": "SearchLint",
+  "description": "SearchLint language support for searchlint.seo files.",
+  "version": "1.0.0-beta.0",
+  "license": "Apache-2.0",
+  "private": true,
+  "preview": true,
+  "icon": "assets/icon.svg",
+  "type": "module",
+  "files": [
+    "assets",
+    "dist/src",
+    "language-configuration.json",
+    "README.md",
+    "CHANGELOG.md",
+    "PRIVACY.md",
+    "package.json"
+  ],
+  "main": "./dist/src/extension.js",
+  "engines": {
+    "vscode": "^1.105.0"
+  },
+  "activationEvents": [
+    "onLanguage:searchlint-seo",
+    "onCommand:searchlint.openOverlay"
+  ],
+  "categories": [
+    "Linters",
+    "Programming Languages"
+  ],
+  "keywords": [
+    "searchlint",
+    "seo",
+    "technical-seo",
+    "nextjs",
+    "lsp"
+  ],
+  "extensionKind": [
+    "workspace"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "searchlint-seo",
+        "aliases": [
+          "SearchLint SEO",
+          "searchlint.seo"
+        ],
+        "extensions": [
+          ".seo"
+        ],
+        "filenames": [
+          "searchlint.seo"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "searchlint.openOverlay",
+        "title": "SearchLint: Open SearchLint Overlay"
+      }
+    ],
+    "configuration": {
+      "title": "SearchLint",
+      "properties": {
+        "searchlint.overlayUrl": {
+          "type": "string",
+          "default": "",
+          "description": "Local SearchLint overlay URL opened by the SearchLint: Open SearchLint Overlay command."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "node ../../scripts/build-package.mjs",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run test/extension.test.ts"
+  },
+  "dependencies": {
+    "searchlint-language-server": "workspace:*",
+    "vscode-languageclient": "10.0.0"
+  },
+  "devDependencies": {
+    "@types/vscode": "1.125.0"
+  },
+  "searchlint": {
+    "layer": "interface"
+  }
+}

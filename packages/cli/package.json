@@ -1,0 +1,61 @@
+{
+  "name": "@searchlint/cli",
+  "version": "1.0.0-beta.0",
+  "description": "SearchLint command line interface",
+  "license": "Apache-2.0",
+  "sideEffects": false,
+  "type": "module",
+  "files": [
+    "dist/src",
+    "package.json"
+  ],
+  "bin": {
+    "searchlint": "./dist/src/bin.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
+    },
+    "./node": {
+      "types": "./dist/src/node.d.ts",
+      "import": "./dist/src/node.js"
+    }
+  },
+  "scripts": {
+    "build": "node ../../scripts/build-package.mjs",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@searchlint/core": "workspace:*",
+    "@searchlint/crawler": "workspace:*",
+    "@searchlint/html": "workspace:*",
+    "@searchlint/http": "workspace:*",
+    "@searchlint/language": "workspace:*",
+    "@searchlint/next": "workspace:*",
+    "@searchlint/reporter-html": "workspace:*",
+    "@searchlint/reporter-junit": "workspace:*",
+    "@searchlint/reporter-sarif": "workspace:*",
+    "@searchlint/source": "workspace:*"
+  },
+  "engines": {
+    "node": ">=24.0.0",
+    "pnpm": ">=11.0.0 <12.0.0"
+  },
+  "keywords": [
+    "searchlint",
+    "seo",
+    "technical-seo",
+    "nextjs",
+    "diagnostics",
+    "cli"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "searchlint": {
+    "layer": "interface"
+  }
+}

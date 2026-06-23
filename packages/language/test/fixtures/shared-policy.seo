@@ -1,0 +1,6 @@
+policy sharedPolicy {
+  description {
+    required true
+  }
+  schema BreadcrumbList
+}

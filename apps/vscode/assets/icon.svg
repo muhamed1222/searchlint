@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+  <title id="title">SearchLint icon</title>
+  <desc id="desc">SearchLint magnifier and checkmark icon for the VS Code extension.</desc>
+  <rect width="128" height="128" rx="24" fill="#102a43" />
+  <path d="M32 60a28 28 0 1 1 50.3 16.9l18.4 18.4-8.4 8.4-18.4-18.4A28 28 0 0 1 32 60Z" fill="#d9e2ec" />
+  <circle cx="60" cy="60" r="17" fill="#102a43" />
+  <path d="m49 61 8 8 17-21" fill="none" stroke="#2f9e44" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M25 106h40" stroke="#f59f00" stroke-width="8" stroke-linecap="round" />
+</svg>
