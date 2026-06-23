@@ -170,7 +170,7 @@ type CliParsedCommand =
       error: string;
     };
 
-export const searchLintCliVersion = "1.0.0-beta.0";
+export const searchLintCliVersion = "1.0.0-beta.1";
 
 const severityRank: Record<Severity, number> = {
   blocker: 4,
@@ -1584,6 +1584,14 @@ function ensurePackageScripts(packageJson: Record<string, unknown>): {
 
   const scripts = packageJson.scripts as Record<string, unknown>;
   let changed = false;
+  const nextVersion = findPackageDependencyVersion(packageJson, "next");
+  if (
+    typeof scripts.dev === "string" &&
+    shouldForceWebpackDevScript(scripts.dev, nextVersion)
+  ) {
+    scripts.dev = `${scripts.dev} --webpack`;
+    changed = true;
+  }
   if (scripts.searchlint === undefined) {
     scripts.searchlint = "searchlint doctor";
     changed = true;
@@ -1594,6 +1602,51 @@ function ensurePackageScripts(packageJson: Record<string, unknown>): {
     changed = true;
   }
   return { changed };
+}
+
+function findPackageDependencyVersion(
+  packageJson: Record<string, unknown>,
+  dependencyName: string
+): string | undefined {
+  for (const dependencyField of [
+    packageJson.dependencies,
+    packageJson.devDependencies,
+    packageJson.peerDependencies,
+    packageJson.optionalDependencies
+  ]) {
+    if (
+      dependencyField !== null &&
+      typeof dependencyField === "object" &&
+      !Array.isArray(dependencyField) &&
+      typeof (dependencyField as Record<string, unknown>)[dependencyName] ===
+        "string"
+    ) {
+      return (dependencyField as Record<string, string>)[dependencyName];
+    }
+  }
+  return undefined;
+}
+
+function shouldForceWebpackDevScript(
+  devScript: string,
+  nextVersion: string | undefined
+): boolean {
+  if (!usesNext16OrNewer(nextVersion)) {
+    return false;
+  }
+  const normalized = devScript.trim().replace(/\s+/g, " ");
+  if (!/^next dev(?:\s|$)/.test(normalized)) {
+    return false;
+  }
+  return !/\s--(?:webpack|turbo|turbopack)(?:\s|$)/.test(normalized);
+}
+
+function usesNext16OrNewer(versionRange: string | undefined): boolean {
+  if (versionRange === undefined) {
+    return false;
+  }
+  const match = versionRange.match(/\d+/);
+  return match !== null && Number.parseInt(match[0], 10) >= 16;
 }
 
 export function doctorText(): string {

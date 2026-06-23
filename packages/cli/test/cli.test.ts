@@ -398,7 +398,7 @@ describe("runSearchLintCli", () => {
 
     expect(result).toMatchObject({
       exitCode: 0,
-      stdout: "searchlint 1.0.0-beta.0\n",
+      stdout: "searchlint 1.0.0-beta.1\n",
       stderr: ""
     });
   });
@@ -409,7 +409,7 @@ describe("runSearchLintCli", () => {
     expect(result.exitCode, result.stderr).toBe(0);
     expect(result.stderr).toBe("");
     expect(result.stdout).toContain("SearchLint doctor");
-    expect(result.stdout).toContain("version: 1.0.0-beta.0");
+    expect(result.stdout).toContain("version: 1.0.0-beta.1");
     expect(result.stdout).toContain("node: >=24.0.0 required");
     expect(result.stdout).toContain("status: local CLI runtime checks passed");
   });
@@ -616,7 +616,7 @@ describe("runSearchLintCli", () => {
       "export default withSearchLint(nextConfig);"
     );
     expect(JSON.parse(files["package.json"] ?? "{}").scripts).toMatchObject({
-      dev: "next dev",
+      dev: "next dev --webpack",
       searchlint: "searchlint doctor",
       "searchlint:config": "searchlint config validate --config searchlint.seo"
     });
@@ -626,7 +626,7 @@ describe("runSearchLintCli", () => {
     const files = {
       "package.json": JSON.stringify({
         scripts: {
-          dev: "next dev",
+          dev: "next dev --webpack",
           searchlint: "searchlint doctor",
           "searchlint:config":
             "searchlint config validate --config searchlint.seo"
@@ -647,6 +647,25 @@ describe("runSearchLintCli", () => {
     expect(files).toEqual(before);
     expect(result.stdout).toContain("Created: none");
     expect(result.stdout).toContain("Updated: none");
+  });
+
+  it("leaves pre-Next 16 dev scripts unchanged", async () => {
+    const files: Record<string, string> = {
+      "package.json": JSON.stringify({
+        scripts: { dev: "next dev" },
+        dependencies: { next: "15.5.9" }
+      }),
+      "next.config.mjs": "const nextConfig = {};\nexport default nextConfig;\n"
+    };
+    const result = await runSearchLintCli(
+      ["init"],
+      createIo(files, undefined, true)
+    );
+
+    expect(result.exitCode, result.stderr).toBe(0);
+    expect(JSON.parse(files["package.json"] ?? "{}").scripts.dev).toBe(
+      "next dev"
+    );
   });
 
   it("patches CommonJS Next.js configs with a dynamic ESM import", async () => {

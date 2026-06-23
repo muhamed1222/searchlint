@@ -1,13 +1,20 @@
 {
   "name": "@searchlint/next",
-  "version": "1.0.0-beta.0",
+  "version": "1.0.0-beta.1",
   "description": "SearchLint Next.js development integration",
   "license": "Apache-2.0",
   "sideEffects": false,
   "type": "module",
-  "files": ["dist/src", "RULE_CATALOG.yaml", "package.json"],
+  "files": [
+    "dist/src",
+    "RULE_CATALOG.yaml",
+    "package.json"
+  ],
   "exports": {
-    ".": { "types": "./dist/src/index.d.ts", "import": "./dist/src/index.js" },
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
+    },
     "./dev-client": {
       "types": "./dist/src/dev-client.d.ts",
       "import": "./dist/src/dev-client.js"
@@ -23,9 +30,21 @@
     "@searchlint/core": "workspace:*",
     "@searchlint/overlay": "workspace:*"
   },
-  "engines": { "node": ">=24.0.0", "pnpm": ">=11.0.0 <12.0.0" },
-  "keywords": ["searchlint", "seo", "technical-seo", "nextjs", "diagnostics"],
-  "publishConfig": { "access": "public", "provenance": true },
+  "engines": {
+    "node": ">=24.0.0",
+    "pnpm": ">=11.0.0 <12.0.0"
+  },
+  "keywords": [
+    "searchlint",
+    "seo",
+    "technical-seo",
+    "nextjs",
+    "diagnostics"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "searchlint": {
     "layer": "analyzer",
     "copyAssets": [
@@ -48,5 +67,7 @@
     "directory": "packages/next"
   },
   "homepage": "https://github.com/muhamed1222/searchlint#readme",
-  "bugs": { "url": "https://github.com/muhamed1222/searchlint/issues" }
+  "bugs": {
+    "url": "https://github.com/muhamed1222/searchlint/issues"
+  }
 }
