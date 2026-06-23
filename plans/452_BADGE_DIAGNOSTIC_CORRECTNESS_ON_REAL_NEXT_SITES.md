@@ -164,6 +164,19 @@ Initial real-site acceptance pages:
 - Mixed-severity badge text now uses `issues` instead of reporting the total as
   the highest severity. For example, one error plus one warning plus one note
   renders as `3 issues`, not `3 errors`.
+- A third real Next.js 16 project, `tropa_nartov_web`, was smoke-tested from a
+  temporary copy at `http://localhost:3013`. The published packages
+  `@searchlint/cli@1.0.0-beta.22` and `@searchlint/next@1.0.0-beta.10`
+  patched `next.config.ts`, `npm run searchlint:verify` passed, and the browser
+  rendered `searchlint-dev-overlay` with no client errors.
+- The `tropa_nartov_web` smoke rendered `SearchLint issues: 13`. The visible
+  diagnostics included canonical/social metadata gaps, multiple H1/heading
+  structure notes, placeholder `href="#"`, and an icon-only social link without
+  accessible text. Manual DOM inspection showed these link diagnostics are real
+  page issues rather than SearchLint false positives.
+- For multi-project local smoke tests, use `PORT=<port> npm run dev` or
+  `PORT=<port> pnpm dev`. Passing `-- -p <port>` through an already patched
+  `next dev --webpack` script can be interpreted by Next as a project directory.
 
 ## Validation
 

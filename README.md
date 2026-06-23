@@ -54,6 +54,9 @@ npm run dev
 The equals form is also accepted:
 `npx -y @searchlint/cli@beta init --site=https://example.com`.
 
+For a custom local port, prefer the framework-supported environment variable:
+`PORT=3013 npm run dev` or `PORT=3013 pnpm dev`.
+
 Expected `doctor` output in a patched Next.js project includes:
 
 ```text
@@ -154,6 +157,9 @@ as the default `site` when `--site` is not provided.
 Both `--site https://example.com` and `--site=https://example.com` are
 supported. The CLI also accepts `searchlint init https://example.com` as a
 fallback for package-manager argument forwarding.
+
+When testing multiple local projects at once, use `PORT=<port> npm run dev` or
+`PORT=<port> pnpm dev` to avoid port collisions.
 
 Open the local site and click the SearchLint badge to inspect the current page.
 The command patches supported Next.js config files and creates `searchlint.seo`
