@@ -65,7 +65,7 @@ Initial real-site acceptance pages:
 
 ## Evidence Log
 
-- `@searchlint/cli@1.0.0-beta.17` and `@searchlint/next@1.0.0-beta.8` are the
+- `@searchlint/cli@1.0.0-beta.18` and `@searchlint/next@1.0.0-beta.8` are the
   current beta packages for the zero-manual-edit Next.js init path.
 - `http://localhost:3001/blog` rendered the badge with `SearchLint info: 2`. The
   two diagnostics were `SL-HEAD-005` and `SL-META-009`, both heuristic
@@ -84,7 +84,7 @@ Initial real-site acceptance pages:
 - The improved local developer chain was published to npm with tag `beta`:
   `@searchlint/core@1.0.0-beta.3`, `@searchlint/browser@1.0.0-beta.2`,
   `@searchlint/overlay@1.0.0-beta.6`, `@searchlint/next@1.0.0-beta.8`, and
-  `@searchlint/cli@1.0.0-beta.17`.
+  `@searchlint/cli@1.0.0-beta.18`.
 - Reinstalling `@searchlint/cli@beta` and `@searchlint/next@beta` in the
   Outlivion test site from npm preserved the improved `SL-IMG-007` evidence.
 - `SL-META-009` now tolerates minor title-length overage up to 65 characters so
@@ -137,6 +137,9 @@ Initial real-site acceptance pages:
 - `@searchlint/cli@1.0.0-beta.17` infers the starter `site` from an absolute
   `package.json` `homepage` URL when `--site` is not provided. Smoke
   verification confirmed `site "https://homepage.example"` output.
+- `@searchlint/cli@1.0.0-beta.18` prints the resolved starter site and source in
+  init output, for example `Site: https://client.example (--site)`. Smoke
+  verification confirmed the summary line.
 
 ## Validation
 

@@ -171,7 +171,7 @@ type CliParsedCommand =
       error: string;
     };
 
-export const searchLintCliVersion = "1.0.0-beta.17";
+export const searchLintCliVersion = "1.0.0-beta.18";
 const searchLintCliPackageRange = "beta";
 const searchLintNextPackageRange = "beta";
 
@@ -1418,10 +1418,10 @@ async function initializeLocalProject(
 
   const changed: string[] = [];
   const created: string[] = [];
-  const resolvedSiteUrl = siteUrl ?? inferSiteUrl(packageJson);
+  const resolvedSite = resolveInitSite(siteUrl, packageJson);
 
   if (!(await io.exists("searchlint.seo"))) {
-    await io.writeText("searchlint.seo", defaultConfigTemplate(resolvedSiteUrl));
+    await io.writeText("searchlint.seo", defaultConfigTemplate(resolvedSite.url));
     created.push("searchlint.seo");
   }
 
@@ -1444,6 +1444,7 @@ async function initializeLocalProject(
     "",
     created.length > 0 ? `Created: ${created.join(", ")}` : "Created: none",
     changed.length > 0 ? `Updated: ${changed.join(", ")}` : "Updated: none",
+    `Site: ${resolvedSite.url} (${resolvedSite.source})`,
     "",
     "Next step:",
     ...(packageUpdate.addedDependencies.length > 0
@@ -1982,6 +1983,24 @@ function inferSiteUrl(packageJson: Record<string, unknown>): string | undefined 
     return homepage;
   }
   return undefined;
+}
+
+type InitSiteSource = "--site" | "package.json homepage" | "default";
+
+function resolveInitSite(
+  siteUrl: string | undefined,
+  packageJson: Record<string, unknown>
+): { url: string; source: InitSiteSource } {
+  if (siteUrl !== undefined) {
+    return { url: siteUrl, source: "--site" };
+  }
+
+  const homepage = inferSiteUrl(packageJson);
+  if (homepage !== undefined) {
+    return { url: homepage, source: "package.json homepage" };
+  }
+
+  return { url: "https://example.com", source: "default" };
 }
 
 function createLocalCoreRules(

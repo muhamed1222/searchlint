@@ -398,7 +398,7 @@ describe("runSearchLintCli", () => {
 
     expect(result).toMatchObject({
       exitCode: 0,
-      stdout: "searchlint 1.0.0-beta.17\n",
+      stdout: "searchlint 1.0.0-beta.18\n",
       stderr: ""
     });
   });
@@ -409,7 +409,7 @@ describe("runSearchLintCli", () => {
     expect(result.exitCode, result.stderr).toBe(0);
     expect(result.stderr).toBe("");
     expect(result.stdout).toContain("SearchLint doctor");
-    expect(result.stdout).toContain("version: 1.0.0-beta.17");
+    expect(result.stdout).toContain("version: 1.0.0-beta.18");
     expect(result.stdout).toContain("node: >=24.0.0 required");
     expect(result.stdout).toContain("status: local CLI runtime checks passed");
   });
@@ -665,6 +665,7 @@ describe("runSearchLintCli", () => {
     expect(result.stdout).toContain(
       "SearchLint initialized for local Next.js development."
     );
+    expect(result.stdout).toContain("Site: https://example.com (default)");
     expect(result.stdout).toContain("  npm install");
     expect(result.stdout).toContain("npm run searchlint:verify");
     expect(files["searchlint.seo"]).toContain("language 1");
@@ -702,6 +703,7 @@ describe("runSearchLintCli", () => {
     );
 
     expect(result.exitCode, result.stderr).toBe(0);
+    expect(result.stdout).toContain("Site: https://client.example (--site)");
     expect(files["searchlint.seo"]).toContain('site "https://client.example"');
   });
 
@@ -720,6 +722,9 @@ describe("runSearchLintCli", () => {
     );
 
     expect(result.exitCode, result.stderr).toBe(0);
+    expect(result.stdout).toContain(
+      "Site: https://homepage.example (package.json homepage)"
+    );
     expect(files["searchlint.seo"]).toContain('site "https://homepage.example"');
   });
 
@@ -738,6 +743,7 @@ describe("runSearchLintCli", () => {
     );
 
     expect(result.exitCode, result.stderr).toBe(0);
+    expect(result.stdout).toContain("Site: https://client.example (--site)");
     expect(files["searchlint.seo"]).toContain('site "https://client.example"');
   });
 
