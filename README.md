@@ -45,10 +45,10 @@ The current tested path is the local Next.js developer badge. It is published
 under the npm `beta` dist-tag:
 
 ```bash
-npm install -D @searchlint/cli@beta @searchlint/next@beta
-npx searchlint init --site https://example.com
-npm run dev
+npx -y @searchlint/cli@beta init --site https://example.com
+npm install
 npm run searchlint:verify
+npm run dev
 ```
 
 Expected `doctor` output in a patched Next.js project includes:
@@ -76,7 +76,7 @@ command above when testing a newly published beta.
 
 The current verified beta versions are:
 
-- `@searchlint/cli@1.0.0-beta.13`
+- `@searchlint/cli@1.0.0-beta.14`
 - `@searchlint/next@1.0.0-beta.8`
 - `@searchlint/core@1.0.0-beta.3`
 - `@searchlint/browser@1.0.0-beta.2`
@@ -140,10 +140,10 @@ documented in `docs/CLI_CI_USAGE.md`.
 Use the local onboarding command in a Next.js project:
 
 ```bash
-npm install -D @searchlint/cli@beta @searchlint/next@beta
-searchlint init --site https://example.com
-npm run dev
+npx -y @searchlint/cli@beta init --site https://example.com
+npm install
 npm run searchlint:verify
+npm run dev
 ```
 
 Open the local site and click the SearchLint badge to inspect the current page.

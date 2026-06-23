@@ -171,7 +171,9 @@ type CliParsedCommand =
       error: string;
     };
 
-export const searchLintCliVersion = "1.0.0-beta.13";
+export const searchLintCliVersion = "1.0.0-beta.14";
+const searchLintCliPackageRange = "beta";
+const searchLintNextPackageRange = "beta";
 
 const severityRank: Record<Severity, number> = {
   blocker: 4,
@@ -1426,7 +1428,7 @@ async function initializeLocalProject(
   changed.push(...nextConfigResult.changed);
   created.push(...nextConfigResult.created);
 
-  const packageUpdate = ensurePackageScripts(packageJson);
+  const packageUpdate = ensurePackageOnboarding(packageJson);
   if (packageUpdate.changed) {
     await io.writeText(
       "package.json",
@@ -1622,7 +1624,7 @@ function isCommonJsNextConfig(source: string): boolean {
   return source.includes("module.exports") || source.includes("require(");
 }
 
-function ensurePackageScripts(packageJson: Record<string, unknown>): {
+function ensurePackageOnboarding(packageJson: Record<string, unknown>): {
   changed: boolean;
 } {
   if (
@@ -1658,7 +1660,48 @@ function ensurePackageScripts(packageJson: Record<string, unknown>): {
       "searchlint doctor && searchlint config validate --config searchlint.seo";
     changed = true;
   }
+  if (
+    ensureDevDependency(
+      packageJson,
+      "@searchlint/cli",
+      searchLintCliPackageRange
+    )
+  ) {
+    changed = true;
+  }
+  if (
+    ensureDevDependency(
+      packageJson,
+      "@searchlint/next",
+      searchLintNextPackageRange
+    )
+  ) {
+    changed = true;
+  }
   return { changed };
+}
+
+function ensureDevDependency(
+  packageJson: Record<string, unknown>,
+  dependencyName: string,
+  versionRange: string
+): boolean {
+  if (findPackageDependencyVersion(packageJson, dependencyName) !== undefined) {
+    return false;
+  }
+
+  if (
+    packageJson.devDependencies === undefined ||
+    packageJson.devDependencies === null ||
+    typeof packageJson.devDependencies !== "object" ||
+    Array.isArray(packageJson.devDependencies)
+  ) {
+    packageJson.devDependencies = {};
+  }
+
+  (packageJson.devDependencies as Record<string, unknown>)[dependencyName] =
+    versionRange;
+  return true;
 }
 
 function findPackageDependencyVersion(

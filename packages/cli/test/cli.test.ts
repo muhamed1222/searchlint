@@ -398,7 +398,7 @@ describe("runSearchLintCli", () => {
 
     expect(result).toMatchObject({
       exitCode: 0,
-      stdout: "searchlint 1.0.0-beta.13\n",
+      stdout: "searchlint 1.0.0-beta.14\n",
       stderr: ""
     });
   });
@@ -409,7 +409,7 @@ describe("runSearchLintCli", () => {
     expect(result.exitCode, result.stderr).toBe(0);
     expect(result.stderr).toBe("");
     expect(result.stdout).toContain("SearchLint doctor");
-    expect(result.stdout).toContain("version: 1.0.0-beta.13");
+    expect(result.stdout).toContain("version: 1.0.0-beta.14");
     expect(result.stdout).toContain("node: >=24.0.0 required");
     expect(result.stdout).toContain("status: local CLI runtime checks passed");
   });
@@ -673,12 +673,17 @@ describe("runSearchLintCli", () => {
     expect(files["next.config.mjs"]).toContain(
       "export default withSearchLint(nextConfig);"
     );
-    expect(JSON.parse(files["package.json"] ?? "{}").scripts).toMatchObject({
+    const packageJson = JSON.parse(files["package.json"] ?? "{}");
+    expect(packageJson.scripts).toMatchObject({
       dev: "next dev --webpack",
       searchlint: "searchlint doctor",
       "searchlint:config": "searchlint config validate --config searchlint.seo",
       "searchlint:verify":
         "searchlint doctor && searchlint config validate --config searchlint.seo"
+    });
+    expect(packageJson.devDependencies).toMatchObject({
+      "@searchlint/cli": "beta",
+      "@searchlint/next": "beta"
     });
   });
 
@@ -697,6 +702,33 @@ describe("runSearchLintCli", () => {
 
     expect(result.exitCode, result.stderr).toBe(0);
     expect(files["searchlint.seo"]).toContain('site "https://client.example"');
+  });
+
+  it("keeps existing SearchLint package versions during init", async () => {
+    const files: Record<string, string> = {
+      "package.json": JSON.stringify({
+        scripts: { dev: "next dev" },
+        dependencies: {
+          next: "16.2.9",
+          "@searchlint/next": "1.0.0-beta.8"
+        },
+        devDependencies: {
+          "@searchlint/cli": "1.0.0-beta.13"
+        }
+      }),
+      "next.config.mjs": "const nextConfig = {};\nexport default nextConfig;\n"
+    };
+    const result = await runSearchLintCli(
+      ["init"],
+      createIo(files, undefined, true)
+    );
+
+    expect(result.exitCode, result.stderr).toBe(0);
+    const packageJson = JSON.parse(files["package.json"] ?? "{}");
+    expect(packageJson.dependencies["@searchlint/next"]).toBe("1.0.0-beta.8");
+    expect(packageJson.devDependencies["@searchlint/cli"]).toBe(
+      "1.0.0-beta.13"
+    );
   });
 
   it("rejects invalid init site URLs", async () => {
@@ -720,7 +752,11 @@ describe("runSearchLintCli", () => {
           "searchlint:verify":
             "searchlint doctor && searchlint config validate --config searchlint.seo"
         },
-        dependencies: { next: "16.2.9" }
+        dependencies: { next: "16.2.9" },
+        devDependencies: {
+          "@searchlint/cli": "beta",
+          "@searchlint/next": "beta"
+        }
       }),
       "searchlint.seo": 'language 1\n\nsite "https://example.com"\n',
       "next.config.mjs":
