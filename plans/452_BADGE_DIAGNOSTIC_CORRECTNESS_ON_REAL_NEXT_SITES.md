@@ -153,8 +153,9 @@ Initial real-site acceptance pages:
   the dependency specifier is only `beta`.
 - `searchlint@1.0.0-beta.25` is an unscoped npm wrapper around
   `@searchlint/cli`, so local onboarding can use
-  `npx -y searchlint@beta init --site=https://example.com` while preserving the
-  scoped package as the implementation package.
+  `npx -y searchlint init --site=https://example.com` while preserving the
+  scoped package as the implementation package. The npm `latest` and `beta`
+  dist-tags both point at `searchlint@1.0.0-beta.25`.
 - `@searchlint/overlay@1.0.0-beta.9` adds machine-readable diagnostic card
   attributes (`data-searchlint-rule-id`, severity, category, and source) so
   real-site smoke tests can verify the exact visible rule IDs without parsing
