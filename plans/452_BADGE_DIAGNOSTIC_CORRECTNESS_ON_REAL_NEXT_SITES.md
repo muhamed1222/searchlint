@@ -210,19 +210,16 @@ Initial real-site acceptance pages:
 - `@searchlint/core@1.0.0-beta.5` suppresses `SL-IMG-007` for empty-alt
   duplicate image sources when another copy of the same normalized source is
   already described with a non-empty `alt` on the rendered page. This keeps
-  unique content images actionable while avoiding duplicate logo/watermark
-  noise on real Next pages, including Next optimizer `/_next/image?url=...`
-  sources.
+  unique content images actionable while avoiding duplicate logo/watermark noise
+  on real Next pages, including Next optimizer `/_next/image?url=...` sources.
 - The fix was published through the local developer beta chain:
   `@searchlint/browser@1.0.0-beta.4`, `@searchlint/next@1.0.0-beta.12`,
-  `@searchlint/cli@1.0.0-beta.26`, and `searchlint@1.0.0-beta.26`. The
-  unscoped `searchlint` npm `latest` and `beta` dist-tags both point to
-  `1.0.0-beta.26`.
+  `@searchlint/cli@1.0.0-beta.26`, and `searchlint@1.0.0-beta.26`. The unscoped
+  `searchlint` npm `latest` and `beta` dist-tags both point to `1.0.0-beta.26`.
 - Outlivion was upgraded through the public npm path with
-  `npm exec --package=searchlint@latest -- searchlint init --upgrade
-  --site=https://outlivion.space`, followed by `npm install` and
-  `npm run searchlint:verify`. The local project reported
-  `searchlint 1.0.0-beta.26`, `@searchlint/next@1.0.0-beta.12`, and
+  `npm exec --package=searchlint@latest -- searchlint init --upgrade --site=https://outlivion.space`,
+  followed by `npm install` and `npm run searchlint:verify`. The local project
+  reported `searchlint 1.0.0-beta.26`, `@searchlint/next@1.0.0-beta.12`, and
   `@searchlint/core@1.0.0-beta.5`.
 - After restarting the Outlivion Next dev server, Playwright smoke checks on
   `/`, `/blog`, `/pricing`, and `/locations/germany-vpn` confirmed the overlay
@@ -237,16 +234,39 @@ Initial real-site acceptance pages:
   such as `SearchLint issues: 2`, while the DOM/visible text is only the compact
   status such as `2 issues`.
 - `@searchlint/next@1.0.0-beta.13`, `@searchlint/cli@1.0.0-beta.27`, and
-  `searchlint@1.0.0-beta.27` publish the overlay badge label cleanup through
-  the normal local developer npm path. The unscoped `searchlint` npm `latest`
-  and `beta` dist-tags both point to `1.0.0-beta.27`.
+  `searchlint@1.0.0-beta.27` publish the overlay badge label cleanup through the
+  normal local developer npm path. The unscoped `searchlint` npm `latest` and
+  `beta` dist-tags both point to `1.0.0-beta.27`.
 - Outlivion was upgraded again through
-  `npm exec --package=searchlint@latest -- searchlint init --upgrade
-  --site=https://outlivion.space`, `npm install`, and
-  `npm run searchlint:verify`. Playwright smoke checks confirmed badge button
-  labels: `/` has `ariaLabel: "SearchLint issues: 2"` and `text: "2 issues"`,
-  `/blog` has `ariaLabel: "SearchLint info: 1"` and `text: "1 note"`, and clean
-  pages have `ariaLabel: "SearchLint clean"` with empty visible text.
+  `npm exec --package=searchlint@latest -- searchlint init --upgrade --site=https://outlivion.space`,
+  `npm install`, and `npm run searchlint:verify`. Playwright smoke checks
+  confirmed badge button labels: `/` has `ariaLabel: "SearchLint issues: 2"` and
+  `text: "2 issues"`, `/blog` has `ariaLabel: "SearchLint info: 1"` and
+  `text: "1 note"`, and clean pages have `ariaLabel: "SearchLint clean"` with
+  empty visible text.
+- A temporary copy of `vpn-tg-app` was tested with the published
+  `searchlint@1.0.0-beta.27` path. Secrets and generated directories were not
+  copied. `searchlint init --site=https://outlivion.space` created
+  `searchlint.seo`, patched `next.config.ts`, added package scripts, and
+  `npm run searchlint:verify` passed. At `http://localhost:3016/`, the overlay
+  attached, the badge exposed `ariaLabel: "SearchLint issues: 3"` and
+  `text: "3 issues"`, opening changed `aria-expanded` from `false` to `true`,
+  and the visible rule IDs were `SL-CANON-001`, `SL-IMG-001`, and `SL-IMG-004`
+  with no console errors.
+- A temporary copy of `ag-detail` was tested with the published
+  `searchlint@1.0.0-beta.27` path. Secrets and generated directories were not
+  copied. `searchlint init --site=https://ag-detail.ru` created
+  `searchlint.seo`, patched `next.config.ts`, added package scripts, and
+  `npm run searchlint:verify` passed. At `http://localhost:3017/`, the overlay
+  attached, the badge exposed `ariaLabel: "SearchLint issues: 3"` and
+  `text: "3 issues"`, opening changed `aria-expanded` from `false` to `true`,
+  and the visible rule IDs were `SL-IMG-007`, `SL-LINK-007`, and `SL-META-009`.
+  The only browser 400 response came from the tested site image optimizer for
+  missing `/assets/portfolio/portfolio-2.jpg`, not from SearchLint.
+- The README beta upgrade command now documents the real upgrade-safe command:
+  `npm exec --package=searchlint@latest -- searchlint init --upgrade --site https://example.com`,
+  because npm can otherwise prefer an older local `node_modules/.bin/searchlint`
+  binary in projects that already installed a previous beta.
 
 ## Validation
 

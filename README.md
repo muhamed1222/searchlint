@@ -73,10 +73,14 @@ If a project already has an older beta installed, update prerelease packages
 through init:
 
 ```bash
-npx -y searchlint init --upgrade --site https://example.com
+npm exec --package=searchlint@latest -- searchlint init --upgrade --site https://example.com
 npm install
 npm run searchlint:verify
 ```
+
+Use the explicit `npm exec --package=searchlint@latest -- ...` form for upgrades
+because npm can otherwise prefer the already-installed local `searchlint` binary
+from `node_modules/.bin`.
 
 Without `--upgrade`, `searchlint init` preserves existing SearchLint package
 versions so stable projects do not drift unexpectedly. With `--upgrade`, it
