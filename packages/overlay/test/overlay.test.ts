@@ -120,6 +120,23 @@ describe("diagnostic filtering and rendering", () => {
     expect(html).not.toContain(">Close</button>");
   });
 
+  it("renders machine-readable diagnostic attributes for QA automation", () => {
+    const html = renderOverlayHtml({
+      status: "warnings",
+      diagnostics: [
+        diagnostic("SL-IMG-007", "warning", "rendered-dom", {
+          confidence: "RELATED",
+          selector: 'img[src="/logo.svg"]'
+        })
+      ]
+    });
+
+    expect(html).toContain('data-searchlint-rule-id="SL-IMG-007"');
+    expect(html).toContain('data-searchlint-severity="warning"');
+    expect(html).toContain('data-searchlint-category="images-social-preview"');
+    expect(html).toContain('data-searchlint-source="rendered-dom"');
+  });
+
   it("renders deterministic badge positions, RTL direction, and fallback errors", () => {
     const html = renderOverlayHtml({
       status: "blocked",

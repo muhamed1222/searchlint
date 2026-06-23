@@ -65,7 +65,7 @@ Initial real-site acceptance pages:
 
 ## Evidence Log
 
-- `@searchlint/cli@1.0.0-beta.24` and `@searchlint/next@1.0.0-beta.10` are the
+- `@searchlint/cli@1.0.0-beta.25` and `@searchlint/next@1.0.0-beta.11` are the
   current beta packages for the zero-manual-edit Next.js init path.
 - `http://localhost:3001/blog` rendered the badge with `SearchLint info: 2`. The
   two diagnostics were `SL-HEAD-005` and `SL-META-009`, both heuristic
@@ -83,7 +83,7 @@ Initial real-site acceptance pages:
   expected/actual values, runtime selector, and structured evidence.
 - The improved local developer chain was published to npm with tag `beta`:
   `@searchlint/core@1.0.0-beta.4`, `@searchlint/browser@1.0.0-beta.3`,
-  `@searchlint/overlay@1.0.0-beta.8`, `@searchlint/next@1.0.0-beta.10`, and
+  `@searchlint/overlay@1.0.0-beta.9`, `@searchlint/next@1.0.0-beta.11`, and
   `@searchlint/cli@1.0.0-beta.22`.
 - Reinstalling `@searchlint/cli@beta` and `@searchlint/next@beta` in the
   Outlivion test site from npm preserved the improved `SL-IMG-007` evidence.
@@ -92,7 +92,7 @@ Initial real-site acceptance pages:
 - `SL-HEAD-005` now tokenizes title and H1 text with Unicode-aware meaningful
   terms and records normalized token evidence.
 - After installing `@searchlint/cli@1.0.0-beta.10` and
-  `@searchlint/next@1.0.0-beta.10` from npm in the Outlivion test site, the Next
+  `@searchlint/next@1.0.0-beta.11` from npm in the Outlivion test site, the Next
   badge path used `@searchlint/core@1.0.0-beta.4`.
 - Playwright verification on `http://localhost:3000/blog` showed
   `SearchLint info: 1`; the former 61-character `SL-META-009` note was gone and
@@ -147,14 +147,18 @@ Initial real-site acceptance pages:
   conservative and preserves existing SearchLint package versions; the upgrade
   flag rewrites existing `@searchlint/cli` and `@searchlint/next` ranges to the
   `beta` dist-tag and prints the package-manager install command.
-- `@searchlint/cli@1.0.0-beta.24` changes `searchlint init --upgrade` to write
+- `@searchlint/cli@1.0.0-beta.25` changes `searchlint init --upgrade` to write
   exact tested beta versions for `searchlint`, `@searchlint/cli`, and
   `@searchlint/next`, because npm lockfiles can keep older beta versions when
   the dependency specifier is only `beta`.
-- `searchlint@1.0.0-beta.24` is an unscoped npm wrapper around
+- `searchlint@1.0.0-beta.25` is an unscoped npm wrapper around
   `@searchlint/cli`, so local onboarding can use
   `npx -y searchlint@beta init --site=https://example.com` while preserving the
   scoped package as the implementation package.
+- `@searchlint/overlay@1.0.0-beta.9` adds machine-readable diagnostic card
+  attributes (`data-searchlint-rule-id`, severity, category, and source) so
+  real-site smoke tests can verify the exact visible rule IDs without parsing
+  human text.
 - A second real Next.js 16 project, `vpn-tg-app`, was smoke-tested from a
   temporary copy at `http://localhost:3010`.
   `npx searchlint init --site=https://outlivion.space` patched `next.config.ts`,
@@ -167,8 +171,8 @@ Initial real-site acceptance pages:
   obvious decorative asset filenames, including Next optimizer `url=...`
   sources.
 - Re-running `vpn-tg-app` from npm-published packages
-  (`@searchlint/cli@1.0.0-beta.22`, `@searchlint/next@1.0.0-beta.10`,
-  `@searchlint/overlay@1.0.0-beta.8`, `@searchlint/core@1.0.0-beta.4`) rendered
+  (`@searchlint/cli@1.0.0-beta.22`, `@searchlint/next@1.0.0-beta.11`,
+  `@searchlint/overlay@1.0.0-beta.9`, `@searchlint/core@1.0.0-beta.4`) rendered
   `searchlint-dev-overlay` at `http://localhost:3012/` with no client errors.
   The badge reported `SearchLint issues: 3`, and the diagnostics were
   `SL-CANON-001`, `SL-IMG-001`, and `SL-IMG-004`; `SL-IMG-007` was absent.
@@ -177,7 +181,7 @@ Initial real-site acceptance pages:
   renders as `3 issues`, not `3 errors`.
 - A third real Next.js 16 project, `tropa_nartov_web`, was smoke-tested from a
   temporary copy at `http://localhost:3013`. The published packages
-  `@searchlint/cli@1.0.0-beta.22` and `@searchlint/next@1.0.0-beta.10` patched
+  `@searchlint/cli@1.0.0-beta.22` and `@searchlint/next@1.0.0-beta.11` patched
   `next.config.ts`, `npm run searchlint:verify` passed, and the browser rendered
   `searchlint-dev-overlay` with no client errors.
 - The `tropa_nartov_web` smoke rendered `SearchLint issues: 13`. The visible

@@ -822,7 +822,7 @@ function renderDiagnosticCard(diagnostic: OverlayRenderDiagnostic): string {
     location?.selector !== undefined
       ? `<p><strong>Selector</strong> <code>${escapeHtml(location.selector)}</code> <button type="button" data-action="highlight">Highlight</button></p>`
       : "";
-  return `<article class="sl-card sl-card--${diagnostic.severity}" role="listitem" tabindex="0" data-fingerprint="${escapeHtml(diagnostic.fingerprint)}">
+  return `<article class="sl-card sl-card--${diagnostic.severity}" role="listitem" tabindex="0" data-fingerprint="${escapeHtml(diagnostic.fingerprint)}" data-searchlint-rule-id="${escapeHtml(diagnostic.ruleId)}" data-searchlint-severity="${escapeHtml(diagnostic.severity)}" data-searchlint-category="${escapeHtml(categoryForRuleId(diagnostic.ruleId))}" data-searchlint-source="${escapeHtml(diagnostic.source)}">
     <div class="sl-card__head">
       <span class="sl-severity">${escapeHtml(severityLabels[diagnostic.severity])}</span>
       <span>${escapeHtml(categoryLabels[categoryForRuleId(diagnostic.ruleId)])}</span>
