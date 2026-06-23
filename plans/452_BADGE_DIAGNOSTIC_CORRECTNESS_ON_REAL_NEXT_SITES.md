@@ -65,7 +65,7 @@ Initial real-site acceptance pages:
 
 ## Evidence Log
 
-- `@searchlint/cli@1.0.0-beta.10` and `@searchlint/next@1.0.0-beta.8` are the
+- `@searchlint/cli@1.0.0-beta.11` and `@searchlint/next@1.0.0-beta.8` are the
   current beta packages for the zero-manual-edit Next.js init path.
 - `http://localhost:3001/blog` rendered the badge with `SearchLint info: 2`. The
   two diagnostics were `SL-HEAD-005` and `SL-META-009`, both heuristic
@@ -100,6 +100,15 @@ Initial real-site acceptance pages:
   wording.
 - Playwright verification on `http://localhost:3000/pricing` and
   `http://localhost:3000/locations/germany-vpn` showed `SearchLint clean`.
+- A fresh `create-next-app` TypeScript project installed
+  `@searchlint/cli@beta` and `@searchlint/next@beta`, then
+  `npx searchlint init` created `searchlint.seo` and patched `next.config.ts`
+  without manual edits.
+- The fresh smoke project rendered `searchlint-dev-overlay` at
+  `http://localhost:3010` with the badge visible.
+- `@searchlint/cli@1.0.0-beta.11` extends `searchlint doctor` with local project
+  status: `package.json found`, `searchlint.seo found`, and
+  `next.config.ts uses withSearchLint`.
 
 ## Validation
 
@@ -107,6 +116,7 @@ Initial real-site acceptance pages:
 - `pnpm --filter @searchlint/core test`
 - `pnpm --filter @searchlint/browser typecheck`
 - `pnpm --filter @searchlint/cli test`
+- `pnpm --filter @searchlint/cli typecheck`
 - `pnpm --filter @searchlint/next test`
 - `pnpm --filter @searchlint/overlay test`
 - `pnpm pack` for `packages/core`, `packages/browser`, `packages/overlay`,

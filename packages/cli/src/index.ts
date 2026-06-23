@@ -170,7 +170,7 @@ type CliParsedCommand =
       error: string;
     };
 
-export const searchLintCliVersion = "1.0.0-beta.10";
+export const searchLintCliVersion = "1.0.0-beta.11";
 
 const severityRank: Record<Severity, number> = {
   blocker: 4,
@@ -212,7 +212,7 @@ export async function runSearchLintCli(
     if (parsed.command === "doctor") {
       return {
         exitCode: 0,
-        stdout: doctorText(),
+        stdout: await doctorText(io),
         stderr: ""
       };
     }
@@ -1443,14 +1443,15 @@ function packageUsesDependency(
   );
 }
 
+const nextConfigCandidates = [
+  "next.config.mjs",
+  "next.config.js",
+  "next.config.cjs",
+  "next.config.ts"
+] as const;
+
 async function findNextConfigPath(io: CliIo): Promise<string | undefined> {
-  const candidates = [
-    "next.config.mjs",
-    "next.config.js",
-    "next.config.cjs",
-    "next.config.ts"
-  ];
-  for (const candidate of candidates) {
+  for (const candidate of nextConfigCandidates) {
     if ((await io.exists?.(candidate)) === true) {
       return candidate;
     }
@@ -1652,15 +1653,105 @@ function usesNext16OrNewer(versionRange: string | undefined): boolean {
   return match !== null && Number.parseInt(match[0], 10) >= 16;
 }
 
-export function doctorText(): string {
+export async function doctorText(io?: CliIo): Promise<string> {
+  const projectStatus =
+    io === undefined
+      ? []
+      : [
+          `project: ${await doctorProjectStatus(io)}`,
+          `config: ${await doctorConfigStatus(io)}`,
+          `next: ${await doctorNextStatus(io)}`
+        ];
+
   return `SearchLint doctor
 
 version: ${searchLintCliVersion}
 node: >=24.0.0 required
 package-manager: pnpm >=11.0.0 <12.0.0 supported
-config: run "searchlint config validate --config searchlint.seo"
+${projectStatus.length > 0 ? `${projectStatus.join("\n")}\n` : ""}config: run "searchlint config validate --config searchlint.seo"
 status: local CLI runtime checks passed
 `;
+}
+
+async function doctorProjectStatus(io: CliIo): Promise<string> {
+  return (await pathExists(io, "package.json"))
+    ? "package.json found"
+    : "package.json not found; run from a project root";
+}
+
+async function doctorConfigStatus(io: CliIo): Promise<string> {
+  return (await pathExists(io, "searchlint.seo"))
+    ? "searchlint.seo found"
+    : "searchlint.seo missing; run \"searchlint init\"";
+}
+
+async function doctorNextStatus(io: CliIo): Promise<string> {
+  const packageJson = await readJsonIfExists(io, "package.json");
+  const nextVersion =
+    packageJson === undefined
+      ? undefined
+      : findPackageDependencyVersion(packageJson, "next");
+  const nextConfig = await findNextConfigStatus(io);
+
+  if (nextVersion === undefined && nextConfig === undefined) {
+    return "Next.js not detected";
+  }
+
+  if (nextConfig === undefined) {
+    return "Next.js dependency found; next.config.* missing";
+  }
+
+  if (nextConfig.usesSearchLint) {
+    return `${nextConfig.path} uses withSearchLint`;
+  }
+
+  return `${nextConfig.path} does not use withSearchLint; run "searchlint init"`;
+}
+
+async function readJsonIfExists(
+  io: CliIo,
+  path: string
+): Promise<Record<string, unknown> | undefined> {
+  if (!(await pathExists(io, path))) {
+    return undefined;
+  }
+
+  try {
+    const value = JSON.parse(await io.readText(path));
+    return value !== null && typeof value === "object" && !Array.isArray(value)
+      ? (value as Record<string, unknown>)
+      : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+async function findNextConfigStatus(
+  io: CliIo
+): Promise<{ path: string; usesSearchLint: boolean } | undefined> {
+  for (const path of nextConfigCandidates) {
+    if (!(await pathExists(io, path))) {
+      continue;
+    }
+    return {
+      path,
+      usesSearchLint: (await io.readText(path)).includes("withSearchLint(")
+    };
+  }
+  return undefined;
+}
+
+async function pathExists(io: CliIo, path: string): Promise<boolean> {
+  if (io.exists !== undefined) {
+    return await io.exists(path);
+  }
+
+  try {
+    await io.readText(path);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 export function completionScript(shell: "bash" | "zsh" | "fish"): string {

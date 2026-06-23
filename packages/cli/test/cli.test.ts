@@ -398,7 +398,7 @@ describe("runSearchLintCli", () => {
 
     expect(result).toMatchObject({
       exitCode: 0,
-      stdout: "searchlint 1.0.0-beta.10\n",
+      stdout: "searchlint 1.0.0-beta.11\n",
       stderr: ""
     });
   });
@@ -409,9 +409,55 @@ describe("runSearchLintCli", () => {
     expect(result.exitCode, result.stderr).toBe(0);
     expect(result.stderr).toBe("");
     expect(result.stdout).toContain("SearchLint doctor");
-    expect(result.stdout).toContain("version: 1.0.0-beta.10");
+    expect(result.stdout).toContain("version: 1.0.0-beta.11");
     expect(result.stdout).toContain("node: >=24.0.0 required");
     expect(result.stdout).toContain("status: local CLI runtime checks passed");
+  });
+
+  it("prints local Next.js badge integration status in doctor diagnostics", async () => {
+    const result = await runSearchLintCli(
+      ["doctor"],
+      createIo(
+        {
+          "package.json": JSON.stringify({
+            dependencies: { next: "16.2.9" },
+            devDependencies: { "@searchlint/next": "1.0.0-beta.8" }
+          }),
+          "searchlint.seo": 'language 1\nsite "https://example.com"\n',
+          "next.config.ts":
+            'import { withSearchLint } from "@searchlint/next";\nconst nextConfig = {};\nexport default withSearchLint(nextConfig);\n'
+        },
+        undefined,
+        true
+      )
+    );
+
+    expect(result.exitCode, result.stderr).toBe(0);
+    expect(result.stdout).toContain("project: package.json found");
+    expect(result.stdout).toContain("config: searchlint.seo found");
+    expect(result.stdout).toContain("next: next.config.ts uses withSearchLint");
+  });
+
+  it("points users back to init when Next.js is not patched", async () => {
+    const result = await runSearchLintCli(
+      ["doctor"],
+      createIo(
+        {
+          "package.json": JSON.stringify({
+            dependencies: { next: "16.2.9" }
+          }),
+          "next.config.mjs": "const nextConfig = {};\nexport default nextConfig;\n"
+        },
+        undefined,
+        true
+      )
+    );
+
+    expect(result.exitCode, result.stderr).toBe(0);
+    expect(result.stdout).toContain("config: searchlint.seo missing");
+    expect(result.stdout).toContain(
+      'next: next.config.mjs does not use withSearchLint; run "searchlint init"'
+    );
   });
 
   it("prints shell completion scripts", async () => {
