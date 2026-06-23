@@ -154,6 +154,7 @@ type CliParsedCommand =
       command: "init";
       printConfig: boolean;
       siteUrl?: string;
+      upgradeSearchLintPackages: boolean;
     }
   | {
       ok: true;
@@ -171,7 +172,7 @@ type CliParsedCommand =
       error: string;
     };
 
-export const searchLintCliVersion = "1.0.0-beta.22";
+export const searchLintCliVersion = "1.0.0-beta.23";
 const searchLintCliPackageRange = "beta";
 const searchLintNextPackageRange = "beta";
 
@@ -236,7 +237,9 @@ export async function runSearchLintCli(
           stderr: ""
         };
       }
-      return await initializeLocalProject(io, parsed.siteUrl);
+      return await initializeLocalProject(io, parsed.siteUrl, {
+        upgradeSearchLintPackages: parsed.upgradeSearchLintPackages
+      });
     }
 
     if (parsed.command === "config-validate") {
@@ -1013,6 +1016,7 @@ function parseCompletionCommand(args: readonly string[]): CliParsedCommand {
 function parseInitCommand(args: readonly string[]): CliParsedCommand {
   let printConfig = false;
   let siteUrl: string | undefined;
+  let upgradeSearchLintPackages = false;
 
   for (let index = 0; index < args.length; index += 1) {
     const arg = args[index];
@@ -1024,10 +1028,22 @@ function parseInitCommand(args: readonly string[]): CliParsedCommand {
         return {
           ok: false,
           error:
-            "Usage: searchlint init [--site https://example.com] [--print-config]"
+            "Usage: searchlint init [--site https://example.com] [--upgrade] [--print-config]"
         };
       }
       printConfig = true;
+      continue;
+    }
+
+    if (arg === "--upgrade") {
+      if (upgradeSearchLintPackages) {
+        return {
+          ok: false,
+          error:
+            "Usage: searchlint init [--site https://example.com] [--upgrade] [--print-config]"
+        };
+      }
+      upgradeSearchLintPackages = true;
       continue;
     }
 
@@ -1041,7 +1057,7 @@ function parseInitCommand(args: readonly string[]): CliParsedCommand {
         return {
           ok: false,
           error:
-            "Usage: searchlint init [--site https://example.com] [--print-config]"
+            "Usage: searchlint init [--site https://example.com] [--upgrade] [--print-config]"
         };
       }
       if (!isHttpUrl(value)) {
@@ -1062,7 +1078,7 @@ function parseInitCommand(args: readonly string[]): CliParsedCommand {
         return {
           ok: false,
           error:
-            "Usage: searchlint init [--site https://example.com] [--print-config]"
+            "Usage: searchlint init [--site https://example.com] [--upgrade] [--print-config]"
         };
       }
       siteUrl = arg;
@@ -1072,7 +1088,7 @@ function parseInitCommand(args: readonly string[]): CliParsedCommand {
     return {
       ok: false,
       error:
-        "Usage: searchlint init [--site https://example.com] [--print-config]"
+        "Usage: searchlint init [--site https://example.com] [--upgrade] [--print-config]"
     };
   }
 
@@ -1080,6 +1096,7 @@ function parseInitCommand(args: readonly string[]): CliParsedCommand {
     ok: true,
     command: "init",
     printConfig,
+    upgradeSearchLintPackages,
     ...(siteUrl === undefined ? {} : { siteUrl })
   };
 }
@@ -1366,7 +1383,7 @@ export function usageText(): string {
 Usage:
   searchlint check --snapshot <snapshot.json> --catalog <RULE_CATALOG.yaml> [options]
   searchlint crawl --url <https://example.com/> --catalog <RULE_CATALOG.yaml> [options]
-  searchlint init [--site https://example.com]
+  searchlint init [--site https://example.com] [--upgrade]
   searchlint init --print-config
   searchlint doctor
   searchlint completion <bash|zsh|fish>
@@ -1408,7 +1425,8 @@ Exit codes:
 
 async function initializeLocalProject(
   io: CliIo,
-  siteUrl?: string
+  siteUrl?: string,
+  options: { upgradeSearchLintPackages?: boolean } = {}
 ): Promise<CliRunResult> {
   if (io.writeText === undefined || io.exists === undefined) {
     throw new Error(
@@ -1439,7 +1457,10 @@ async function initializeLocalProject(
   const resolvedSite = resolveInitSite(siteUrl, packageJson);
 
   if (!(await io.exists("searchlint.seo"))) {
-    await io.writeText("searchlint.seo", defaultConfigTemplate(resolvedSite.url));
+    await io.writeText(
+      "searchlint.seo",
+      defaultConfigTemplate(resolvedSite.url)
+    );
     created.push("searchlint.seo");
   }
 
@@ -1447,7 +1468,9 @@ async function initializeLocalProject(
   changed.push(...nextConfigResult.changed);
   created.push(...nextConfigResult.created);
 
-  const packageUpdate = ensurePackageOnboarding(packageJson);
+  const packageUpdate = ensurePackageOnboarding(packageJson, {
+    upgradeSearchLintPackages: options.upgradeSearchLintPackages === true
+  });
   const packageManager = await detectPackageManager(io, packageJson);
   if (packageUpdate.changed) {
     await io.writeText(
@@ -1465,7 +1488,7 @@ async function initializeLocalProject(
     `Site: ${resolvedSite.url} (${resolvedSite.source})`,
     "",
     "Next step:",
-    ...(packageUpdate.addedDependencies.length > 0
+    ...(packageUpdate.requiresInstall
       ? [`  ${installCommand(packageManager)}`]
       : []),
     `  ${runScriptCommand(packageManager, "searchlint:verify")}`,
@@ -1510,7 +1533,9 @@ async function detectPackageManager(
 }
 
 function installCommand(packageManager: PackageManager): string {
-  return packageManager === "yarn" ? "yarn install" : `${packageManager} install`;
+  return packageManager === "yarn"
+    ? "yarn install"
+    : `${packageManager} install`;
 }
 
 function runScriptCommand(
@@ -1689,9 +1714,14 @@ function isCommonJsNextConfig(source: string): boolean {
   return source.includes("module.exports") || source.includes("require(");
 }
 
-function ensurePackageOnboarding(packageJson: Record<string, unknown>): {
+function ensurePackageOnboarding(
+  packageJson: Record<string, unknown>,
+  options: { upgradeSearchLintPackages?: boolean } = {}
+): {
   changed: boolean;
   addedDependencies: string[];
+  upgradedDependencies: string[];
+  requiresInstall: boolean;
 } {
   if (
     packageJson.scripts === undefined ||
@@ -1705,6 +1735,7 @@ function ensurePackageOnboarding(packageJson: Record<string, unknown>): {
   const scripts = packageJson.scripts as Record<string, unknown>;
   let changed = false;
   const addedDependencies: string[] = [];
+  const upgradedDependencies: string[] = [];
   const nextVersion = findPackageDependencyVersion(packageJson, "next");
   if (
     typeof scripts.dev === "string" &&
@@ -1745,7 +1776,35 @@ function ensurePackageOnboarding(packageJson: Record<string, unknown>): {
     addedDependencies.push("@searchlint/next");
     changed = true;
   }
-  return { changed, addedDependencies };
+  if (options.upgradeSearchLintPackages === true) {
+    const upgradedCli = setExistingDependencyVersion(
+      packageJson,
+      "@searchlint/cli",
+      searchLintCliPackageRange
+    );
+    if (upgradedCli) {
+      upgradedDependencies.push("@searchlint/cli");
+      changed = true;
+    }
+
+    const upgradedNext = setExistingDependencyVersion(
+      packageJson,
+      "@searchlint/next",
+      searchLintNextPackageRange
+    );
+    if (upgradedNext) {
+      upgradedDependencies.push("@searchlint/next");
+      changed = true;
+    }
+  }
+
+  return {
+    changed,
+    addedDependencies,
+    upgradedDependencies,
+    requiresInstall:
+      addedDependencies.length > 0 || upgradedDependencies.length > 0
+  };
 }
 
 function ensureDevDependency(
@@ -1792,6 +1851,35 @@ function findPackageDependencyVersion(
     }
   }
   return undefined;
+}
+
+function setExistingDependencyVersion(
+  packageJson: Record<string, unknown>,
+  dependencyName: string,
+  versionRange: string
+): boolean {
+  for (const dependencyField of [
+    packageJson.dependencies,
+    packageJson.devDependencies,
+    packageJson.peerDependencies,
+    packageJson.optionalDependencies
+  ]) {
+    if (
+      dependencyField !== null &&
+      typeof dependencyField === "object" &&
+      !Array.isArray(dependencyField)
+    ) {
+      const dependencies = dependencyField as Record<string, unknown>;
+      if (typeof dependencies[dependencyName] === "string") {
+        if (dependencies[dependencyName] === versionRange) {
+          return false;
+        }
+        dependencies[dependencyName] = versionRange;
+        return true;
+      }
+    }
+  }
+  return false;
 }
 
 function shouldForceWebpackDevScript(
@@ -1845,7 +1933,7 @@ async function doctorProjectStatus(io: CliIo): Promise<string> {
 async function doctorConfigStatus(io: CliIo): Promise<string> {
   return (await pathExists(io, "searchlint.seo"))
     ? "searchlint.seo found"
-    : "searchlint.seo missing; run \"searchlint init\"";
+    : 'searchlint.seo missing; run "searchlint init"';
 }
 
 async function doctorNextStatus(io: CliIo): Promise<string> {
@@ -1995,7 +2083,9 @@ function isHttpUrl(value: string): boolean {
   return /^https?:\/\/[^\s/$.?#].[^\s]*$/i.test(value);
 }
 
-function inferSiteUrl(packageJson: Record<string, unknown>): string | undefined {
+function inferSiteUrl(
+  packageJson: Record<string, unknown>
+): string | undefined {
   const homepage = packageJson.homepage;
   if (typeof homepage === "string" && isHttpUrl(homepage)) {
     return homepage;

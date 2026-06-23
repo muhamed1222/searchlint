@@ -65,7 +65,7 @@ Initial real-site acceptance pages:
 
 ## Evidence Log
 
-- `@searchlint/cli@1.0.0-beta.22` and `@searchlint/next@1.0.0-beta.10` are the
+- `@searchlint/cli@1.0.0-beta.23` and `@searchlint/next@1.0.0-beta.10` are the
   current beta packages for the zero-manual-edit Next.js init path.
 - `http://localhost:3001/blog` rendered the badge with `SearchLint info: 2`. The
   two diagnostics were `SL-HEAD-005` and `SL-META-009`, both heuristic
@@ -92,22 +92,20 @@ Initial real-site acceptance pages:
 - `SL-HEAD-005` now tokenizes title and H1 text with Unicode-aware meaningful
   terms and records normalized token evidence.
 - After installing `@searchlint/cli@1.0.0-beta.10` and
-  `@searchlint/next@1.0.0-beta.10` from npm in the Outlivion test site, the
-  Next badge path used `@searchlint/core@1.0.0-beta.4`.
+  `@searchlint/next@1.0.0-beta.10` from npm in the Outlivion test site, the Next
+  badge path used `@searchlint/core@1.0.0-beta.4`.
 - Playwright verification on `http://localhost:3000/blog` showed
-  `SearchLint info: 1`; the former 61-character `SL-META-009` note was gone
-  and the remaining `SL-HEAD-005` note showed the improved expected/actual
-  wording.
+  `SearchLint info: 1`; the former 61-character `SL-META-009` note was gone and
+  the remaining `SL-HEAD-005` note showed the improved expected/actual wording.
 - Playwright verification on `http://localhost:3000/pricing` and
   `http://localhost:3000/locations/germany-vpn` showed `SearchLint clean`.
-- A fresh `create-next-app` TypeScript project installed
-  `@searchlint/cli@beta` and `@searchlint/next@beta`, then
-  `npx searchlint init` created `searchlint.seo` and patched `next.config.ts`
-  without manual edits.
+- A fresh `create-next-app` TypeScript project installed `@searchlint/cli@beta`
+  and `@searchlint/next@beta`, then `npx searchlint init` created
+  `searchlint.seo` and patched `next.config.ts` without manual edits.
 - The fresh smoke project rendered `searchlint-dev-overlay` at
   `http://localhost:3010` with the badge visible.
-- `@searchlint/cli@1.0.0-beta.11` extended `searchlint doctor` with local project
-  status: `package.json found`, `searchlint.seo found`, and
+- `@searchlint/cli@1.0.0-beta.11` extended `searchlint doctor` with local
+  project status: `package.json found`, `searchlint.seo found`, and
   `next.config.ts uses withSearchLint`.
 - `@searchlint/cli@1.0.0-beta.12` adds `npm run searchlint:verify` during
   `searchlint init`. The script runs `searchlint doctor` and
@@ -115,25 +113,25 @@ Initial real-site acceptance pages:
 - Fresh `create-next-app` smoke verification confirmed that
   `npm run searchlint:verify` passes after `npx searchlint init`.
 - `@searchlint/cli@1.0.0-beta.13` adds `searchlint init --site <url>` and
-  `searchlint init --print-config --site <url>` so agency projects can create
-  a site-specific `searchlint.seo` without manual editing.
+  `searchlint init --print-config --site <url>` so agency projects can create a
+  site-specific `searchlint.seo` without manual editing.
 - Fresh `create-next-app` smoke verification confirmed that
   `npx searchlint init --site https://client.example` writes that exact site URL
   and `npm run searchlint:verify` passes.
-- `@searchlint/cli@1.0.0-beta.14` makes `searchlint init` add
-  `@searchlint/cli` and `@searchlint/next` to `devDependencies` when missing.
-  Existing SearchLint package versions are preserved.
+- `@searchlint/cli@1.0.0-beta.14` makes `searchlint init` add `@searchlint/cli`
+  and `@searchlint/next` to `devDependencies` when missing. Existing SearchLint
+  package versions are preserved.
 - Fresh npx-style smoke verification confirmed this flow:
   `npx -y @searchlint/cli@beta init --site https://client.example`, then
   `npm install`, then `npm run searchlint:verify`.
-- `@searchlint/cli@1.0.0-beta.15` updates `searchlint init` next-step output
-  to include `npm install` only when the command added missing SearchLint
+- `@searchlint/cli@1.0.0-beta.15` updates `searchlint init` next-step output to
+  include `npm install` only when the command added missing SearchLint
   dependencies. Fresh npx-style smoke verification confirmed the output order:
   `npm install`, `npm run searchlint:verify`, `npm run dev`.
 - `@searchlint/cli@1.0.0-beta.16` makes `searchlint init` next-step output
   package-manager aware using `packageManager`, `pnpm-lock.yaml`, or
-  `yarn.lock`. Smoke verification confirmed pnpm output:
-  `pnpm install`, `pnpm searchlint:verify`, `pnpm dev`.
+  `yarn.lock`. Smoke verification confirmed pnpm output: `pnpm install`,
+  `pnpm searchlint:verify`, `pnpm dev`.
 - `@searchlint/cli@1.0.0-beta.17` infers the starter `site` from an absolute
   `package.json` `homepage` URL when `--site` is not provided. Smoke
   verification confirmed `site "https://homepage.example"` output.
@@ -144,14 +142,19 @@ Initial real-site acceptance pages:
   `searchlint init --site=https://client.example`, and the positional fallback
   `searchlint init https://client.example` for package-manager argument
   forwarding.
+- `@searchlint/cli@1.0.0-beta.23` adds `searchlint init --upgrade` for projects
+  that already installed an older SearchLint beta. Normal init remains
+  conservative and preserves existing SearchLint package versions; the upgrade
+  flag rewrites existing `@searchlint/cli` and `@searchlint/next` ranges to the
+  `beta` dist-tag and prints the package-manager install command.
 - A second real Next.js 16 project, `vpn-tg-app`, was smoke-tested from a
-  temporary copy at `http://localhost:3010`. `npx searchlint init
-  --site=https://outlivion.space` patched `next.config.ts`, `npm run
-  searchlint:verify` passed, and the browser rendered
+  temporary copy at `http://localhost:3010`.
+  `npx searchlint init --site=https://outlivion.space` patched `next.config.ts`,
+  `npm run searchlint:verify` passed, and the browser rendered
   `searchlint-dev-overlay` without client errors.
-- The `vpn-tg-app` smoke exposed an `SL-IMG-007` false positive for a
-  decorative Next optimized image source ending in `shell-bg.png` with
-  `alt=""`. `SL-IMG-007` now ignores explicitly decorative empty-alt images
+- The `vpn-tg-app` smoke exposed an `SL-IMG-007` false positive for a decorative
+  Next optimized image source ending in `shell-bg.png` with `alt=""`.
+  `SL-IMG-007` now ignores explicitly decorative empty-alt images
   (`aria-hidden`, `role=presentation|none`, decorative data attributes) and
   obvious decorative asset filenames, including Next optimizer `url=...`
   sources.
@@ -166,9 +169,9 @@ Initial real-site acceptance pages:
   renders as `3 issues`, not `3 errors`.
 - A third real Next.js 16 project, `tropa_nartov_web`, was smoke-tested from a
   temporary copy at `http://localhost:3013`. The published packages
-  `@searchlint/cli@1.0.0-beta.22` and `@searchlint/next@1.0.0-beta.10`
-  patched `next.config.ts`, `npm run searchlint:verify` passed, and the browser
-  rendered `searchlint-dev-overlay` with no client errors.
+  `@searchlint/cli@1.0.0-beta.22` and `@searchlint/next@1.0.0-beta.10` patched
+  `next.config.ts`, `npm run searchlint:verify` passed, and the browser rendered
+  `searchlint-dev-overlay` with no client errors.
 - The `tropa_nartov_web` smoke rendered `SearchLint issues: 13`. The visible
   diagnostics included canonical/social metadata gaps, multiple H1/heading
   structure notes, placeholder `href="#"`, and an icon-only social link without

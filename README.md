@@ -70,19 +70,22 @@ in local development through the Next.js config wrapper; it does not require a
 component in the application source.
 
 If a project already has an older beta installed, update prerelease packages
-explicitly:
+through init:
 
 ```bash
-npm install -D @searchlint/cli@beta @searchlint/next@beta
+npx -y @searchlint/cli@beta init --upgrade --site https://example.com
+npm install
+npm run searchlint:verify
 ```
 
-Depending on the existing semver range, npm may keep an older prerelease such as
-`1.0.0-beta.10` when using a caret range. Use the explicit `@beta` install
-command above when testing a newly published beta.
+Without `--upgrade`, `searchlint init` preserves existing SearchLint package
+versions so stable projects do not drift unexpectedly. With `--upgrade`, it
+updates existing `@searchlint/cli` and `@searchlint/next` entries to the current
+`beta` dist-tag before the next install.
 
 The current verified beta versions are:
 
-- `@searchlint/cli@1.0.0-beta.22`
+- `@searchlint/cli@1.0.0-beta.23`
 - `@searchlint/next@1.0.0-beta.10`
 - `@searchlint/core@1.0.0-beta.4`
 - `@searchlint/browser@1.0.0-beta.3`
@@ -153,10 +156,10 @@ npm run dev
 ```
 
 If `package.json` contains an absolute `homepage` URL, `searchlint init` uses it
-as the default `site` when `--site` is not provided.
-Both `--site https://example.com` and `--site=https://example.com` are
-supported. The CLI also accepts `searchlint init https://example.com` as a
-fallback for package-manager argument forwarding.
+as the default `site` when `--site` is not provided. Both
+`--site https://example.com` and `--site=https://example.com` are supported. The
+CLI also accepts `searchlint init https://example.com` as a fallback for
+package-manager argument forwarding.
 
 When testing multiple local projects at once, use `PORT=<port> npm run dev` or
 `PORT=<port> pnpm dev` to avoid port collisions.
