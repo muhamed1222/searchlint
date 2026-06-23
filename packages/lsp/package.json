@@ -5,15 +5,9 @@
   "license": "Apache-2.0",
   "sideEffects": false,
   "type": "module",
-  "files": [
-    "dist/src",
-    "package.json"
-  ],
+  "files": ["dist/src", "package.json"],
   "exports": {
-    ".": {
-      "types": "./dist/src/index.d.ts",
-      "import": "./dist/src/index.js"
-    }
+    ".": { "types": "./dist/src/index.d.ts", "import": "./dist/src/index.js" }
   },
   "scripts": {
     "build": "node ../../scripts/build-package.mjs",
@@ -24,10 +18,7 @@
     "@searchlint/core": "workspace:*",
     "@searchlint/language": "workspace:*"
   },
-  "engines": {
-    "node": ">=24.0.0",
-    "pnpm": ">=11.0.0 <12.0.0"
-  },
+  "engines": { "node": ">=24.0.0", "pnpm": ">=11.0.0 <12.0.0" },
   "keywords": [
     "searchlint",
     "seo",
@@ -36,11 +27,13 @@
     "diagnostics",
     "lsp"
   ],
-  "publishConfig": {
-    "access": "public",
-    "provenance": true
+  "publishConfig": { "access": "public", "provenance": true },
+  "searchlint": { "layer": "interface" },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/muhamed1222/searchlint",
+    "directory": "packages/lsp"
   },
-  "searchlint": {
-    "layer": "interface"
-  }
+  "homepage": "https://github.com/muhamed1222/searchlint#readme",
+  "bugs": { "url": "https://github.com/muhamed1222/searchlint/issues" }
 }

@@ -5,13 +5,8 @@
   "license": "Apache-2.0",
   "sideEffects": false,
   "type": "module",
-  "files": [
-    "dist/src",
-    "package.json"
-  ],
-  "bin": {
-    "searchlint-language-server": "./dist/src/node.js"
-  },
+  "files": ["dist/src", "package.json"],
+  "bin": { "searchlint-language-server": "./dist/src/node.js" },
   "exports": {
     ".": {
       "types": "./dist/src/server.d.ts",
@@ -32,10 +27,7 @@
     "vscode-languageserver": "10.0.0",
     "vscode-languageserver-textdocument": "1.0.12"
   },
-  "engines": {
-    "node": ">=24.0.0",
-    "pnpm": ">=11.0.0 <12.0.0"
-  },
+  "engines": { "node": ">=24.0.0", "pnpm": ">=11.0.0 <12.0.0" },
   "keywords": [
     "searchlint",
     "seo",
@@ -44,10 +36,13 @@
     "diagnostics",
     "lsp"
   ],
-  "publishConfig": {
-    "provenance": true
+  "publishConfig": { "provenance": true },
+  "searchlint": { "layer": "interface" },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/muhamed1222/searchlint",
+    "directory": "packages/language-server"
   },
-  "searchlint": {
-    "layer": "interface"
-  }
+  "homepage": "https://github.com/muhamed1222/searchlint#readme",
+  "bugs": { "url": "https://github.com/muhamed1222/searchlint/issues" }
 }
