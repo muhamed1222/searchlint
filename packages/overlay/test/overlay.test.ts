@@ -7,6 +7,7 @@ import {
   createOverlayAccessibilityReport,
   deriveBadgeState,
   filterDiagnostics,
+  nearestOverlayPosition,
   renderBadgeLabel,
   renderOverlayHtml,
   type OverlayRenderDiagnostic
@@ -33,6 +34,13 @@ describe("deriveBadgeState", () => {
   it("renders diagnostic counts in badge labels", () => {
     expect(renderBadgeLabel("clean", 0)).toBe("SearchLint clean");
     expect(renderBadgeLabel("blocked", 3)).toBe("SearchLint blocked: 3");
+  });
+
+  it("snaps dragged badges to the nearest viewport corner", () => {
+    expect(nearestOverlayPosition(1000, 800, 100, 100)).toBe("top-left");
+    expect(nearestOverlayPosition(1000, 800, 900, 100)).toBe("top-right");
+    expect(nearestOverlayPosition(1000, 800, 100, 700)).toBe("bottom-left");
+    expect(nearestOverlayPosition(1000, 800, 900, 700)).toBe("bottom-right");
   });
 });
 
@@ -121,7 +129,8 @@ describe("diagnostic filtering and rendering", () => {
       diagnostics
     });
 
-    expect(html).toContain('aria-label="1000 diagnostics"');
+    expect(html).toContain('aria-label="SearchLint blocked: 1000"');
+    expect(html).toContain("1000 blockers");
     expect(html.match(/<article class="sl-card/g)?.length).toBe(1000);
     expect(html).toContain("overflow-wrap: anywhere");
   });

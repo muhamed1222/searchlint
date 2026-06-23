@@ -170,7 +170,7 @@ type CliParsedCommand =
       error: string;
     };
 
-export const searchLintCliVersion = "1.0.0-beta.1";
+export const searchLintCliVersion = "1.0.0-beta.2";
 
 const severityRank: Record<Severity, number> = {
   blocker: 4,
