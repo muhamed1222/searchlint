@@ -76,7 +76,7 @@ command above when testing a newly published beta.
 
 The current verified beta versions are:
 
-- `@searchlint/cli@1.0.0-beta.16`
+- `@searchlint/cli@1.0.0-beta.17`
 - `@searchlint/next@1.0.0-beta.8`
 - `@searchlint/core@1.0.0-beta.3`
 - `@searchlint/browser@1.0.0-beta.2`
@@ -145,6 +145,9 @@ npm install
 npm run searchlint:verify
 npm run dev
 ```
+
+If `package.json` contains an absolute `homepage` URL, `searchlint init` uses it
+as the default `site` when `--site` is not provided.
 
 Open the local site and click the SearchLint badge to inspect the current page.
 The command patches supported Next.js config files and creates `searchlint.seo`

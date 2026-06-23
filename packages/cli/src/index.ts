@@ -171,7 +171,7 @@ type CliParsedCommand =
       error: string;
     };
 
-export const searchLintCliVersion = "1.0.0-beta.16";
+export const searchLintCliVersion = "1.0.0-beta.17";
 const searchLintCliPackageRange = "beta";
 const searchLintNextPackageRange = "beta";
 
@@ -1418,9 +1418,10 @@ async function initializeLocalProject(
 
   const changed: string[] = [];
   const created: string[] = [];
+  const resolvedSiteUrl = siteUrl ?? inferSiteUrl(packageJson);
 
   if (!(await io.exists("searchlint.seo"))) {
-    await io.writeText("searchlint.seo", defaultConfigTemplate(siteUrl));
+    await io.writeText("searchlint.seo", defaultConfigTemplate(resolvedSiteUrl));
     created.push("searchlint.seo");
   }
 
@@ -1973,6 +1974,14 @@ route "/" {
 
 function isHttpUrl(value: string): boolean {
   return /^https?:\/\/[^\s/$.?#].[^\s]*$/i.test(value);
+}
+
+function inferSiteUrl(packageJson: Record<string, unknown>): string | undefined {
+  const homepage = packageJson.homepage;
+  if (typeof homepage === "string" && isHttpUrl(homepage)) {
+    return homepage;
+  }
+  return undefined;
 }
 
 function createLocalCoreRules(
