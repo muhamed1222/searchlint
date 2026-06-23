@@ -153,6 +153,7 @@ type CliParsedCommand =
       ok: true;
       command: "init";
       printConfig: boolean;
+      siteUrl?: string;
     }
   | {
       ok: true;
@@ -170,7 +171,7 @@ type CliParsedCommand =
       error: string;
     };
 
-export const searchLintCliVersion = "1.0.0-beta.12";
+export const searchLintCliVersion = "1.0.0-beta.13";
 
 const severityRank: Record<Severity, number> = {
   blocker: 4,
@@ -229,11 +230,11 @@ export async function runSearchLintCli(
       if (parsed.printConfig) {
         return {
           exitCode: 0,
-          stdout: defaultConfigTemplate(),
+          stdout: defaultConfigTemplate(parsed.siteUrl),
           stderr: ""
         };
       }
-      return await initializeLocalProject(io);
+      return await initializeLocalProject(io, parsed.siteUrl);
     }
 
     if (parsed.command === "config-validate") {
@@ -873,20 +874,7 @@ function parseCliCommand(args: readonly string[]): CliParsedCommand {
   }
 
   if (command === "init") {
-    if (args.length > 2) {
-      return {
-        ok: false,
-        error: "searchlint init accepts only --print-config."
-      };
-    }
-    const printConfig = args[1] === "--print-config";
-    if (args.length === 2 && !printConfig) {
-      return {
-        ok: false,
-        error: "searchlint init accepts only --print-config."
-      };
-    }
-    return { ok: true, command: "init", printConfig };
+    return parseInitCommand(args.slice(1));
   }
 
   if (command === "config") {
@@ -1017,6 +1005,62 @@ function parseCompletionCommand(args: readonly string[]): CliParsedCommand {
     ok: true,
     command: "completion",
     shell
+  };
+}
+
+function parseInitCommand(args: readonly string[]): CliParsedCommand {
+  let printConfig = false;
+  let siteUrl: string | undefined;
+
+  for (let index = 0; index < args.length; index += 1) {
+    const arg = args[index];
+    if (arg === "--print-config") {
+      if (printConfig) {
+        return {
+          ok: false,
+          error:
+            "Usage: searchlint init [--site https://example.com] [--print-config]"
+        };
+      }
+      printConfig = true;
+      continue;
+    }
+
+    if (arg === "--site") {
+      const value = args[index + 1];
+      if (!value || value.startsWith("--")) {
+        return { ok: false, error: "Missing value for '--site'." };
+      }
+      if (siteUrl !== undefined) {
+        return {
+          ok: false,
+          error:
+            "Usage: searchlint init [--site https://example.com] [--print-config]"
+        };
+      }
+      if (!isHttpUrl(value)) {
+        return {
+          ok: false,
+          error: "--site must be an absolute http or https URL."
+        };
+      }
+      siteUrl = value;
+      index += 1;
+      continue;
+    }
+
+    return {
+      ok: false,
+      error:
+        "Usage: searchlint init [--site https://example.com] [--print-config]"
+    };
+  }
+
+  return {
+    ok: true,
+    command: "init",
+    printConfig,
+    ...(siteUrl === undefined ? {} : { siteUrl })
   };
 }
 
@@ -1342,7 +1386,10 @@ Exit codes:
 `;
 }
 
-async function initializeLocalProject(io: CliIo): Promise<CliRunResult> {
+async function initializeLocalProject(
+  io: CliIo,
+  siteUrl?: string
+): Promise<CliRunResult> {
   if (io.writeText === undefined || io.exists === undefined) {
     throw new Error(
       "searchlint init requires filesystem write and exists support."
@@ -1371,7 +1418,7 @@ async function initializeLocalProject(io: CliIo): Promise<CliRunResult> {
   const created: string[] = [];
 
   if (!(await io.exists("searchlint.seo"))) {
-    await io.writeText("searchlint.seo", defaultConfigTemplate());
+    await io.writeText("searchlint.seo", defaultConfigTemplate(siteUrl));
     created.push("searchlint.seo");
   }
 
@@ -1823,15 +1870,19 @@ complete -F _searchlint_completion searchlint
 `;
 }
 
-export function defaultConfigTemplate(): string {
+export function defaultConfigTemplate(siteUrl = "https://example.com"): string {
   return `language 1
 
-site "https://example.com"
+site "${siteUrl}"
 
 route "/" {
   indexable true
 }
 `;
+}
+
+function isHttpUrl(value: string): boolean {
+  return /^https?:\/\/[^\s/$.?#].[^\s]*$/i.test(value);
 }
 
 function createLocalCoreRules(

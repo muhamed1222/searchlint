@@ -46,7 +46,7 @@ under the npm `beta` dist-tag:
 
 ```bash
 npm install -D @searchlint/cli@beta @searchlint/next@beta
-npx searchlint init
+npx searchlint init --site https://example.com
 npm run dev
 npm run searchlint:verify
 ```
@@ -76,7 +76,7 @@ command above when testing a newly published beta.
 
 The current verified beta versions are:
 
-- `@searchlint/cli@1.0.0-beta.12`
+- `@searchlint/cli@1.0.0-beta.13`
 - `@searchlint/next@1.0.0-beta.8`
 - `@searchlint/core@1.0.0-beta.3`
 - `@searchlint/browser@1.0.0-beta.2`
@@ -141,7 +141,7 @@ Use the local onboarding command in a Next.js project:
 
 ```bash
 npm install -D @searchlint/cli@beta @searchlint/next@beta
-searchlint init
+searchlint init --site https://example.com
 npm run dev
 npm run searchlint:verify
 ```

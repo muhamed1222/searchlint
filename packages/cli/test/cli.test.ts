@@ -398,7 +398,7 @@ describe("runSearchLintCli", () => {
 
     expect(result).toMatchObject({
       exitCode: 0,
-      stdout: "searchlint 1.0.0-beta.12\n",
+      stdout: "searchlint 1.0.0-beta.13\n",
       stderr: ""
     });
   });
@@ -409,7 +409,7 @@ describe("runSearchLintCli", () => {
     expect(result.exitCode, result.stderr).toBe(0);
     expect(result.stderr).toBe("");
     expect(result.stdout).toContain("SearchLint doctor");
-    expect(result.stdout).toContain("version: 1.0.0-beta.12");
+    expect(result.stdout).toContain("version: 1.0.0-beta.13");
     expect(result.stdout).toContain("node: >=24.0.0 required");
     expect(result.stdout).toContain("status: local CLI runtime checks passed");
   });
@@ -636,6 +636,17 @@ describe("runSearchLintCli", () => {
     expect(result.stdout).toContain('route "/"');
   });
 
+  it("emits a starter config for a provided site URL", async () => {
+    const result = await runSearchLintCli(
+      ["init", "--site", "https://client.example", "--print-config"],
+      createIo({})
+    );
+
+    expect(result.exitCode).toBe(0);
+    expect(result.stderr).toBe("");
+    expect(result.stdout).toContain('site "https://client.example"');
+  });
+
   it("initializes a Next.js project for local dev badge onboarding", async () => {
     const files: Record<string, string> = {
       "package.json": JSON.stringify({
@@ -669,6 +680,33 @@ describe("runSearchLintCli", () => {
       "searchlint:verify":
         "searchlint doctor && searchlint config validate --config searchlint.seo"
     });
+  });
+
+  it("initializes searchlint.seo with the provided site URL", async () => {
+    const files: Record<string, string> = {
+      "package.json": JSON.stringify({
+        scripts: { dev: "next dev" },
+        dependencies: { next: "16.2.9" }
+      }),
+      "next.config.mjs": "const nextConfig = {};\nexport default nextConfig;\n"
+    };
+    const result = await runSearchLintCli(
+      ["init", "--site", "https://client.example"],
+      createIo(files, undefined, true)
+    );
+
+    expect(result.exitCode, result.stderr).toBe(0);
+    expect(files["searchlint.seo"]).toContain('site "https://client.example"');
+  });
+
+  it("rejects invalid init site URLs", async () => {
+    const result = await runSearchLintCli(
+      ["init", "--site", "client.example"],
+      createIo({})
+    );
+
+    expect(result.exitCode).toBe(1);
+    expect(result.stderr).toBe("--site must be an absolute http or https URL.");
   });
 
   it("keeps Next.js project initialization idempotent", async () => {
