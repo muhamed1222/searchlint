@@ -171,7 +171,7 @@ type CliParsedCommand =
       error: string;
     };
 
-export const searchLintCliVersion = "1.0.0-beta.15";
+export const searchLintCliVersion = "1.0.0-beta.16";
 const searchLintCliPackageRange = "beta";
 const searchLintNextPackageRange = "beta";
 
@@ -1429,6 +1429,7 @@ async function initializeLocalProject(
   created.push(...nextConfigResult.created);
 
   const packageUpdate = ensurePackageOnboarding(packageJson);
+  const packageManager = await detectPackageManager(io, packageJson);
   if (packageUpdate.changed) {
     await io.writeText(
       "package.json",
@@ -1444,9 +1445,11 @@ async function initializeLocalProject(
     changed.length > 0 ? `Updated: ${changed.join(", ")}` : "Updated: none",
     "",
     "Next step:",
-    ...(packageUpdate.addedDependencies.length > 0 ? ["  npm install"] : []),
-    "  npm run searchlint:verify",
-    "  npm run dev",
+    ...(packageUpdate.addedDependencies.length > 0
+      ? [`  ${installCommand(packageManager)}`]
+      : []),
+    `  ${runScriptCommand(packageManager, "searchlint:verify")}`,
+    `  ${runScriptCommand(packageManager, "dev")}`,
     "",
     "Open your local site and click the SearchLint badge to inspect the current page."
   ];
@@ -1456,6 +1459,47 @@ async function initializeLocalProject(
     stdout: `${lines.join("\n")}\n`,
     stderr: ""
   };
+}
+
+type PackageManager = "npm" | "pnpm" | "yarn";
+
+async function detectPackageManager(
+  io: CliIo,
+  packageJson: Record<string, unknown>
+): Promise<PackageManager> {
+  const packageManager = packageJson.packageManager;
+  if (typeof packageManager === "string") {
+    if (packageManager.startsWith("pnpm@")) {
+      return "pnpm";
+    }
+    if (packageManager.startsWith("yarn@")) {
+      return "yarn";
+    }
+    if (packageManager.startsWith("npm@")) {
+      return "npm";
+    }
+  }
+
+  if ((await io.exists?.("pnpm-lock.yaml")) === true) {
+    return "pnpm";
+  }
+  if ((await io.exists?.("yarn.lock")) === true) {
+    return "yarn";
+  }
+  return "npm";
+}
+
+function installCommand(packageManager: PackageManager): string {
+  return packageManager === "yarn" ? "yarn install" : `${packageManager} install`;
+}
+
+function runScriptCommand(
+  packageManager: PackageManager,
+  scriptName: string
+): string {
+  return packageManager === "npm"
+    ? `npm run ${scriptName}`
+    : `${packageManager} ${scriptName}`;
 }
 
 function parsePackageJson(packageJsonText: string): Record<string, unknown> {

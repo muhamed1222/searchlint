@@ -65,7 +65,7 @@ Initial real-site acceptance pages:
 
 ## Evidence Log
 
-- `@searchlint/cli@1.0.0-beta.15` and `@searchlint/next@1.0.0-beta.8` are the
+- `@searchlint/cli@1.0.0-beta.16` and `@searchlint/next@1.0.0-beta.8` are the
   current beta packages for the zero-manual-edit Next.js init path.
 - `http://localhost:3001/blog` rendered the badge with `SearchLint info: 2`. The
   two diagnostics were `SL-HEAD-005` and `SL-META-009`, both heuristic
@@ -84,7 +84,7 @@ Initial real-site acceptance pages:
 - The improved local developer chain was published to npm with tag `beta`:
   `@searchlint/core@1.0.0-beta.3`, `@searchlint/browser@1.0.0-beta.2`,
   `@searchlint/overlay@1.0.0-beta.6`, `@searchlint/next@1.0.0-beta.8`, and
-  `@searchlint/cli@1.0.0-beta.15`.
+  `@searchlint/cli@1.0.0-beta.16`.
 - Reinstalling `@searchlint/cli@beta` and `@searchlint/next@beta` in the
   Outlivion test site from npm preserved the improved `SL-IMG-007` evidence.
 - `SL-META-009` now tolerates minor title-length overage up to 65 characters so
@@ -130,6 +130,10 @@ Initial real-site acceptance pages:
   to include `npm install` only when the command added missing SearchLint
   dependencies. Fresh npx-style smoke verification confirmed the output order:
   `npm install`, `npm run searchlint:verify`, `npm run dev`.
+- `@searchlint/cli@1.0.0-beta.16` makes `searchlint init` next-step output
+  package-manager aware using `packageManager`, `pnpm-lock.yaml`, or
+  `yarn.lock`. Smoke verification confirmed pnpm output:
+  `pnpm install`, `pnpm searchlint:verify`, `pnpm dev`.
 
 ## Validation
 
