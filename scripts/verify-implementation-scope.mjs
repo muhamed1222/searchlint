@@ -31,6 +31,7 @@ const approvedImplementationRoots = new Set([
   "packages/reporter-junit/test",
   "packages/reporter-sarif/src",
   "packages/reporter-sarif/test",
+  "packages/searchlint/src",
   "packages/source/src",
   "packages/source/test",
   "apps/dashboard/src",
@@ -52,7 +53,9 @@ const approvedMetadataFiles = new Set([
   ".gitkeep",
   "README.md",
   "CHANGELOG.md",
-  "PRIVACY.md"
+  "PRIVACY.md",
+  "RULE_CATALOG.yaml",
+  ".DS_Store"
 ]);
 const implementationExtensions = new Set([
   ".js",
