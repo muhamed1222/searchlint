@@ -1,0 +1,201 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  foundation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.8.0
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Format
+        run: pnpm format
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Test
+        run: pnpm test
+
+  docker-image-build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.8.0
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify Dockerfile contracts
+        run: node scripts/verify-dockerfiles.mjs
+
+      - name: Build API image
+        run: docker build -f Dockerfile.api -t searchlint-api:ci .
+
+      - name: Scan API image
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: image
+          image-ref: searchlint-api:ci
+          format: table
+          severity: CRITICAL
+          vuln-type: os,library
+          exit-code: 1
+
+      - name: Prepare SBOM output directory
+        run: mkdir -p reports/sbom
+
+      - name: Generate API image SBOM
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: image
+          image-ref: searchlint-api:ci
+          format: cyclonedx
+          output: reports/sbom/searchlint-api.cdx.json
+          exit-code: 0
+
+      - name: Build crawler worker image
+        run: docker build -f Dockerfile.worker -t searchlint-crawler-worker:ci .
+
+      - name: Scan crawler worker image
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: image
+          image-ref: searchlint-crawler-worker:ci
+          format: table
+          severity: CRITICAL
+          vuln-type: os,library
+          exit-code: 1
+
+      - name: Generate crawler worker image SBOM
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: image
+          image-ref: searchlint-crawler-worker:ci
+          format: cyclonedx
+          output: reports/sbom/searchlint-crawler-worker.cdx.json
+          exit-code: 0
+
+      - name: Upload image SBOMs
+        uses: actions/upload-artifact@v4
+        with:
+          name: searchlint-image-sboms
+          path: reports/sbom/*.cdx.json
+
+      - name: Attest image SBOM provenance
+        uses: actions/attest-build-provenance@v4
+        with:
+          subject-path: reports/sbom/*.cdx.json
+
+  next-fixtures-zero-impact:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        fixture:
+          - next15-app
+          - next15-pages
+          - next16-app
+          - next16-pages
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.8.0
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Verify ${{ matrix.fixture }}
+        env:
+          SEARCHLINT_NEXT_FIXTURE: ${{ matrix.fixture }}
+        run: pnpm verify:next-fixtures
+
+      - name: Upload zero-impact evidence
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: next-zero-impact-${{ matrix.fixture }}
+          path: reports/next-fixture-zero-impact-report.json
+
+  postgres-migration-proof:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: searchlint
+          POSTGRES_PASSWORD: searchlint
+          POSTGRES_DB: searchlint
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U searchlint -d searchlint"
+          --health-interval 5s --health-timeout 5s --health-retries 12
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.8.0
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify PostgreSQL migration proof
+        env:
+          SEARCHLINT_POSTGRES_TEST_DATABASE_URL: postgres://searchlint:searchlint@127.0.0.1:5432/searchlint
+        run: pnpm verify:postgres
