@@ -75,6 +75,7 @@ jobs:
           format: table
           severity: CRITICAL
           vuln-type: os,library
+          ignore-unfixed: true
           exit-code: 1
 
       - name: Prepare SBOM output directory
@@ -100,6 +101,7 @@ jobs:
           format: table
           severity: CRITICAL
           vuln-type: os,library
+          ignore-unfixed: true
           exit-code: 1
 
       - name: Generate crawler worker image SBOM

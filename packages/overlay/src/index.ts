@@ -622,7 +622,7 @@ export function renderOverlayHtml(state: SearchLintOverlayState): string {
   return `${renderStyles()}
 <div class="sl-drawer sl-position--${position}" dir="${direction}" data-state="closed">
   <button class="sl-badge sl-badge--${state.status}" type="button" aria-label="${escapeHtml(badgeLabel)}" aria-haspopup="dialog" aria-controls="${panelId}" aria-expanded="false" data-action="toggle">
-    <span class="sl-badge__text" aria-hidden="false" aria-live="polite" aria-atomic="true"><span class="sl-badge__status">${escapeHtml(labelForBadgeToggle(false, language))}</span></span>
+    <span class="sl-badge__text sl-badge__count" aria-hidden="false" aria-live="polite" aria-atomic="true"><span class="sl-badge__status">${escapeHtml(labelForBadgeToggle(false, language))}</span></span>
     <span class="sl-badge__logo" aria-hidden="true">${renderSearchLintLogo()}</span>
   </button>
   <section id="${panelId}" class="sl-panel" role="dialog" aria-modal="false" aria-labelledby="${panelTitleId}" aria-describedby="${panelDescriptionId}" hidden tabindex="-1">
@@ -632,6 +632,10 @@ export function renderOverlayHtml(state: SearchLintOverlayState): string {
         <h2 id="${panelTitleId}">SearchLint</h2>
         <span class="sl-panel__live" aria-hidden="true"></span>
         <p id="${panelDescriptionId}" class="sl-context">${escapeHtml(language === "ru" ? "SEO диагностика" : "SEO diagnostics")}${state.pageUrl ? ` · ${escapeHtml(state.pageUrl)}` : ""}${state.route ? ` · ${escapeHtml(state.route)}` : ""}</p>
+      </div>
+      <div class="sl-header-actions">
+        ${state.rerunEnabled === true ? renderRerunButton(language) : ""}
+        ${renderCloseButton(language)}
       </div>
     </header>
     <div class="sl-panel__scroll">
@@ -794,12 +798,21 @@ function labelForBadgeToggle(open: boolean, language: OverlayLanguage): string {
 }
 
 function renderRerunButton(language: OverlayLanguage): string {
-  const title =
-    language === "ru"
-      ? "Обновить проверку SearchLint"
-      : "Refresh SearchLint analysis";
+  const title = language === "ru" ? "Обновить анализ" : "Rerun analysis";
   return `<button class="sl-icon-button" type="button" aria-label="${escapeHtml(title)}" title="${escapeHtml(title)}" data-action="rerun">
     ${renderRefreshIcon()}
+    <span class="sl-context">${escapeHtml(title)}</span>
+  </button>`;
+}
+
+function renderCloseButton(language: OverlayLanguage): string {
+  const title =
+    language === "ru"
+      ? "Закрыть диагностику SearchLint"
+      : "Close SearchLint diagnostics";
+  return `<button class="sl-icon-button" type="button" aria-label="${escapeHtml(title)}" title="${escapeHtml(title)}" data-action="close">
+    ${renderCloseIcon()}
+    <span class="sl-context">${escapeHtml(title)}</span>
   </button>`;
 }
 
@@ -822,6 +835,13 @@ function renderRefreshIcon(): string {
     <path d="M3.5 3.6v3.5H7" />
     <path d="M4.5 12.5a5.8 5.8 0 0 0 10.3 2.1l1.7-1.7" />
     <path d="M16.5 16.4v-3.5H13" />
+  </svg>`;
+}
+
+function renderCloseIcon(): string {
+  return `<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+    <path d="M5 5l10 10" />
+    <path d="M15 5L5 15" />
   </svg>`;
 }
 
@@ -1036,12 +1056,12 @@ export function createSearchLintOverlayRuntime(
     }
   }
 
-  function close(focusBadge = true): void {
+  function close(focusBadge = true, animate = false): void {
     dragState = undefined;
     const drawer = shadow.querySelector<HTMLElement>(".sl-drawer");
     const panel = shadow.querySelector<HTMLElement>(".sl-panel");
     const badge = shadow.querySelector<HTMLElement>(".sl-badge");
-    if (drawer && panel && !panel.hidden && badge) {
+    if (animate && drawer && panel && !panel.hidden && badge) {
       drawer.style.transform = "";
       drawer.dataset.state = "closing";
       badge.setAttribute("aria-expanded", "false");
@@ -1314,9 +1334,9 @@ export function createSearchLintOverlayRuntime(
         event.preventDefault();
         return;
       }
-      isOpen ? close(false) : open(false);
+      isOpen ? close(false, true) : open(false);
     }
-    if (action === "close") close(false);
+    if (action === "close") close(false, true);
     if (action === "language-toggle") {
       const language = nextOverlayLanguage(state.language ?? "en");
       state = {
@@ -4284,7 +4304,7 @@ function renderIssueRow(
   const location = diagnostic.sourceLocation;
   const selector =
     location?.selector !== undefined
-      ? `<button type="button" class="sl-issue-icon-action" data-action="highlight" aria-label="Highlight ${escapeHtml(diagnostic.ruleId)} evidence">${renderFeedIcon("warning", diagnostic.severity === "info" ? "info" : "warn")}</button>`
+      ? `<button type="button" class="sl-issue-icon-action" data-action="highlight" aria-label="Highlight">${renderFeedIcon("warning", diagnostic.severity === "info" ? "info" : "warn")}</button>`
       : renderFeedIcon(
           "warning",
           diagnostic.severity === "info" ? "info" : "warn"
@@ -4302,8 +4322,8 @@ function renderIssueRow(
     <div class="sl-issue-actions">
       <span>${escapeHtml(severityLabelForLanguage(diagnostic.severity, language))}</span>
       <button class="sl-issue-primary-action" type="button" data-action="copy-fix-prompt" aria-label="${language === "ru" ? "Скопировать fix prompt для" : "Copy fix prompt for"} ${escapeHtml(diagnostic.ruleId)}">${language === "ru" ? "Скопировать prompt" : "Copy fix prompt"}</button>
-      <button type="button" data-action="copy" aria-label="${language === "ru" ? "Скопировать диагностику" : "Copy"} ${escapeHtml(diagnostic.ruleId)}${language === "ru" ? "" : " diagnostic"}">${language === "ru" ? "Диагностика" : "Diagnostic"}</button>
-      ${suppressEnabled ? `<button type="button" data-action="suppress" aria-label="${language === "ru" ? "Скрыть диагностику" : "Suppress"} ${escapeHtml(diagnostic.ruleId)}${language === "ru" ? "" : " diagnostic"}">${language === "ru" ? "Скрыть" : "Suppress"}</button>` : ""}
+      <button type="button" data-action="copy" aria-label="${language === "ru" ? "Скопировать диагностику" : "Copy diagnostic"}">${language === "ru" ? "Диагностика" : "Diagnostic"}</button>
+      ${suppressEnabled ? `<button type="button" data-action="suppress" aria-label="${language === "ru" ? "Скрыть диагностику" : "Suppress"}">${language === "ru" ? "Скрыть" : "Suppress"}</button>` : ""}
     </div>
   </article>`;
 }
@@ -4691,7 +4711,7 @@ function renderDiagnosticCard(
       : "";
   const selector =
     location?.selector !== undefined
-      ? `<p><strong>Selector</strong> <code>${escapeHtml(location.selector)}</code> <button type="button" data-action="highlight" aria-label="Highlight ${escapeHtml(diagnostic.ruleId)} evidence">Highlight</button></p>`
+      ? `<p><strong>Selector</strong> <code>${escapeHtml(location.selector)}</code> <button type="button" data-action="highlight" aria-label="Highlight">Highlight</button></p>`
       : "";
   return `<article class="sl-card sl-card--${diagnostic.severity}" role="listitem" tabindex="0" data-fingerprint="${escapeHtml(diagnostic.fingerprint)}" data-searchlint-rule-id="${escapeHtml(diagnostic.ruleId)}" data-searchlint-severity="${escapeHtml(diagnostic.severity)}" data-searchlint-category="${escapeHtml(categoryForRuleId(diagnostic.ruleId))}" data-searchlint-source="${escapeHtml(diagnostic.source)}">
     <div class="sl-card__head">
@@ -4713,8 +4733,8 @@ function renderDiagnosticCard(
     ${diagnostic.rawHtmlSnippet ? `<details><summary>Raw HTML</summary><pre>${escapeHtml(diagnostic.rawHtmlSnippet)}</pre></details>` : ""}
     ${diagnostic.renderedDomSnippet ? `<details><summary>Rendered DOM</summary><pre>${escapeHtml(diagnostic.renderedDomSnippet)}</pre></details>` : ""}
     <div class="sl-card__actions">
-      <button type="button" data-action="copy" aria-label="Copy ${escapeHtml(diagnostic.ruleId)} diagnostic">Copy diagnostic</button>
-      ${suppressEnabled ? `<button type="button" data-action="suppress" aria-label="Suppress ${escapeHtml(diagnostic.ruleId)} diagnostic">Suppress</button>` : ""}
+      <button type="button" data-action="copy" aria-label="Copy diagnostic">Copy diagnostic</button>
+      ${suppressEnabled ? `<button type="button" data-action="suppress" aria-label="Suppress">Suppress</button>` : ""}
     </div>
   </article>`;
 }

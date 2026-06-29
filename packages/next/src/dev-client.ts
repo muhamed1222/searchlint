@@ -132,6 +132,7 @@ export function initializeSearchLintDevClient(
   const runtime = createSearchLintOverlayRuntime({
     document: options.document ?? document,
     initialDiagnostics: [],
+    onSuppress: () => undefined,
     onRerun: () =>
       rerunSearchLintDevClient(
         runtime,
@@ -376,11 +377,7 @@ export async function collectSiteEssentials(
 ): Promise<OverlaySiteEssentialsAudit | undefined> {
   const pageUrl = document.location?.href;
   const origin = resolveCurrentOrigin(document);
-  if (
-    typeof pageUrl !== "string" ||
-    pageUrl === "" ||
-    origin === undefined
-  ) {
+  if (typeof pageUrl !== "string" || pageUrl === "" || origin === undefined) {
     return undefined;
   }
   const fetchArtifact =
@@ -392,8 +389,16 @@ export async function collectSiteEssentials(
       capturedAt,
       pageUrl,
       essentials: [
-        notProvenEssential("robots", "robots.txt", "Browser fetch is unavailable."),
-        notProvenEssential("sitemap", "sitemap.xml", "Browser fetch is unavailable."),
+        notProvenEssential(
+          "robots",
+          "robots.txt",
+          "Browser fetch is unavailable."
+        ),
+        notProvenEssential(
+          "sitemap",
+          "sitemap.xml",
+          "Browser fetch is unavailable."
+        ),
         notProvenEssential("llms", "llms.txt", "Browser fetch is unavailable."),
         notProvenEssential(
           "not-found",
@@ -425,7 +430,10 @@ export async function collectSiteEssentials(
       missingDetail:
         "llms.txt is missing. Add it when AI/LLM discovery should be explicit."
     }),
-    checkNotFoundRoute(fetchArtifact, new URL("/__searchlint_missing_page__", origin).href)
+    checkNotFoundRoute(
+      fetchArtifact,
+      new URL("/__searchlint_missing_page__", origin).href
+    )
   ]);
 
   return {
@@ -1357,7 +1365,10 @@ function fetchCachedGooglePageSpeed(
   const cacheKey = JSON.stringify([pageUrl, strategy, apiKey ?? ""]);
   const now = Date.now();
   const existing = pageSpeedCache.get(cacheKey);
-  if (existing !== undefined && now - existing.createdAt < pageSpeedCacheTtlMs) {
+  if (
+    existing !== undefined &&
+    now - existing.createdAt < pageSpeedCacheTtlMs
+  ) {
     return existing.promise;
   }
 

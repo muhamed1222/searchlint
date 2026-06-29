@@ -78,6 +78,11 @@ for (const scan of scanBlocks(workflow)) {
     "vuln-type: os,library",
     "Trivy scans must include OS and library vulnerabilities"
   );
+  assertIncludes(
+    scan,
+    "ignore-unfixed: true",
+    "Trivy scans must fail on fixable critical findings without blocking on upstream base-image vulnerabilities that have no fixed version"
+  );
   assertIncludes(scan, "exit-code: 1", "Trivy scans must fail CI on findings");
 }
 

@@ -221,7 +221,9 @@ describe("createCoreCanonicalHreflangRules", () => {
       },
       "https://moolt.site"
     );
-    const diagnostics = result.diagnostics.map((diagnostic) => diagnostic.ruleId);
+    const diagnostics = result.diagnostics.map(
+      (diagnostic) => diagnostic.ruleId
+    );
     const hostDiagnostic = result.diagnostics.find(
       (diagnostic) => diagnostic.ruleId === "SL-CANON-007"
     );
