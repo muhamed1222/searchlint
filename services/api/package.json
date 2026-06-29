@@ -1,0 +1,47 @@
+{
+  "name": "@searchlint/api",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "files": [
+    "dist/src",
+    "package.json"
+  ],
+  "bin": {
+    "searchlint-api": "./dist/src/bin.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
+    },
+    "./http-contracts": {
+      "types": "./dist/src/http-contracts.d.ts",
+      "import": "./dist/src/http-contracts.js"
+    },
+    "./node": {
+      "types": "./dist/src/node.d.ts",
+      "import": "./dist/src/node.js"
+    }
+  },
+  "scripts": {
+    "build": "node ../../scripts/build-package.mjs",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "searchlint": {
+    "layer": "service"
+  },
+  "dependencies": {
+    "@opentelemetry/api": "1.9.0",
+    "@opentelemetry/exporter-logs-otlp-http": "0.219.0",
+    "@opentelemetry/exporter-metrics-otlp-http": "0.219.0",
+    "@opentelemetry/resources": "2.8.0",
+    "@opentelemetry/sdk-logs": "0.219.0",
+    "@opentelemetry/sdk-metrics": "2.8.0",
+    "pg": "^8.22.0"
+  },
+  "devDependencies": {
+    "@types/pg": "^8.20.0"
+  }
+}
