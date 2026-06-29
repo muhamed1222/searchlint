@@ -537,9 +537,9 @@ async function runDevelopmentE2E(projectDir, fixture) {
         namedActions:
           controls.includes("Rerun analysis") &&
           controls.includes("Close SearchLint diagnostics") &&
-          controls.includes("Copy diagnostic") &&
-          controls.includes("Suppress") &&
-          controls.includes("Highlight"),
+          controls.includes("Copy SL-IMG-ALT-001 diagnostic") &&
+          controls.includes("Suppress SL-IMG-ALT-001 diagnostic") &&
+          controls.includes("Highlight SL-IMG-ALT-001 evidence"),
         liveStatus:
           count?.getAttribute("aria-live") === "polite" &&
           count?.getAttribute("aria-atomic") === "true",
