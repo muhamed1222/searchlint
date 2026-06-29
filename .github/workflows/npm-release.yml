@@ -31,10 +31,10 @@ jobs:
     environment: npm-release
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@v4
         with:
           node-version: "24"
           registry-url: "https://registry.npmjs.org"
@@ -70,7 +70,8 @@ jobs:
             packages/reporter-junit \
             packages/reporter-sarif \
             packages/source \
-            packages/cli
+            packages/cli \
+            packages/searchlint
           do
             npm publish "$package_dir" \
               --access public \
