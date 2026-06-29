@@ -218,14 +218,12 @@ describe("agency mode", () => {
     expect(
       createAgencyHostedWhiteLabelReportLinkGrant({
         ...input,
-        artifact: reportArtifact({ artifactUri: undefined })
+        artifact: reportArtifactWithoutArtifactUri()
       })
     ).toMatchObject({ allowed: false, reason: "missing-artifact-uri" });
+    const { membership: _membership, ...inputWithoutMembership } = input;
     expect(
-      createAgencyHostedWhiteLabelReportLinkGrant({
-        ...input,
-        membership: undefined
-      })
+      createAgencyHostedWhiteLabelReportLinkGrant(inputWithoutMembership)
     ).toMatchObject({
       allowed: false,
       reason: "access-denied",
@@ -538,6 +536,12 @@ function reportArtifact(
     createdAt: "2026-06-22T00:00:00.000Z",
     ...overrides
   };
+}
+
+function reportArtifactWithoutArtifactUri(): ReportArtifact {
+  const artifact: Partial<ReportArtifact> = reportArtifact();
+  delete artifact.artifactUri;
+  return artifact as ReportArtifact;
 }
 
 function policies(): AgencySharedRulePolicy[] {
