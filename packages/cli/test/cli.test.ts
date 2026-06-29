@@ -398,7 +398,7 @@ describe("runSearchLintCli", () => {
 
     expect(result).toMatchObject({
       exitCode: 0,
-      stdout: "searchlint 1.0.0-beta.27\n",
+      stdout: "searchlint 1.0.0-beta.110\n",
       stderr: ""
     });
   });
@@ -406,12 +406,100 @@ describe("runSearchLintCli", () => {
   it("prints doctor diagnostics", async () => {
     const result = await runSearchLintCli(["doctor"], createIo({}));
 
-    expect(result.exitCode, result.stderr).toBe(0);
+    expect(result.exitCode, result.stderr).toBe(1);
     expect(result.stderr).toBe("");
     expect(result.stdout).toContain("SearchLint doctor");
-    expect(result.stdout).toContain("version: 1.0.0-beta.27");
-    expect(result.stdout).toContain("node: >=24.0.0 required");
-    expect(result.stdout).toContain("status: local CLI runtime checks passed");
+    expect(result.stdout).toContain("version: 1.0.0-beta.110");
+    expect(result.stdout).toContain("node: v");
+    expect(result.stdout).toContain("ok (requires >=24.0.0)");
+    expect(result.stdout).toContain(
+      "package-manager: not detected; npm, pnpm, and yarn are supported"
+    );
+    expect(result.stdout).toContain(
+      "project: package.json not found; run from a project root"
+    );
+    expect(result.stdout).toContain("status: local CLI runtime checks failed");
+  });
+
+  it("fails doctor diagnostics with a clear message on unsupported Node versions", async () => {
+    const io = createIo({});
+    io.nodeVersion = "v22.22.2";
+    const result = await runSearchLintCli(["doctor"], io);
+
+    expect(result.exitCode).toBe(1);
+    expect(result.stderr).toBe("");
+    expect(result.stdout).toContain(
+      "node: v22.22.2 unsupported (requires >=24.0.0)"
+    );
+    expect(result.stdout).toContain("status: local CLI runtime checks failed");
+  });
+
+  it("prints detected package manager in doctor diagnostics", async () => {
+    const npmResult = await runSearchLintCli(
+      ["doctor"],
+      createIo(
+        {
+          "package.json": JSON.stringify({
+            scripts: { dev: "next dev" },
+            dependencies: { next: "16.2.9" }
+          }),
+          "package-lock.json": "{}"
+        },
+        undefined,
+        true
+      )
+    );
+    const pnpmResult = await runSearchLintCli(
+      ["doctor"],
+      createIo(
+        {
+          "package.json": JSON.stringify({
+            packageManager: "pnpm@11.8.0",
+            scripts: { dev: "next dev" },
+            dependencies: { next: "16.2.9" }
+          })
+        },
+        undefined,
+        true
+      )
+    );
+    const yarnResult = await runSearchLintCli(
+      ["doctor"],
+      createIo(
+        {
+          "package.json": JSON.stringify({
+            scripts: { dev: "next dev" },
+            dependencies: { next: "16.2.9" }
+          }),
+          "yarn.lock": ""
+        },
+        undefined,
+        true
+      )
+    );
+
+    expect(npmResult.stdout).toContain("package-manager: npm detected");
+    expect(pnpmResult.stdout).toContain("package-manager: pnpm detected");
+    expect(yarnResult.stdout).toContain("package-manager: yarn detected");
+  });
+
+  it("detects pnpm from a parent workspace lockfile", async () => {
+    const result = await runSearchLintCli(
+      ["doctor"],
+      createIo(
+        {
+          "package.json": JSON.stringify({
+            scripts: { dev: "next dev" },
+            dependencies: { next: "16.2.9" }
+          }),
+          "../pnpm-lock.yaml": ""
+        },
+        undefined,
+        true
+      )
+    );
+
+    expect(result.stdout).toContain("package-manager: pnpm detected");
   });
 
   it("prints local Next.js badge integration status in doctor diagnostics", async () => {
@@ -421,7 +509,12 @@ describe("runSearchLintCli", () => {
         {
           "package.json": JSON.stringify({
             dependencies: { next: "16.2.9" },
-            devDependencies: { "@searchlint/next": "1.0.0-beta.10" }
+            devDependencies: {
+              "@searchlint/next": "1.0.0-beta.10",
+              typescript: "5.9.3",
+              "@types/react": "19.2.0",
+              "@types/node": "24.10.0"
+            }
           }),
           "searchlint.seo": 'language 1\nsite "https://example.com"\n',
           "next.config.ts":
@@ -436,6 +529,266 @@ describe("runSearchLintCli", () => {
     expect(result.stdout).toContain("project: package.json found");
     expect(result.stdout).toContain("config: searchlint.seo found");
     expect(result.stdout).toContain("next: next.config.ts uses withSearchLint");
+  });
+
+  it("does not treat unused withSearchLint imports as local badge integration", async () => {
+    const result = await runSearchLintCli(
+      ["doctor"],
+      createIo(
+        {
+          "package.json": JSON.stringify({
+            dependencies: { next: "16.2.9" },
+            devDependencies: {
+              "@searchlint/next": "1.0.0-beta.40",
+              typescript: "6.0.3"
+            }
+          }),
+          "searchlint.seo": 'language 1\nsite "https://example.com"\n',
+          "next.config.ts":
+            'import { withSearchLint } from "@searchlint/next";\nconst nextConfig = {};\nexport default nextConfig;\n'
+        },
+        undefined,
+        true
+      )
+    );
+
+    expect(result.exitCode, result.stderr).toBe(1);
+    expect(result.stdout).toContain(
+      'next: next.config.ts does not use withSearchLint; run "searchlint init"'
+    );
+    expect(result.stdout).toContain("status: local CLI runtime checks failed");
+  });
+
+  it("points unpatched next.config.ts projects to init before TypeScript dependency checks", async () => {
+    const result = await runSearchLintCli(
+      ["doctor"],
+      createIo(
+        {
+          "package.json": JSON.stringify({
+            dependencies: { next: "16.2.9" }
+          }),
+          "searchlint.seo": 'language 1\nsite "https://example.com"\n',
+          "next.config.ts":
+            'import type { NextConfig } from "next";\nconst nextConfig: NextConfig = {};\nexport default nextConfig;\n'
+        },
+        undefined,
+        true
+      )
+    );
+
+    expect(result.exitCode).toBe(1);
+    expect(result.stdout).toContain(
+      'next: next.config.ts does not use withSearchLint; run "searchlint init"'
+    );
+    expect(result.stdout).not.toContain(
+      "next.config.ts requires TypeScript config dependencies"
+    );
+  });
+
+  it("does not treat commented withSearchLint calls as local badge integration", async () => {
+    const result = await runSearchLintCli(
+      ["doctor"],
+      createIo(
+        {
+          "package.json": JSON.stringify({
+            dependencies: { next: "16.2.9" },
+            devDependencies: { "@searchlint/next": "1.0.0-beta.40" }
+          }),
+          "searchlint.seo": 'language 1\nsite "https://example.com"\n',
+          "next.config.mjs":
+            "// export default withSearchLint(nextConfig);\nconst nextConfig = {};\nexport default nextConfig;\n"
+        },
+        undefined,
+        true
+      )
+    );
+
+    expect(result.exitCode, result.stderr).toBe(1);
+    expect(result.stdout).toContain(
+      'next: next.config.mjs does not use withSearchLint; run "searchlint init"'
+    );
+    expect(result.stdout).toContain("status: local CLI runtime checks failed");
+  });
+
+  it("recognizes CommonJS local badge integration created by init", async () => {
+    const result = await runSearchLintCli(
+      ["doctor"],
+      createIo(
+        {
+          "package.json": JSON.stringify({
+            dependencies: { next: "16.2.9" },
+            devDependencies: { "@searchlint/next": "1.0.0-beta.40" }
+          }),
+          "searchlint.seo": 'language 1\nsite "https://example.com"\n',
+          "next.config.js":
+            'const __searchlintNextConfig = {};\n\nmodule.exports = async (phase, defaults) => {\n  const { withSearchLint } = await import("@searchlint/next");\n  return withSearchLint(__searchlintNextConfig)(phase, defaults);\n};\n'
+        },
+        undefined,
+        true
+      )
+    );
+
+    expect(result.exitCode, result.stderr).toBe(0);
+    expect(result.stdout).toContain("next: next.config.js uses withSearchLint");
+  });
+
+  it("fails doctor diagnostics when next.config.ts is used without TypeScript", async () => {
+    const result = await runSearchLintCli(
+      ["doctor"],
+      createIo(
+        {
+          "package.json": JSON.stringify({
+            dependencies: { next: "16.2.9" },
+            devDependencies: { "@searchlint/next": "1.0.0-beta.61" }
+          }),
+          "searchlint.seo": 'language 1\nsite "https://example.com"\n',
+          "next.config.ts":
+            'import { withSearchLint } from "@searchlint/next";\nconst nextConfig = {};\nexport default withSearchLint(nextConfig);\n'
+        },
+        undefined,
+        true
+      )
+    );
+
+    expect(result.exitCode).toBe(1);
+    expect(result.stdout).toContain(
+      "next: next.config.ts requires TypeScript config dependencies: typescript, @types/react, @types/node; run npm install -D typescript @types/react @types/node or rename the config to next.config.mjs"
+    );
+    expect(result.stdout).toContain("status: local CLI runtime checks failed");
+  });
+
+  it("prints pnpm install hints for missing TypeScript config dependencies", async () => {
+    const result = await runSearchLintCli(
+      ["doctor"],
+      createIo(
+        {
+          "package.json": JSON.stringify({
+            packageManager: "pnpm@11.8.0",
+            dependencies: { next: "16.2.9" },
+            devDependencies: { "@searchlint/next": "1.0.0-beta.61" }
+          }),
+          "searchlint.seo": 'language 1\nsite "https://example.com"\n',
+          "next.config.ts":
+            'import { withSearchLint } from "@searchlint/next";\nconst nextConfig = {};\nexport default withSearchLint(nextConfig);\n'
+        },
+        undefined,
+        true
+      )
+    );
+
+    expect(result.exitCode).toBe(1);
+    expect(result.stdout).toContain(
+      "run pnpm add -D typescript @types/react @types/node"
+    );
+  });
+
+  it("prints yarn install hints for missing TypeScript config dependencies", async () => {
+    const result = await runSearchLintCli(
+      ["doctor"],
+      createIo(
+        {
+          "package.json": JSON.stringify({
+            dependencies: { next: "16.2.9" },
+            devDependencies: { "@searchlint/next": "1.0.0-beta.61" }
+          }),
+          "yarn.lock": "",
+          "searchlint.seo": 'language 1\nsite "https://example.com"\n',
+          "next.config.ts":
+            'import { withSearchLint } from "@searchlint/next";\nconst nextConfig = {};\nexport default withSearchLint(nextConfig);\n'
+        },
+        undefined,
+        true
+      )
+    );
+
+    expect(result.exitCode).toBe(1);
+    expect(result.stdout).toContain(
+      "run yarn add -D typescript @types/react @types/node"
+    );
+  });
+
+  it("fails doctor diagnostics when parent workspace TypeScript support is incomplete", async () => {
+    const result = await runSearchLintCli(
+      ["doctor"],
+      createIo(
+        {
+          "package.json": JSON.stringify({
+            dependencies: { next: "16.2.9" },
+            devDependencies: { "@searchlint/next": "1.0.0-beta.61" }
+          }),
+          "../package.json": JSON.stringify({
+            private: true,
+            devDependencies: { typescript: "6.0.3" }
+          }),
+          "searchlint.seo": 'language 1\nsite "https://example.com"\n',
+          "next.config.ts":
+            'import { withSearchLint } from "@searchlint/next";\nconst nextConfig = {};\nexport default withSearchLint(nextConfig);\n'
+        },
+        undefined,
+        true
+      )
+    );
+
+    expect(result.exitCode).toBe(1);
+    expect(result.stdout).toContain(
+      "next: next.config.ts requires TypeScript config dependencies: @types/react, @types/node; run npm install -D typescript @types/react @types/node or rename the config to next.config.mjs"
+    );
+    expect(result.stdout).toContain("status: local CLI runtime checks failed");
+  });
+
+  it("accepts next.config.ts when TypeScript support is declared in a parent workspace package", async () => {
+    const result = await runSearchLintCli(
+      ["doctor"],
+      createIo(
+        {
+          "package.json": JSON.stringify({
+            dependencies: { next: "16.2.9" },
+            devDependencies: { "@searchlint/next": "1.0.0-beta.61" }
+          }),
+          "../package.json": JSON.stringify({
+            private: true,
+            devDependencies: {
+              typescript: "5.9.3",
+              "@types/react": "19.2.0",
+              "@types/node": "24.10.0"
+            }
+          }),
+          "searchlint.seo": 'language 1\nsite "https://example.com"\n',
+          "next.config.ts":
+            'import { withSearchLint } from "@searchlint/next";\nconst nextConfig = {};\nexport default withSearchLint(nextConfig);\n'
+        },
+        undefined,
+        true
+      )
+    );
+
+    expect(result.exitCode, result.stdout).toBe(0);
+    expect(result.stdout).toContain("next: next.config.ts uses withSearchLint");
+    expect(result.stdout).toContain("status: local CLI runtime checks passed");
+  });
+
+  it("fails doctor diagnostics for unsupported next.config.cjs projects", async () => {
+    const result = await runSearchLintCli(
+      ["doctor"],
+      createIo(
+        {
+          "package.json": JSON.stringify({
+            dependencies: { next: "16.2.9" }
+          }),
+          "searchlint.seo": 'language 1\nsite "https://example.com"\n',
+          "next.config.cjs":
+            "const nextConfig = {};\nmodule.exports = nextConfig;\n"
+        },
+        undefined,
+        true
+      )
+    );
+
+    expect(result.exitCode).toBe(1);
+    expect(result.stdout).toContain(
+      "next: next.config.cjs is not supported by Next.js. Rename it to next.config.js, next.config.mjs, or next.config.ts, then run searchlint init again."
+    );
+    expect(result.stdout).toContain("status: local CLI runtime checks failed");
   });
 
   it("points users back to init when Next.js is not patched", async () => {
@@ -454,11 +807,34 @@ describe("runSearchLintCli", () => {
       )
     );
 
-    expect(result.exitCode, result.stderr).toBe(0);
+    expect(result.exitCode, result.stderr).toBe(1);
     expect(result.stdout).toContain("config: searchlint.seo missing");
     expect(result.stdout).toContain(
       'next: next.config.mjs does not use withSearchLint; run "searchlint init"'
     );
+    expect(result.stdout).toContain("status: local CLI runtime checks failed");
+  });
+
+  it("fails doctor diagnostics when Next.js config is missing in a Next.js project", async () => {
+    const result = await runSearchLintCli(
+      ["doctor"],
+      createIo(
+        {
+          "package.json": JSON.stringify({
+            dependencies: { next: "16.2.9" }
+          }),
+          "searchlint.seo": 'language 1\nsite "https://example.com"\n'
+        },
+        undefined,
+        true
+      )
+    );
+
+    expect(result.exitCode, result.stderr).toBe(1);
+    expect(result.stdout).toContain(
+      'next: Next.js dependency found; next.config.* missing; run "searchlint init"'
+    );
+    expect(result.stdout).toContain("status: local CLI runtime checks failed");
   });
 
   it("prints shell completion scripts", async () => {
@@ -707,8 +1083,8 @@ describe("runSearchLintCli", () => {
         "searchlint doctor && searchlint config validate --config searchlint.seo"
     });
     expect(packageJson.devDependencies).toMatchObject({
-      "@searchlint/cli": "beta",
-      "@searchlint/next": "beta"
+      "@searchlint/cli": "1.0.0-beta.110",
+      "@searchlint/next": "1.0.0-beta.61"
     });
   });
 
@@ -808,6 +1184,31 @@ describe("runSearchLintCli", () => {
     expect(files["searchlint.seo"]).toContain('site "https://client.example"');
   });
 
+  it("keeps existing searchlint.seo and explains that --site was not applied", async () => {
+    const existingConfig = 'language 1\n\nsite "https://existing.example"\n';
+    const files: Record<string, string> = {
+      "package.json": JSON.stringify({
+        scripts: { dev: "next dev" },
+        dependencies: { next: "16.2.9" }
+      }),
+      "searchlint.seo": existingConfig,
+      "next.config.mjs": "const nextConfig = {};\nexport default nextConfig;\n"
+    };
+    const result = await runSearchLintCli(
+      ["init", "--site", "https://client.example"],
+      createIo(files, undefined, true)
+    );
+
+    expect(result.exitCode, result.stderr).toBe(0);
+    expect(files["searchlint.seo"]).toBe(existingConfig);
+    expect(result.stdout).toContain(
+      "Config: existing searchlint.seo kept; --site only applies when creating a new config"
+    );
+    expect(result.stdout).not.toContain(
+      "Site: https://client.example (--site)"
+    );
+  });
+
   it("prints pnpm next steps for pnpm projects", async () => {
     const files: Record<string, string> = {
       "package.json": JSON.stringify({
@@ -875,6 +1276,78 @@ describe("runSearchLintCli", () => {
     );
   });
 
+  it("adds the scoped CLI package when only the wrapper package is installed so npm links the bin", async () => {
+    const files: Record<string, string> = {
+      "package.json": JSON.stringify({
+        scripts: { dev: "next dev" },
+        dependencies: {
+          next: "16.2.9"
+        },
+        devDependencies: {
+          searchlint: "1.0.0-beta.31"
+        }
+      }),
+      "next.config.ts":
+        'import type { NextConfig } from "next";\n\nconst nextConfig: NextConfig = {};\n\nexport default nextConfig;\n'
+    };
+    const result = await runSearchLintCli(
+      ["init"],
+      createIo(files, undefined, true)
+    );
+
+    expect(result.exitCode, result.stderr).toBe(0);
+    const packageJson = JSON.parse(files["package.json"] ?? "{}");
+    expect(packageJson.devDependencies.searchlint).toBe("1.0.0-beta.31");
+    expect(packageJson.devDependencies["@searchlint/cli"]).toBe(
+      "1.0.0-beta.110"
+    );
+    expect(packageJson.devDependencies["@searchlint/next"]).toBe(
+      "1.0.0-beta.61"
+    );
+    expect(files["next.config.ts"]).toContain(
+      "export default withSearchLint(nextConfig);"
+    );
+  });
+
+  it("keeps a direct scoped CLI package when the wrapper package is installed so npm links the bin", async () => {
+    const files: Record<string, string> = {
+      "package.json": JSON.stringify({
+        scripts: { dev: "next dev" },
+        dependencies: {
+          next: "16.2.9",
+          "@searchlint/cli": "1.0.0-beta.22"
+        },
+        devDependencies: {
+          searchlint: "1.0.0-beta.31",
+          "@searchlint/cli": "1.0.0-beta.23",
+          "@searchlint/next": "1.0.0-beta.13"
+        },
+        optionalDependencies: {
+          "@searchlint/cli": "1.0.0-beta.21"
+        }
+      }),
+      "next.config.mjs": "const nextConfig = {};\nexport default nextConfig;\n"
+    };
+    const result = await runSearchLintCli(
+      ["init"],
+      createIo(files, undefined, true)
+    );
+
+    expect(result.exitCode, result.stderr).toBe(0);
+    const packageJson = JSON.parse(files["package.json"] ?? "{}");
+    expect(packageJson.dependencies["@searchlint/cli"]).toBe("1.0.0-beta.22");
+    expect(packageJson.devDependencies["@searchlint/cli"]).toBe(
+      "1.0.0-beta.23"
+    );
+    expect(packageJson.optionalDependencies["@searchlint/cli"]).toBe(
+      "1.0.0-beta.21"
+    );
+    expect(packageJson.devDependencies.searchlint).toBe("1.0.0-beta.31");
+    expect(packageJson.devDependencies["@searchlint/next"]).toBe(
+      "1.0.0-beta.13"
+    );
+  });
+
   it("upgrades existing SearchLint package ranges when requested", async () => {
     const files: Record<string, string> = {
       "package.json": JSON.stringify({
@@ -897,13 +1370,13 @@ describe("runSearchLintCli", () => {
     expect(result.exitCode, result.stderr).toBe(0);
     expect(result.stdout).toContain("  npm install");
     const packageJson = JSON.parse(files["package.json"] ?? "{}");
-    expect(packageJson.dependencies["@searchlint/next"]).toBe("1.0.0-beta.13");
+    expect(packageJson.dependencies["@searchlint/next"]).toBe("1.0.0-beta.61");
     expect(packageJson.devDependencies["@searchlint/cli"]).toBe(
-      "1.0.0-beta.27"
+      "1.0.0-beta.110"
     );
   });
 
-  it("upgrades the unscoped wrapper package when present", async () => {
+  it("upgrades the unscoped wrapper package and direct scoped CLI when present", async () => {
     const files: Record<string, string> = {
       "package.json": JSON.stringify({
         scripts: { dev: "next dev" },
@@ -925,12 +1398,12 @@ describe("runSearchLintCli", () => {
 
     expect(result.exitCode, result.stderr).toBe(0);
     const packageJson = JSON.parse(files["package.json"] ?? "{}");
-    expect(packageJson.devDependencies.searchlint).toBe("1.0.0-beta.27");
+    expect(packageJson.devDependencies.searchlint).toBe("1.0.0-beta.110");
     expect(packageJson.devDependencies["@searchlint/cli"]).toBe(
-      "1.0.0-beta.27"
+      "1.0.0-beta.110"
     );
     expect(packageJson.devDependencies["@searchlint/next"]).toBe(
-      "1.0.0-beta.13"
+      "1.0.0-beta.61"
     );
   });
 
@@ -978,6 +1451,53 @@ describe("runSearchLintCli", () => {
     expect(result.stdout).not.toContain("npm install");
   });
 
+  it("rejects next.config.cjs during init because Next.js does not support it", async () => {
+    const files: Record<string, string> = {
+      "package.json": JSON.stringify({
+        scripts: { dev: "next dev" },
+        dependencies: { next: "16.2.9" }
+      }),
+      "next.config.cjs":
+        "const nextConfig = {};\nmodule.exports = nextConfig;\n"
+    };
+    const result = await runSearchLintCli(
+      ["init"],
+      createIo(files, undefined, true)
+    );
+
+    expect(result.exitCode).toBe(1);
+    expect(result.stderr).toBe(
+      "next.config.cjs is not supported by Next.js. Rename it to next.config.js, next.config.mjs, or next.config.ts, then run searchlint init again."
+    );
+    expect(files["next.config.cjs"]).toBe(
+      "const nextConfig = {};\nmodule.exports = nextConfig;\n"
+    );
+  });
+
+  it("does not treat commented withSearchLint calls as already initialized during init", async () => {
+    const files: Record<string, string> = {
+      "package.json": JSON.stringify({
+        scripts: { dev: "next dev" },
+        dependencies: { next: "16.2.9" }
+      }),
+      "next.config.mjs":
+        "// export default withSearchLint(nextConfig);\nconst nextConfig = {};\nexport default nextConfig;\n"
+    };
+    const result = await runSearchLintCli(
+      ["init"],
+      createIo(files, undefined, true)
+    );
+
+    expect(result.exitCode, result.stderr).toBe(0);
+    expect(files["next.config.mjs"]).toContain(
+      "// export default withSearchLint(nextConfig);"
+    );
+    expect(files["next.config.mjs"]).toContain(
+      "export default withSearchLint(nextConfig);"
+    );
+    expect(result.stdout).toContain("Updated: next.config.mjs, package.json");
+  });
+
   it("leaves pre-Next 16 dev scripts unchanged", async () => {
     const files: Record<string, string> = {
       "package.json": JSON.stringify({
@@ -997,10 +1517,77 @@ describe("runSearchLintCli", () => {
     );
   });
 
+  it("adds webpack mode to wrapped Next 16 dev scripts", async () => {
+    const files: Record<string, string> = {
+      "package.json": JSON.stringify({
+        scripts: { dev: "portless refref-acme -- next dev" },
+        dependencies: { next: "16.0.7" }
+      }),
+      "../pnpm-lock.yaml": "",
+      "next.config.js": "const nextConfig = {};\nmodule.exports = nextConfig;\n"
+    };
+    const result = await runSearchLintCli(
+      ["init"],
+      createIo(files, undefined, true)
+    );
+    const packageJson = JSON.parse(files["package.json"] ?? "{}");
+
+    expect(result.exitCode, result.stderr).toBe(0);
+    expect(packageJson.scripts.dev).toBe(
+      "portless refref-acme -- next dev --webpack"
+    );
+    expect(result.stdout).toContain("  pnpm searchlint:verify");
+    expect(result.stdout).toContain("  pnpm dev");
+  });
+
+  it("replaces wrapped Next 16 turbopack dev scripts with webpack", async () => {
+    const files: Record<string, string> = {
+      "package.json": JSON.stringify({
+        scripts: {
+          dev: "portless refref-webapp -- next dev --turbo || portless refref-webapp -- next dev --turbo"
+        },
+        dependencies: { next: "16.0.7" }
+      }),
+      "next.config.ts": "const nextConfig = {};\nexport default nextConfig;\n"
+    };
+    const result = await runSearchLintCli(
+      ["init"],
+      createIo(files, undefined, true)
+    );
+    const packageJson = JSON.parse(files["package.json"] ?? "{}");
+
+    expect(result.exitCode, result.stderr).toBe(0);
+    expect(packageJson.scripts.dev).toBe(
+      "portless refref-webapp -- next dev --webpack || portless refref-webapp -- next dev --webpack"
+    );
+  });
+
+  it("replaces only non-webpack Next 16 fallback dev commands", async () => {
+    const files: Record<string, string> = {
+      "package.json": JSON.stringify({
+        scripts: {
+          dev: "next dev --webpack || portless refref-webapp -- next dev --turbo"
+        },
+        dependencies: { next: "16.0.7" }
+      }),
+      "next.config.ts": "const nextConfig = {};\nexport default nextConfig;\n"
+    };
+    const result = await runSearchLintCli(
+      ["init"],
+      createIo(files, undefined, true)
+    );
+    const packageJson = JSON.parse(files["package.json"] ?? "{}");
+
+    expect(result.exitCode, result.stderr).toBe(0);
+    expect(packageJson.scripts.dev).toBe(
+      "next dev --webpack || portless refref-webapp -- next dev --webpack"
+    );
+  });
+
   it("patches CommonJS Next.js configs with a dynamic ESM import", async () => {
     const files = {
       "package.json": JSON.stringify({ dependencies: { next: "16.2.9" } }),
-      "next.config.cjs":
+      "next.config.js":
         "const nextConfig = { poweredByHeader: false };\nmodule.exports = nextConfig;\n"
     };
     const result = await runSearchLintCli(
@@ -1009,11 +1596,162 @@ describe("runSearchLintCli", () => {
     );
 
     expect(result.exitCode, result.stderr).toBe(0);
-    expect(files["next.config.cjs"]).toContain(
+    expect(files["next.config.js"]).toContain(
       'const { withSearchLint } = await import("@searchlint/next");'
     );
-    expect(files["next.config.cjs"]).toContain(
+    expect(files["next.config.js"]).toContain(
       "return withSearchLint(__searchlintNextConfig)(phase, defaults);"
+    );
+  });
+
+  it("prefers next.config.js when both js and mjs configs exist", async () => {
+    const files = {
+      "package.json": JSON.stringify({ dependencies: { next: "14.2.35" } }),
+      "next.config.mjs":
+        "const withNextra = require('nextra')({ theme: 'nextra-theme-docs' });\nmodule.exports = withNextra();\n",
+      "next.config.js":
+        "const withNextra = require('nextra')({ theme: 'nextra-theme-docs' });\nmodule.exports = withNextra();\n"
+    };
+    const result = await runSearchLintCli(
+      ["init"],
+      createIo(files, undefined, true)
+    );
+
+    expect(result.exitCode, result.stderr).toBe(0);
+    expect(files["next.config.js"]).toContain(
+      'const { withSearchLint } = await import("@searchlint/next");'
+    );
+    expect(files["next.config.js"]).toContain(
+      "return withSearchLint(__searchlintNextConfig)(phase, defaults);"
+    );
+    expect(files["next.config.mjs"]).toBe(
+      "const withNextra = require('nextra')({ theme: 'nextra-theme-docs' });\nmodule.exports = withNextra();\n"
+    );
+    expect(result.stdout).toContain("Updated: next.config.js, package.json");
+  });
+
+  it("patches CommonJS inline arrow function Next.js configs", async () => {
+    const files = {
+      "package.json": JSON.stringify({ dependencies: { next: "16.2.9" } }),
+      "next.config.js":
+        "module.exports = (phase, defaults) => ({ env: { phase } });\n"
+    };
+    const result = await runSearchLintCli(
+      ["init"],
+      createIo(files, undefined, true)
+    );
+
+    expect(result.exitCode, result.stderr).toBe(0);
+    expect(files["next.config.js"]).toContain(
+      "const __searchlintNextConfig = (phase, defaults) => ({ env: { phase } });"
+    );
+    expect(files["next.config.js"]).toContain(
+      'const { withSearchLint } = await import("@searchlint/next");'
+    );
+    expect(files["next.config.js"]).toContain(
+      "return withSearchLint(__searchlintNextConfig)(phase, defaults);"
+    );
+  });
+
+  it("patches CommonJS single-parameter arrow function Next.js configs", async () => {
+    const files = {
+      "package.json": JSON.stringify({ dependencies: { next: "16.2.9" } }),
+      "next.config.js": "module.exports = phase => ({ env: { phase } });\n"
+    };
+    const result = await runSearchLintCli(
+      ["init"],
+      createIo(files, undefined, true)
+    );
+
+    expect(result.exitCode, result.stderr).toBe(0);
+    expect(files["next.config.js"]).toContain(
+      "const __searchlintNextConfig = phase => ({ env: { phase } });"
+    );
+    expect(files["next.config.js"]).toContain(
+      "return withSearchLint(__searchlintNextConfig)(phase, defaults);"
+    );
+  });
+
+  it("patches CommonJS anonymous function Next.js configs", async () => {
+    const files = {
+      "package.json": JSON.stringify({ dependencies: { next: "16.2.9" } }),
+      "next.config.js":
+        "module.exports = function (phase, defaults) {\n  return { poweredByHeader: false };\n};\n"
+    };
+    const result = await runSearchLintCli(
+      ["init"],
+      createIo(files, undefined, true)
+    );
+
+    expect(result.exitCode, result.stderr).toBe(0);
+    expect(files["next.config.js"]).toContain(
+      "const __searchlintNextConfig = function (phase, defaults) {"
+    );
+    expect(files["next.config.js"]).toContain(
+      "return withSearchLint(__searchlintNextConfig)(phase, defaults);"
+    );
+  });
+
+  it("patches CommonJS named function Next.js configs", async () => {
+    const files = {
+      "package.json": JSON.stringify({ dependencies: { next: "16.2.9" } }),
+      "next.config.js":
+        "module.exports = function nextConfig(phase, defaults) {\n  return { poweredByHeader: false };\n};\n"
+    };
+    const result = await runSearchLintCli(
+      ["init"],
+      createIo(files, undefined, true)
+    );
+
+    expect(result.exitCode, result.stderr).toBe(0);
+    expect(files["next.config.js"]).toContain(
+      "const __searchlintNextConfig = function nextConfig(phase, defaults) {"
+    );
+    expect(files["next.config.js"]).toContain(
+      "return withSearchLint(__searchlintNextConfig)(phase, defaults);"
+    );
+  });
+
+  it("patches CommonJS async named function Next.js configs", async () => {
+    const files = {
+      "package.json": JSON.stringify({ dependencies: { next: "16.2.9" } }),
+      "next.config.js":
+        "module.exports = async function nextConfig(phase, defaults) {\n  return { poweredByHeader: false };\n};\n"
+    };
+    const result = await runSearchLintCli(
+      ["init"],
+      createIo(files, undefined, true)
+    );
+
+    expect(result.exitCode, result.stderr).toBe(0);
+    expect(files["next.config.js"]).toContain(
+      "const __searchlintNextConfig = async function nextConfig(phase, defaults) {"
+    );
+    expect(files["next.config.js"]).toContain(
+      "return withSearchLint(__searchlintNextConfig)(phase, defaults);"
+    );
+  });
+
+  it("patches CommonJS call expression Next.js configs", async () => {
+    const files = {
+      "package.json": JSON.stringify({ dependencies: { next: "16.2.9" } }),
+      "next.config.js":
+        "const { defineConfig } = require('next/config');\nmodule.exports = defineConfig({ poweredByHeader: false });\n"
+    };
+    const result = await runSearchLintCli(
+      ["init"],
+      createIo(files, undefined, true)
+    );
+
+    expect(result.exitCode, result.stderr).toBe(0);
+    expect(files["next.config.js"]).toContain(
+      "const __searchlintNextConfig = defineConfig({ poweredByHeader: false });"
+    );
+    expect(files["next.config.js"]).toContain(
+      "return withSearchLint(__searchlintNextConfig)(phase, defaults);"
+    );
+    expect(files["next.config.js"]).not.toContain(
+      "withSearchLint(defineConfig);"
     );
   });
 
@@ -1035,7 +1773,358 @@ describe("runSearchLintCli", () => {
     expect(files["next.config.ts"]).toContain(
       "export default withSearchLint(nextConfig);"
     );
+    expect(files["next.config.ts"]?.endsWith("\n")).toBe(true);
     expect(files["searchlint.seo"]).toContain("language 1");
+    const packageJson = JSON.parse(files["package.json"] ?? "{}");
+    expect(packageJson.devDependencies.typescript).toBe("^5.9.0");
+    expect(packageJson.devDependencies["@types/react"]).toBe("^19.0.0");
+    expect(packageJson.devDependencies["@types/node"]).toBe("^24.0.0");
+  });
+
+  it("does not add local TypeScript dependencies when a parent workspace package provides them", async () => {
+    const files: Record<string, string> = {
+      "package.json": JSON.stringify({ dependencies: { next: "16.2.9" } }),
+      "../package.json": JSON.stringify({
+        devDependencies: {
+          typescript: "5.9.3",
+          "@types/react": "19.2.0",
+          "@types/node": "24.10.0"
+        }
+      }),
+      "next.config.ts":
+        'import type { NextConfig } from "next";\n\nconst nextConfig: NextConfig = {};\n\nexport default nextConfig;\n'
+    };
+    const result = await runSearchLintCli(
+      ["init"],
+      createIo(files, undefined, true)
+    );
+    const packageJson = JSON.parse(files["package.json"] ?? "{}");
+
+    expect(result.exitCode, result.stderr).toBe(0);
+    expect(files["next.config.ts"]).toContain(
+      "export default withSearchLint(nextConfig);"
+    );
+    expect(packageJson.devDependencies.typescript).toBeUndefined();
+    expect(packageJson.devDependencies["@types/react"]).toBeUndefined();
+    expect(packageJson.devDependencies["@types/node"]).toBeUndefined();
+  });
+
+  it("adds only missing TypeScript config dependencies when a parent workspace package is partial", async () => {
+    const files: Record<string, string> = {
+      "package.json": JSON.stringify({ dependencies: { next: "16.2.9" } }),
+      "../package.json": JSON.stringify({
+        devDependencies: { typescript: "5.9.3" }
+      }),
+      "next.config.ts":
+        'import type { NextConfig } from "next";\n\nconst nextConfig: NextConfig = {};\n\nexport default nextConfig;\n'
+    };
+    const result = await runSearchLintCli(
+      ["init"],
+      createIo(files, undefined, true)
+    );
+    const packageJson = JSON.parse(files["package.json"] ?? "{}");
+
+    expect(result.exitCode, result.stderr).toBe(0);
+    expect(files["next.config.ts"]).toContain(
+      "export default withSearchLint(nextConfig);"
+    );
+    expect(packageJson.devDependencies.typescript).toBeUndefined();
+    expect(packageJson.devDependencies["@types/react"]).toBe("^19.0.0");
+    expect(packageJson.devDependencies["@types/node"]).toBe("^24.0.0");
+  });
+
+  it("patches TypeScript satisfies binding Next.js configs", async () => {
+    const files: Record<string, string> = {
+      "package.json": JSON.stringify({ dependencies: { next: "16.2.9" } }),
+      "next.config.ts":
+        'import type { NextConfig } from "next";\n\nconst nextConfig = {};\n\nexport default nextConfig satisfies NextConfig;\n'
+    };
+    const result = await runSearchLintCli(
+      ["init"],
+      createIo(files, undefined, true)
+    );
+
+    expect(result.exitCode, result.stderr).toBe(0);
+    expect(files["next.config.ts"]).toContain(
+      "export default withSearchLint(nextConfig);"
+    );
+    expect(files["next.config.ts"]).not.toContain(
+      "export default withSearchLint(nextConfig) satisfies NextConfig"
+    );
+  });
+
+  it("patches TypeScript satisfies inline object Next.js configs", async () => {
+    const files: Record<string, string> = {
+      "package.json": JSON.stringify({ dependencies: { next: "16.2.9" } }),
+      "next.config.ts":
+        'import type { NextConfig } from "next";\n\nexport default { reactStrictMode: true } satisfies NextConfig;\n'
+    };
+    const result = await runSearchLintCli(
+      ["init"],
+      createIo(files, undefined, true)
+    );
+
+    expect(result.exitCode, result.stderr).toBe(0);
+    expect(files["next.config.ts"]).toContain(
+      "const __searchlintNextConfig = { reactStrictMode: true } satisfies NextConfig;"
+    );
+    expect(files["next.config.ts"]).toContain(
+      "export default withSearchLint(__searchlintNextConfig);"
+    );
+  });
+
+  it("patches TypeScript satisfies call expression Next.js configs", async () => {
+    const files: Record<string, string> = {
+      "package.json": JSON.stringify({ dependencies: { next: "16.2.9" } }),
+      "next.config.ts":
+        'import type { NextConfig } from "next";\nimport { defineConfig } from "next/config";\n\nexport default defineConfig({ reactStrictMode: true }) satisfies NextConfig;\n'
+    };
+    const result = await runSearchLintCli(
+      ["init"],
+      createIo(files, undefined, true)
+    );
+
+    expect(result.exitCode, result.stderr).toBe(0);
+    expect(files["next.config.ts"]).toContain(
+      "const __searchlintNextConfig = defineConfig({ reactStrictMode: true }) satisfies NextConfig;"
+    );
+    expect(files["next.config.ts"]).toContain(
+      "export default withSearchLint(__searchlintNextConfig);"
+    );
+  });
+
+  it("patches TypeScript as binding Next.js configs", async () => {
+    const files: Record<string, string> = {
+      "package.json": JSON.stringify({ dependencies: { next: "16.2.9" } }),
+      "next.config.ts":
+        'import type { NextConfig } from "next";\n\nconst nextConfig = {};\n\nexport default nextConfig as NextConfig;\n'
+    };
+    const result = await runSearchLintCli(
+      ["init"],
+      createIo(files, undefined, true)
+    );
+
+    expect(result.exitCode, result.stderr).toBe(0);
+    expect(files["next.config.ts"]).toContain(
+      "export default withSearchLint(nextConfig);"
+    );
+    expect(files["next.config.ts"]).not.toContain(
+      "export default withSearchLint(nextConfig) as NextConfig"
+    );
+  });
+
+  it("patches TypeScript as inline object Next.js configs", async () => {
+    const files: Record<string, string> = {
+      "package.json": JSON.stringify({ dependencies: { next: "16.2.9" } }),
+      "next.config.ts":
+        'import type { NextConfig } from "next";\n\nexport default { reactStrictMode: true } as NextConfig;\n'
+    };
+    const result = await runSearchLintCli(
+      ["init"],
+      createIo(files, undefined, true)
+    );
+
+    expect(result.exitCode, result.stderr).toBe(0);
+    expect(files["next.config.ts"]).toContain(
+      "const __searchlintNextConfig = { reactStrictMode: true } as NextConfig;"
+    );
+    expect(files["next.config.ts"]).toContain(
+      "export default withSearchLint(__searchlintNextConfig);"
+    );
+  });
+
+  it("patches TypeScript as call expression Next.js configs", async () => {
+    const files: Record<string, string> = {
+      "package.json": JSON.stringify({ dependencies: { next: "16.2.9" } }),
+      "next.config.ts":
+        'import type { NextConfig } from "next";\nimport { defineConfig } from "next/config";\n\nexport default defineConfig({ reactStrictMode: true }) as NextConfig;\n'
+    };
+    const result = await runSearchLintCli(
+      ["init"],
+      createIo(files, undefined, true)
+    );
+
+    expect(result.exitCode, result.stderr).toBe(0);
+    expect(files["next.config.ts"]).toContain(
+      "const __searchlintNextConfig = defineConfig({ reactStrictMode: true }) as NextConfig;"
+    );
+    expect(files["next.config.ts"]).toContain(
+      "export default withSearchLint(__searchlintNextConfig);"
+    );
+  });
+
+  it("patches named ESM function Next.js configs without requiring manual edits", async () => {
+    const files: Record<string, string> = {
+      "package.json": JSON.stringify({ dependencies: { next: "16.2.9" } }),
+      "next.config.mjs":
+        "export default function nextConfig(phase, defaults) {\n  return { reactStrictMode: true };\n}\n"
+    };
+    const result = await runSearchLintCli(
+      ["init"],
+      createIo(files, undefined, true)
+    );
+
+    expect(result.exitCode, result.stderr).toBe(0);
+    expect(files["next.config.mjs"]).toContain(
+      'import { withSearchLint } from "@searchlint/next";'
+    );
+    expect(files["next.config.mjs"]).toContain(
+      "function nextConfig(phase, defaults) {"
+    );
+    expect(files["next.config.mjs"]).toContain(
+      "export default withSearchLint(nextConfig);"
+    );
+    expect(files["next.config.mjs"]).not.toContain(
+      "export default function nextConfig"
+    );
+  });
+
+  it("patches async named ESM function Next.js configs", async () => {
+    const files: Record<string, string> = {
+      "package.json": JSON.stringify({ dependencies: { next: "16.2.9" } }),
+      "next.config.ts":
+        "export default async function nextConfig(phase: string) {\n  return { poweredByHeader: false };\n}\n"
+    };
+    const result = await runSearchLintCli(
+      ["init"],
+      createIo(files, undefined, true)
+    );
+
+    expect(result.exitCode, result.stderr).toBe(0);
+    expect(files["next.config.ts"]).toContain(
+      "async function nextConfig(phase: string) {"
+    );
+    expect(files["next.config.ts"]).toContain(
+      "export default withSearchLint(nextConfig);"
+    );
+    expect(files["next.config.ts"]).not.toContain(
+      "export default async function nextConfig"
+    );
+  });
+
+  it("patches inline arrow function Next.js configs", async () => {
+    const files: Record<string, string> = {
+      "package.json": JSON.stringify({ dependencies: { next: "16.2.9" } }),
+      "next.config.mjs":
+        "export default (phase, defaults) => ({ reactStrictMode: true });\n"
+    };
+    const result = await runSearchLintCli(
+      ["init"],
+      createIo(files, undefined, true)
+    );
+
+    expect(result.exitCode, result.stderr).toBe(0);
+    expect(files["next.config.mjs"]).toContain(
+      "const __searchlintNextConfig = (phase, defaults) => ({ reactStrictMode: true });"
+    );
+    expect(files["next.config.mjs"]).toContain(
+      "export default withSearchLint(__searchlintNextConfig);"
+    );
+  });
+
+  it("patches single-parameter inline arrow function Next.js configs", async () => {
+    const files: Record<string, string> = {
+      "package.json": JSON.stringify({ dependencies: { next: "16.2.9" } }),
+      "next.config.mjs": "export default phase => ({ env: { phase } });\n"
+    };
+    const result = await runSearchLintCli(
+      ["init"],
+      createIo(files, undefined, true)
+    );
+
+    expect(result.exitCode, result.stderr).toBe(0);
+    expect(files["next.config.mjs"]).toContain(
+      "const __searchlintNextConfig = phase => ({ env: { phase } });"
+    );
+    expect(files["next.config.mjs"]).toContain(
+      "export default withSearchLint(__searchlintNextConfig);"
+    );
+    expect(files["next.config.mjs"]).not.toContain(
+      "export default withSearchLint(phase)"
+    );
+  });
+
+  it("patches async single-parameter inline arrow function Next.js configs", async () => {
+    const files: Record<string, string> = {
+      "package.json": JSON.stringify({ dependencies: { next: "16.2.9" } }),
+      "next.config.mjs": "export default async phase => ({ env: { phase } });\n"
+    };
+    const result = await runSearchLintCli(
+      ["init"],
+      createIo(files, undefined, true)
+    );
+
+    expect(result.exitCode, result.stderr).toBe(0);
+    expect(files["next.config.mjs"]).toContain(
+      "const __searchlintNextConfig = async phase => ({ env: { phase } });"
+    );
+    expect(files["next.config.mjs"]).toContain(
+      "export default withSearchLint(__searchlintNextConfig);"
+    );
+  });
+
+  it("patches ESM call expression Next.js configs", async () => {
+    const files: Record<string, string> = {
+      "package.json": JSON.stringify({ dependencies: { next: "16.2.9" } }),
+      "next.config.mjs":
+        'import { defineConfig } from "next/config";\nexport default defineConfig({ reactStrictMode: true });\n'
+    };
+    const result = await runSearchLintCli(
+      ["init"],
+      createIo(files, undefined, true)
+    );
+
+    expect(result.exitCode, result.stderr).toBe(0);
+    expect(files["next.config.mjs"]).toContain(
+      "const __searchlintNextConfig = defineConfig({ reactStrictMode: true });"
+    );
+    expect(files["next.config.mjs"]).toContain(
+      "export default withSearchLint(__searchlintNextConfig);"
+    );
+    expect(files["next.config.mjs"]).not.toContain(
+      "export default withSearchLint(defineConfig);"
+    );
+  });
+
+  it("patches anonymous inline function Next.js configs", async () => {
+    const files: Record<string, string> = {
+      "package.json": JSON.stringify({ dependencies: { next: "16.2.9" } }),
+      "next.config.mjs":
+        "export default function (phase, defaults) {\n  return { poweredByHeader: false };\n}\n"
+    };
+    const result = await runSearchLintCli(
+      ["init"],
+      createIo(files, undefined, true)
+    );
+
+    expect(result.exitCode, result.stderr).toBe(0);
+    expect(files["next.config.mjs"]).toContain(
+      "const __searchlintNextConfig = function (phase, defaults) {"
+    );
+    expect(files["next.config.mjs"]).toContain(
+      "export default withSearchLint(__searchlintNextConfig);"
+    );
+    expect(files["next.config.mjs"]).not.toContain("export default function");
+  });
+
+  it("prints a manual fallback when init cannot safely patch an ESM Next.js config", async () => {
+    const files: Record<string, string> = {
+      "package.json": JSON.stringify({ dependencies: { next: "16.2.9" } }),
+      "next.config.mjs":
+        "const nextConfig = { reactStrictMode: true };\nexport { nextConfig as default };\n"
+    };
+    const result = await runSearchLintCli(
+      ["init"],
+      createIo(files, undefined, true)
+    );
+
+    expect(result.exitCode).toBe(1);
+    expect(result.stderr).toContain(
+      "searchlint init could not safely patch next.config.mjs."
+    );
+    expect(result.stderr).toContain(
+      'Manual fallback: import { withSearchLint } from "@searchlint/next" and export withSearchLint(nextConfig).'
+    );
   });
 
   it("validates explicit and discovered SearchLint configs", async () => {

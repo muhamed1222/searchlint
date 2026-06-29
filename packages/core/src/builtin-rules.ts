@@ -252,6 +252,7 @@ type ImageTagEntry = {
   index: number;
   src?: string;
   alt?: string;
+  ancestorTags: readonly string[];
 };
 
 function imageTags(html: string): readonly string[] {
@@ -259,17 +260,64 @@ function imageTags(html: string): readonly string[] {
 }
 
 function imageTagEntries(html: string): readonly ImageTagEntry[] {
-  return [...html.matchAll(/<img\s+[^>]*>/gi)].map((match, index) => {
+  const entries: ImageTagEntry[] = [];
+  const ancestorStack: string[] = [];
+  for (const match of html.matchAll(/<\/?([a-z][\w:-]*)(?:\s[^>]*)?>/gi)) {
     const tag = match[0] ?? "";
-    const src = attributeValue(tag, "src");
-    const alt = attributeValue(tag, "alt");
-    return {
-      tag,
-      index,
-      ...(src === undefined ? {} : { src }),
-      ...(alt === undefined ? {} : { alt })
-    };
-  });
+    const tagName = (match[1] ?? "").toLowerCase();
+    if (tag.startsWith("</")) {
+      const index = ancestorStack
+        .map((ancestor) => tagNameFromTag(ancestor))
+        .lastIndexOf(tagName);
+      if (index >= 0) {
+        ancestorStack.splice(index);
+      }
+      continue;
+    }
+
+    if (tagName === "img") {
+      const src = attributeValue(tag, "src");
+      const alt = attributeValue(tag, "alt");
+      entries.push({
+        tag,
+        index: entries.length,
+        ...(src === undefined ? {} : { src }),
+        ...(alt === undefined ? {} : { alt }),
+        ancestorTags: [...ancestorStack]
+      });
+      continue;
+    }
+
+    if (!isVoidHtmlElement(tagName) && !tag.endsWith("/>")) {
+      ancestorStack.push(tag);
+    }
+  }
+  return entries;
+}
+
+function tagNameFromTag(tag: string): string {
+  return tag.match(/^<\s*([a-z][\w:-]*)/i)?.[1]?.toLowerCase() ?? "";
+}
+
+const voidHtmlElements = new Set([
+  "area",
+  "base",
+  "br",
+  "col",
+  "embed",
+  "hr",
+  "img",
+  "input",
+  "link",
+  "meta",
+  "param",
+  "source",
+  "track",
+  "wbr"
+]);
+
+function isVoidHtmlElement(tagName: string): boolean {
+  return voidHtmlElements.has(tagName);
 }
 
 function anchorTags(html: string): readonly { tag: string; text: string }[] {
@@ -279,13 +327,17 @@ function anchorTags(html: string): readonly { tag: string; text: string }[] {
   }));
 }
 
-function headingEntries(
-  html: string
-): readonly { level: number; text: string; tag: string }[] {
+function headingEntries(html: string): readonly {
+  level: number;
+  text: string;
+  tag: string;
+  openingTag: string;
+}[] {
   return [...html.matchAll(/<h([1-6])\b([^>]*)>([\s\S]*?)<\/h\1>/gi)].map(
     (match) => ({
       level: Number(match[1]),
       tag: match[0] ?? "",
+      openingTag: `<h${match[1] ?? ""}${match[2] ?? ""}>`,
       text: stripTags(match[3] ?? "").trim()
     })
   );
@@ -2244,10 +2296,10 @@ function hiddenPrimaryHeading(context: RuleContext): readonly RuleReport[] {
   const hidden = headingEntries(html).find(
     (heading) =>
       heading.level === 1 &&
-      (/\bhidden\b/i.test(heading.tag) ||
-        /display\s*:\s*none/i.test(heading.tag) ||
-        /visibility\s*:\s*hidden/i.test(heading.tag) ||
-        /aria-hidden\s*=\s*["']true["']/i.test(heading.tag))
+      (/\bhidden\b/i.test(heading.openingTag) ||
+        /display\s*:\s*none/i.test(heading.openingTag) ||
+        /visibility\s*:\s*hidden/i.test(heading.openingTag) ||
+        /aria-hidden\s*=\s*["']true["']/i.test(heading.openingTag))
   );
   if (!hidden) {
     return [];
@@ -2579,20 +2631,33 @@ function contentImageEmptyAlt(context: RuleContext): readonly RuleReport[] {
 }
 
 function isDecorativeImageCandidate(entry: ImageTagEntry): boolean {
-  if (hasBooleanishAttribute(entry.tag, "aria-hidden", "true")) {
+  if (hasDecorativeAttributes(entry.tag)) {
     return true;
   }
-  const role = attributeValue(entry.tag, "role")?.trim().toLowerCase();
+  if (entry.ancestorTags.some((tag) => hasDecorativeAttributes(tag))) {
+    return true;
+  }
+  if (isTrackingPixelImageSource(entry.src)) {
+    return true;
+  }
+  return isLikelyDecorativeImageSource(entry.src);
+}
+
+function hasDecorativeAttributes(tag: string): boolean {
+  if (hasBooleanishAttribute(tag, "aria-hidden", "true")) {
+    return true;
+  }
+  const role = attributeValue(tag, "role")?.trim().toLowerCase();
   if (role === "presentation" || role === "none") {
     return true;
   }
   if (
-    hasBooleanishAttribute(entry.tag, "data-searchlint-decorative", "true") ||
-    hasBooleanishAttribute(entry.tag, "data-decorative", "true")
+    hasBooleanishAttribute(tag, "data-searchlint-decorative", "true") ||
+    hasBooleanishAttribute(tag, "data-decorative", "true")
   ) {
     return true;
   }
-  return isLikelyDecorativeImageSource(entry.src);
+  return false;
 }
 
 function hasDescribedDuplicateImageSource(
@@ -2618,8 +2683,18 @@ function isLikelyDecorativeImageSource(src: string | undefined): boolean {
     return false;
   }
   const fileName = path.split("/").pop() ?? path;
-  return /(?:^|[-_.@])(bg|background|decorative|decoration|ornament|pattern|texture|shape|shell-bg)(?:[-_.@]|$)/i.test(
+  return /(?:^|[-_.@])(badge|bg|background|decorative|decoration|icon|ornament|pattern|texture|shape|shell-bg)(?:[-_.@]|$)/i.test(
     fileName
+  );
+}
+
+function isTrackingPixelImageSource(src: string | undefined): boolean {
+  const decoded = src ? decodeAttributeUrl(src).toLowerCase() : "";
+  return (
+    /(^|\/\/)mc\.yandex\.[^/]+\/watch\//i.test(decoded) ||
+    /(^|\/\/)www\.google-analytics\.com\/collect/i.test(decoded) ||
+    /(^|\/\/)www\.googletagmanager\.com\//i.test(decoded) ||
+    /(^|\/\/)www\.facebook\.com\/tr/i.test(decoded)
   );
 }
 
@@ -2686,9 +2761,20 @@ function imageAltReportDetails(
 
 function imageSelector(entry: ImageTagEntry): string {
   if (entry.src) {
-    return `img[src="${cssString(entry.src)}"]`;
+    return `img[src="${cssString(decodeHtmlAttributeEntities(entry.src))}"]`;
   }
   return `img:nth-of-type(${entry.index + 1})`;
+}
+
+function decodeHtmlAttributeEntities(value: string): string {
+  return value
+    .replace(/&amp;/gi, "&")
+    .replace(/&#x([0-9a-f]+);/gi, (_, hex: string) =>
+      String.fromCodePoint(Number.parseInt(hex, 16))
+    )
+    .replace(/&#([0-9]+);/g, (_, decimal: string) =>
+      String.fromCodePoint(Number.parseInt(decimal, 10))
+    );
 }
 
 function cssString(value: string): string {
@@ -3006,9 +3092,11 @@ function schemaTypeMismatch(context: RuleContext): readonly RuleReport[] {
   ];
 }
 
-function schemaUrlEntries(
-  node: unknown
-): readonly { field: "url" | "mainEntityOfPage"; value: string }[] {
+function schemaUrlEntries(node: unknown): readonly {
+  field: "url" | "mainEntityOfPage";
+  value: string;
+  schemaType: string | undefined;
+}[] {
   if (Array.isArray(node)) {
     return node.flatMap((item) => schemaUrlEntries(item));
   }
@@ -3018,22 +3106,49 @@ function schemaUrlEntries(
   }
 
   const record = node as Record<string, unknown>;
-  const entries: { field: "url" | "mainEntityOfPage"; value: string }[] = [];
+  const schemaType = primarySchemaType(record["@type"]);
+  const entries: {
+    field: "url" | "mainEntityOfPage";
+    value: string;
+    schemaType: string | undefined;
+  }[] = [];
   for (const field of ["url", "mainEntityOfPage"] as const) {
     const value = record[field];
     if (typeof value === "string") {
-      entries.push({ field, value });
+      entries.push({ field, value, schemaType });
     } else if (value && typeof value === "object") {
       const nested = value as Record<string, unknown>;
       if (typeof nested["@id"] === "string") {
-        entries.push({ field, value: nested["@id"] });
+        entries.push({ field, value: nested["@id"], schemaType });
       } else if (typeof nested.url === "string") {
-        entries.push({ field, value: nested.url });
+        entries.push({ field, value: nested.url, schemaType });
       }
     }
   }
 
   return [...entries, ...schemaUrlEntries(record["@graph"])];
+}
+
+function primarySchemaType(value: unknown): string | undefined {
+  if (typeof value === "string") {
+    return value;
+  }
+  if (Array.isArray(value)) {
+    return value.find((item): item is string => typeof item === "string");
+  }
+  return undefined;
+}
+
+function isSiteLevelSchemaUrlEntry(entry: {
+  field: "url" | "mainEntityOfPage";
+  schemaType: string | undefined;
+}): boolean {
+  return (
+    entry.field === "url" &&
+    (entry.schemaType === "Organization" ||
+      entry.schemaType === "WebSite" ||
+      entry.schemaType === "Service")
+  );
 }
 
 function schemaUrlConflictsPage(context: RuleContext): readonly RuleReport[] {
@@ -3048,7 +3163,11 @@ function schemaUrlConflictsPage(context: RuleContext): readonly RuleReport[] {
     for (const node of parsedJsonLd(document.html)) {
       for (const entry of schemaUrlEntries(node)) {
         const actual = parseUrlAgainstPage(entry.value, context);
-        if (!actual || actual.href === expected.href) {
+        if (
+          !actual ||
+          isSiteLevelSchemaUrlEntry(entry) ||
+          schemaEntityUrlKey(actual) === schemaEntityUrlKey(expected)
+        ) {
           continue;
         }
 
@@ -3067,6 +3186,7 @@ function schemaUrlConflictsPage(context: RuleContext): readonly RuleReport[] {
                   label: "schema url conflict",
                   value: {
                     field: entry.field,
+                    schemaType: entry.schemaType ?? null,
                     schemaUrl: actual.href,
                     expectedUrl: expected.href,
                     pageUrl: context.snapshot.pageUrl,
@@ -3082,6 +3202,11 @@ function schemaUrlConflictsPage(context: RuleContext): readonly RuleReport[] {
   }
 
   return [];
+}
+
+function schemaEntityUrlKey(url: ParsedUrl): string {
+  const pathname = url.pathname.length === 0 ? "/" : url.pathname;
+  return `${url.protocol.toLowerCase()}//${url.host.toLowerCase()}${pathname}${url.search}`;
 }
 
 function invalidJsonLd(context: RuleContext): readonly RuleReport[] {
@@ -3908,7 +4033,10 @@ function emptyLinkText(context: RuleContext): readonly RuleReport[] {
     return [];
   }
 
-  const empty = anchorTags(html).find((anchor) => anchor.text.length === 0);
+  const empty = anchorTags(html).find(
+    (anchor) =>
+      anchor.text.length === 0 && !anchorHasAccessibleName(anchor.tag, html)
+  );
   if (!empty) {
     return [];
   }
@@ -3921,6 +4049,41 @@ function emptyLinkText(context: RuleContext): readonly RuleReport[] {
       "Rendered DOM contains an anchor with no text content."
     )
   ];
+}
+
+function anchorHasAccessibleName(tag: string, html: string): boolean {
+  const ariaLabel = attributeValue(tag, "aria-label")?.trim();
+  if (ariaLabel) {
+    return true;
+  }
+
+  const title = attributeValue(tag, "title")?.trim();
+  if (title) {
+    return true;
+  }
+
+  const labelledBy = attributeValue(tag, "aria-labelledby")
+    ?.split(/\s+/)
+    .map((id) => id.trim())
+    .filter((id) => id.length > 0);
+  if (!labelledBy || labelledBy.length === 0) {
+    return false;
+  }
+
+  return labelledBy.some((id) => elementTextById(html, id).length > 0);
+}
+
+function elementTextById(html: string, id: string): string {
+  const escapedId = escapeRegExp(id);
+  const pattern = new RegExp(
+    `<([a-z][\\w:-]*)\\b(?=[^>]*\\bid\\s*=\\s*["']${escapedId}["'])[^>]*>([\\s\\S]*?)<\\/\\1>`,
+    "i"
+  );
+  return stripTags(html.match(pattern)?.[2] ?? "");
+}
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 function externalTargetBlankMissingRel(
@@ -4844,12 +5007,8 @@ function canonicalSchemeConflict(context: RuleContext): readonly RuleReport[] {
 
   const canonical = parseUrlAgainstPage(entry.href, context);
   const page = parseUrlAgainstPage(context.snapshot.pageUrl, context);
-  if (
-    !canonical ||
-    !page ||
-    canonical.protocol === page.protocol ||
-    canonicalMatchesConfiguredLocalSite(context, page, canonical)
-  ) {
+  const expected = canonicalExpectedOrigin(context, page);
+  if (!canonical || !expected || canonical.protocol === expected.protocol) {
     return [];
   }
 
@@ -4858,9 +5017,9 @@ function canonicalSchemeConflict(context: RuleContext): readonly RuleReport[] {
       context,
       entry.source,
       "Canonical URL uses a different scheme",
-      `Page scheme is '${page.protocol}' but canonical scheme is '${canonical.protocol}'.`,
+      `Expected canonical scheme is '${expected.protocol}' but canonical scheme is '${canonical.protocol}'.`,
       {
-        expected: page.protocol,
+        expected: expected.protocol,
         actual: canonical.protocol
       }
     )
@@ -4875,12 +5034,8 @@ function canonicalHostConflict(context: RuleContext): readonly RuleReport[] {
 
   const canonical = parseUrlAgainstPage(entry.href, context);
   const page = parseUrlAgainstPage(context.snapshot.pageUrl, context);
-  if (
-    !canonical ||
-    !page ||
-    canonical.host === page.host ||
-    canonicalMatchesConfiguredLocalSite(context, page, canonical)
-  ) {
+  const expected = canonicalExpectedOrigin(context, page);
+  if (!canonical || !expected || canonical.host === expected.host) {
     return [];
   }
 
@@ -4889,30 +5044,28 @@ function canonicalHostConflict(context: RuleContext): readonly RuleReport[] {
       context,
       entry.source,
       "Canonical URL uses a different host",
-      `Page host is '${page.host}' but canonical host is '${canonical.host}'.`,
+      `Expected canonical host is '${expected.host}' but canonical host is '${canonical.host}'.`,
       {
-        expected: page.host,
+        expected: expected.host,
         actual: canonical.host
       }
     )
   ];
 }
 
-function canonicalMatchesConfiguredLocalSite(
+function canonicalExpectedOrigin(
   context: RuleContext,
-  page: ParsedUrl,
-  canonical: ParsedUrl
-): boolean {
-  if (!isLocalDevelopmentUrl(page) || !context.siteUrl) {
-    return false;
+  page: ParsedUrl | undefined
+): Pick<ParsedUrl, "protocol" | "host"> | undefined {
+  if (!page) {
+    return undefined;
   }
 
-  const site = parseAbsoluteUrlOrUndefined(context.siteUrl);
-  return (
-    site !== undefined &&
-    canonical.protocol === site.protocol &&
-    canonical.host === site.host
-  );
+  if (!isLocalDevelopmentUrl(page) || !context.siteUrl) {
+    return page;
+  }
+
+  return parseAbsoluteUrlOrUndefined(context.siteUrl) ?? page;
 }
 
 function isLocalDevelopmentUrl(url: ParsedUrl): boolean {

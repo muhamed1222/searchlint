@@ -1,0 +1,280 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "SearchLint dashboard static hosting: private S3 bucket fronted by CloudFront with origin access control, SPA fallback, and baseline security headers.",
+  "Parameters": {
+    "EnvironmentName": {
+      "Type": "String",
+      "Default": "prod",
+      "AllowedPattern": "^[a-z0-9-]+$"
+    },
+    "DashboardContentSecurityPolicy": {
+      "Type": "String",
+      "Default": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https:; img-src 'self' data:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests"
+    },
+    "CloudFrontPriceClass": {
+      "Type": "String",
+      "Default": "PriceClass_100",
+      "AllowedValues": ["PriceClass_100", "PriceClass_200", "PriceClass_All"]
+    },
+    "KmsKeyArn": {
+      "Type": "String",
+      "Default": ""
+    }
+  },
+  "Conditions": {
+    "HasKmsKey": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            {
+              "Ref": "KmsKeyArn"
+            },
+            ""
+          ]
+        }
+      ]
+    }
+  },
+  "Resources": {
+    "DashboardAssetBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": {
+          "Fn::Sub": "searchlint-${EnvironmentName}-dashboard-assets-${AWS::AccountId}-${AWS::Region}"
+        },
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true
+        },
+        "OwnershipControls": {
+          "Rules": [
+            {
+              "ObjectOwnership": "BucketOwnerEnforced"
+            }
+          ]
+        },
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "SSEAlgorithm": {
+                  "Fn::If": ["HasKmsKey", "aws:kms", "AES256"]
+                },
+                "KMSMasterKeyID": {
+                  "Fn::If": [
+                    "HasKmsKey",
+                    {
+                      "Ref": "KmsKeyArn"
+                    },
+                    {
+                      "Ref": "AWS::NoValue"
+                    }
+                  ]
+                }
+              },
+              "BucketKeyEnabled": {
+                "Fn::If": ["HasKmsKey", true, false]
+              }
+            }
+          ]
+        },
+        "VersioningConfiguration": {
+          "Status": "Enabled"
+        }
+      }
+    },
+    "DashboardCloudFrontOriginAccessControl": {
+      "Type": "AWS::CloudFront::OriginAccessControl",
+      "Properties": {
+        "OriginAccessControlConfig": {
+          "Name": {
+            "Fn::Sub": "searchlint-${EnvironmentName}-dashboard-oac"
+          },
+          "Description": "Allows CloudFront to read SearchLint dashboard static assets from the private S3 bucket.",
+          "OriginAccessControlOriginType": "s3",
+          "SigningBehavior": "always",
+          "SigningProtocol": "sigv4"
+        }
+      }
+    },
+    "DashboardResponseHeadersPolicy": {
+      "Type": "AWS::CloudFront::ResponseHeadersPolicy",
+      "Properties": {
+        "ResponseHeadersPolicyConfig": {
+          "Name": {
+            "Fn::Sub": "searchlint-${EnvironmentName}-dashboard-security-headers"
+          },
+          "Comment": "Baseline security headers for SearchLint dashboard static hosting.",
+          "SecurityHeadersConfig": {
+            "ContentSecurityPolicy": {
+              "ContentSecurityPolicy": {
+                "Ref": "DashboardContentSecurityPolicy"
+              },
+              "Override": true
+            },
+            "ContentTypeOptions": {
+              "Override": true
+            },
+            "FrameOptions": {
+              "FrameOption": "DENY",
+              "Override": true
+            },
+            "ReferrerPolicy": {
+              "ReferrerPolicy": "strict-origin-when-cross-origin",
+              "Override": true
+            },
+            "StrictTransportSecurity": {
+              "AccessControlMaxAgeSec": 31536000,
+              "IncludeSubdomains": true,
+              "Preload": true,
+              "Override": true
+            },
+            "XSSProtection": {
+              "ModeBlock": true,
+              "Protection": true,
+              "Override": true
+            }
+          }
+        }
+      }
+    },
+    "DashboardCloudFrontDistribution": {
+      "Type": "AWS::CloudFront::Distribution",
+      "Properties": {
+        "DistributionConfig": {
+          "Comment": {
+            "Fn::Sub": "SearchLint ${EnvironmentName} dashboard static hosting"
+          },
+          "Enabled": true,
+          "HttpVersion": "http2and3",
+          "IPV6Enabled": true,
+          "PriceClass": {
+            "Ref": "CloudFrontPriceClass"
+          },
+          "DefaultRootObject": "index.html",
+          "Origins": [
+            {
+              "Id": "dashboard-s3-origin",
+              "DomainName": {
+                "Fn::GetAtt": ["DashboardAssetBucket", "RegionalDomainName"]
+              },
+              "OriginAccessControlId": {
+                "Ref": "DashboardCloudFrontOriginAccessControl"
+              },
+              "S3OriginConfig": {
+                "OriginAccessIdentity": ""
+              }
+            }
+          ],
+          "DefaultCacheBehavior": {
+            "TargetOriginId": "dashboard-s3-origin",
+            "ViewerProtocolPolicy": "redirect-to-https",
+            "AllowedMethods": ["GET", "HEAD", "OPTIONS"],
+            "CachedMethods": ["GET", "HEAD", "OPTIONS"],
+            "Compress": true,
+            "CachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6",
+            "ResponseHeadersPolicyId": {
+              "Ref": "DashboardResponseHeadersPolicy"
+            }
+          },
+          "CustomErrorResponses": [
+            {
+              "ErrorCode": 403,
+              "ResponseCode": 200,
+              "ResponsePagePath": "/index.html",
+              "ErrorCachingMinTTL": 0
+            },
+            {
+              "ErrorCode": 404,
+              "ResponseCode": 200,
+              "ResponsePagePath": "/index.html",
+              "ErrorCachingMinTTL": 0
+            }
+          ],
+          "ViewerCertificate": {
+            "CloudFrontDefaultCertificate": true,
+            "MinimumProtocolVersion": "TLSv1.2_2021"
+          }
+        }
+      }
+    },
+    "DashboardAssetBucketPolicy": {
+      "Type": "AWS::S3::BucketPolicy",
+      "Properties": {
+        "Bucket": {
+          "Ref": "DashboardAssetBucket"
+        },
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "DenyInsecureTransport",
+              "Effect": "Deny",
+              "Principal": "*",
+              "Action": "s3:*",
+              "Resource": [
+                {
+                  "Fn::GetAtt": ["DashboardAssetBucket", "Arn"]
+                },
+                {
+                  "Fn::Sub": "${DashboardAssetBucket.Arn}/*"
+                }
+              ],
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": "false"
+                }
+              }
+            },
+            {
+              "Sid": "AllowCloudFrontRead",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "cloudfront.amazonaws.com"
+              },
+              "Action": "s3:GetObject",
+              "Resource": {
+                "Fn::Sub": "${DashboardAssetBucket.Arn}/*"
+              },
+              "Condition": {
+                "StringEquals": {
+                  "AWS:SourceArn": {
+                    "Fn::Sub": "arn:aws:cloudfront::${AWS::AccountId}:distribution/${DashboardCloudFrontDistribution}"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "DashboardAssetBucketName": {
+      "Description": "Upload SearchLint dashboard index.html and generated assets to this private bucket.",
+      "Value": {
+        "Ref": "DashboardAssetBucket"
+      }
+    },
+    "DashboardCloudFrontDistributionId": {
+      "Description": "CloudFront distribution id for cache invalidation and deployment status checks.",
+      "Value": {
+        "Ref": "DashboardCloudFrontDistribution"
+      }
+    },
+    "DashboardCloudFrontDomainName": {
+      "Description": "CloudFront domain name that serves the SearchLint dashboard.",
+      "Value": {
+        "Fn::GetAtt": ["DashboardCloudFrontDistribution", "DomainName"]
+      }
+    },
+    "DashboardBaseUrl": {
+      "Description": "HTTPS base URL for the hosted SearchLint dashboard.",
+      "Value": {
+        "Fn::Sub": "https://${DashboardCloudFrontDistribution.DomainName}"
+      }
+    }
+  }
+}

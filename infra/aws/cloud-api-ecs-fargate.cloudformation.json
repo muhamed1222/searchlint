@@ -1,0 +1,720 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "SearchLint Cloud API: API Gateway HTTP API ingress through VPC Link to an internal ALB and ECS/Fargate service running the Node HTTP API.",
+  "Parameters": {
+    "EnvironmentName": {
+      "Type": "String",
+      "Default": "prod",
+      "AllowedPattern": "^[a-z0-9-]+$"
+    },
+    "ClusterArn": {
+      "Type": "String"
+    },
+    "ApiImageUri": {
+      "Type": "String"
+    },
+    "VpcId": {
+      "Type": "AWS::EC2::VPC::Id"
+    },
+    "VpcSubnets": {
+      "Type": "List<AWS::EC2::Subnet::Id>"
+    },
+    "PostgresDatabaseUrlSecretArn": {
+      "Type": "String"
+    },
+    "StripeWebhookSecretArn": {
+      "Type": "String"
+    },
+    "CognitoIssuer": {
+      "Type": "String"
+    },
+    "CognitoAudience": {
+      "Type": "String"
+    },
+    "CognitoJwksUrl": {
+      "Type": "String"
+    },
+    "CognitoTokenUse": {
+      "Type": "String",
+      "Default": "access",
+      "AllowedValues": ["access"]
+    },
+    "GoogleOAuthClientId": {
+      "Type": "String"
+    },
+    "GoogleOAuthAuthorizationEndpoint": {
+      "Type": "String",
+      "Default": "https://accounts.google.com/o/oauth2/v2/auth"
+    },
+    "GoogleOAuthRedirectUri": {
+      "Type": "String"
+    },
+    "GoogleOAuthScopes": {
+      "Type": "String",
+      "Default": "openid https://www.googleapis.com/auth/webmasters.readonly"
+    },
+    "GoogleOAuthPkceRequired": {
+      "Type": "String",
+      "Default": "true",
+      "AllowedValues": ["true", "false"]
+    },
+    "YandexOAuthClientId": {
+      "Type": "String"
+    },
+    "YandexOAuthAuthorizationEndpoint": {
+      "Type": "String",
+      "Default": "https://oauth.yandex.com/authorize"
+    },
+    "YandexOAuthRedirectUri": {
+      "Type": "String"
+    },
+    "YandexOAuthScopes": {
+      "Type": "String",
+      "Default": "webmaster:read metrika:read"
+    },
+    "KmsKeyArn": {
+      "Type": "String",
+      "Default": ""
+    },
+    "ApiDesiredCount": {
+      "Type": "Number",
+      "Default": 2,
+      "MinValue": 1
+    },
+    "ApiRateLimitWindowMs": {
+      "Type": "Number",
+      "Default": 60000,
+      "MinValue": 1
+    },
+    "ApiRateLimitMaxRequests": {
+      "Type": "Number",
+      "Default": 600,
+      "MinValue": 1
+    },
+    "ApiDispatchTimeoutMs": {
+      "Type": "Number",
+      "Default": 30000,
+      "MinValue": 1
+    },
+    "ApiMaxBodyBytes": {
+      "Type": "Number",
+      "Default": 1048576,
+      "MinValue": 1
+    },
+    "PostgresSslMode": {
+      "Type": "String",
+      "Default": "require",
+      "AllowedValues": [
+        "disable",
+        "allow",
+        "prefer",
+        "require",
+        "verify-ca",
+        "verify-full"
+      ]
+    },
+    "OtelEndpoint": {
+      "Type": "String"
+    },
+    "OtelHeadersSecretArn": {
+      "Type": "String",
+      "Default": ""
+    },
+    "OtelTimeoutMs": {
+      "Type": "Number",
+      "Default": 10000,
+      "MinValue": 1
+    },
+    "TaskCpu": {
+      "Type": "String",
+      "Default": "512",
+      "AllowedValues": ["256", "512", "1024", "2048", "4096"]
+    },
+    "TaskMemory": {
+      "Type": "String",
+      "Default": "1024",
+      "AllowedValues": ["512", "1024", "2048", "3072", "4096", "8192"]
+    }
+  },
+  "Conditions": {
+    "HasKmsKey": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            {
+              "Ref": "KmsKeyArn"
+            },
+            ""
+          ]
+        }
+      ]
+    },
+    "HasOtelHeadersSecret": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            {
+              "Ref": "OtelHeadersSecretArn"
+            },
+            ""
+          ]
+        }
+      ]
+    }
+  },
+  "Resources": {
+    "CloudApiLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": {
+          "Fn::Sub": "/aws/ecs/searchlint/${EnvironmentName}/cloud-api"
+        },
+        "RetentionInDays": 30
+      }
+    },
+    "CloudApiLoadBalancerSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "SearchLint Cloud API internal ALB",
+        "VpcId": {
+          "Ref": "VpcId"
+        },
+        "SecurityGroupIngress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 80,
+            "ToPort": 80,
+            "CidrIp": "10.0.0.0/8"
+          }
+        ],
+        "SecurityGroupEgress": [
+          {
+            "IpProtocol": "-1",
+            "CidrIp": "0.0.0.0/0"
+          }
+        ]
+      }
+    },
+    "CloudApiServiceSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "SearchLint Cloud API ECS service",
+        "VpcId": {
+          "Ref": "VpcId"
+        },
+        "SecurityGroupIngress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 3000,
+            "ToPort": 3000,
+            "SourceSecurityGroupId": {
+              "Ref": "CloudApiLoadBalancerSecurityGroup"
+            }
+          }
+        ],
+        "SecurityGroupEgress": [
+          {
+            "IpProtocol": "-1",
+            "CidrIp": "0.0.0.0/0"
+          }
+        ]
+      }
+    },
+    "CloudApiLoadBalancer": {
+      "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+      "Properties": {
+        "Scheme": "internal",
+        "Type": "application",
+        "Subnets": {
+          "Ref": "VpcSubnets"
+        },
+        "SecurityGroups": [
+          {
+            "Ref": "CloudApiLoadBalancerSecurityGroup"
+          }
+        ]
+      }
+    },
+    "CloudApiTargetGroup": {
+      "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+      "Properties": {
+        "VpcId": {
+          "Ref": "VpcId"
+        },
+        "Protocol": "HTTP",
+        "Port": 3000,
+        "TargetType": "ip",
+        "HealthCheckPath": "/healthz",
+        "Matcher": {
+          "HttpCode": "200-399"
+        }
+      }
+    },
+    "CloudApiListener": {
+      "Type": "AWS::ElasticLoadBalancingV2::Listener",
+      "Properties": {
+        "LoadBalancerArn": {
+          "Ref": "CloudApiLoadBalancer"
+        },
+        "Protocol": "HTTP",
+        "Port": 80,
+        "DefaultActions": [
+          {
+            "Type": "forward",
+            "TargetGroupArn": {
+              "Ref": "CloudApiTargetGroup"
+            }
+          }
+        ]
+      }
+    },
+    "CloudApiTaskExecutionRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": "searchlint-cloud-api-task-execution",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": ["logs:CreateLogStream", "logs:PutLogEvents"],
+                  "Resource": {
+                    "Fn::GetAtt": ["CloudApiLogGroup", "Arn"]
+                  }
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": ["secretsmanager:GetSecretValue"],
+                  "Resource": [
+                    {
+                      "Ref": "PostgresDatabaseUrlSecretArn"
+                    },
+                    {
+                      "Ref": "StripeWebhookSecretArn"
+                    },
+                    {
+                      "Fn::If": [
+                        "HasOtelHeadersSecret",
+                        {
+                          "Ref": "OtelHeadersSecretArn"
+                        },
+                        {
+                          "Ref": "AWS::NoValue"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "Fn::If": [
+                    "HasKmsKey",
+                    {
+                      "Effect": "Allow",
+                      "Action": ["kms:Decrypt"],
+                      "Resource": {
+                        "Ref": "KmsKeyArn"
+                      }
+                    },
+                    {
+                      "Ref": "AWS::NoValue"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "CloudApiTaskRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        }
+      }
+    },
+    "CloudApiTaskDefinition": {
+      "Type": "AWS::ECS::TaskDefinition",
+      "Properties": {
+        "Family": {
+          "Fn::Sub": "searchlint-${EnvironmentName}-cloud-api"
+        },
+        "RequiresCompatibilities": ["FARGATE"],
+        "NetworkMode": "awsvpc",
+        "Cpu": {
+          "Ref": "TaskCpu"
+        },
+        "Memory": {
+          "Ref": "TaskMemory"
+        },
+        "ExecutionRoleArn": {
+          "Fn::GetAtt": ["CloudApiTaskExecutionRole", "Arn"]
+        },
+        "TaskRoleArn": {
+          "Fn::GetAtt": ["CloudApiTaskRole", "Arn"]
+        },
+        "ContainerDefinitions": [
+          {
+            "Name": "cloud-api",
+            "Image": {
+              "Ref": "ApiImageUri"
+            },
+            "Essential": true,
+            "PortMappings": [
+              {
+                "ContainerPort": 3000,
+                "Protocol": "tcp"
+              }
+            ],
+            "Command": ["node", "dist/src/bin.js"],
+            "Environment": [
+              {
+                "Name": "SEARCHLINT_API_HOST",
+                "Value": "0.0.0.0"
+              },
+              {
+                "Name": "SEARCHLINT_API_PORT",
+                "Value": "3000"
+              },
+              {
+                "Name": "SEARCHLINT_POSTGRES_SSL_MODE",
+                "Value": {
+                  "Ref": "PostgresSslMode"
+                }
+              },
+              {
+                "Name": "SEARCHLINT_API_RATE_LIMIT_STORE",
+                "Value": "postgres"
+              },
+              {
+                "Name": "SEARCHLINT_API_RATE_LIMIT_WINDOW_MS",
+                "Value": {
+                  "Ref": "ApiRateLimitWindowMs"
+                }
+              },
+              {
+                "Name": "SEARCHLINT_API_RATE_LIMIT_MAX_REQUESTS",
+                "Value": {
+                  "Ref": "ApiRateLimitMaxRequests"
+                }
+              },
+              {
+                "Name": "SEARCHLINT_API_DISPATCH_TIMEOUT_MS",
+                "Value": {
+                  "Ref": "ApiDispatchTimeoutMs"
+                }
+              },
+              {
+                "Name": "SEARCHLINT_API_MAX_BODY_BYTES",
+                "Value": {
+                  "Ref": "ApiMaxBodyBytes"
+                }
+              },
+              {
+                "Name": "SEARCHLINT_COGNITO_ISSUER",
+                "Value": {
+                  "Ref": "CognitoIssuer"
+                }
+              },
+              {
+                "Name": "SEARCHLINT_COGNITO_AUDIENCE",
+                "Value": {
+                  "Ref": "CognitoAudience"
+                }
+              },
+              {
+                "Name": "SEARCHLINT_COGNITO_JWKS_URL",
+                "Value": {
+                  "Ref": "CognitoJwksUrl"
+                }
+              },
+              {
+                "Name": "SEARCHLINT_COGNITO_TOKEN_USE",
+                "Value": {
+                  "Ref": "CognitoTokenUse"
+                }
+              },
+              {
+                "Name": "SEARCHLINT_GOOGLE_OAUTH_CLIENT_ID",
+                "Value": {
+                  "Ref": "GoogleOAuthClientId"
+                }
+              },
+              {
+                "Name": "SEARCHLINT_GOOGLE_OAUTH_AUTHORIZATION_ENDPOINT",
+                "Value": {
+                  "Ref": "GoogleOAuthAuthorizationEndpoint"
+                }
+              },
+              {
+                "Name": "SEARCHLINT_GOOGLE_OAUTH_REDIRECT_URI",
+                "Value": {
+                  "Ref": "GoogleOAuthRedirectUri"
+                }
+              },
+              {
+                "Name": "SEARCHLINT_GOOGLE_OAUTH_SCOPES",
+                "Value": {
+                  "Ref": "GoogleOAuthScopes"
+                }
+              },
+              {
+                "Name": "SEARCHLINT_GOOGLE_OAUTH_PKCE_REQUIRED",
+                "Value": {
+                  "Ref": "GoogleOAuthPkceRequired"
+                }
+              },
+              {
+                "Name": "SEARCHLINT_YANDEX_OAUTH_CLIENT_ID",
+                "Value": {
+                  "Ref": "YandexOAuthClientId"
+                }
+              },
+              {
+                "Name": "SEARCHLINT_YANDEX_OAUTH_AUTHORIZATION_ENDPOINT",
+                "Value": {
+                  "Ref": "YandexOAuthAuthorizationEndpoint"
+                }
+              },
+              {
+                "Name": "SEARCHLINT_YANDEX_OAUTH_REDIRECT_URI",
+                "Value": {
+                  "Ref": "YandexOAuthRedirectUri"
+                }
+              },
+              {
+                "Name": "SEARCHLINT_YANDEX_OAUTH_SCOPES",
+                "Value": {
+                  "Ref": "YandexOAuthScopes"
+                }
+              },
+              {
+                "Name": "OTEL_SERVICE_NAME",
+                "Value": "searchlint-cloud-api"
+              },
+              {
+                "Name": "SEARCHLINT_ENVIRONMENT",
+                "Value": {
+                  "Ref": "EnvironmentName"
+                }
+              },
+              {
+                "Name": "OTEL_EXPORTER_OTLP_ENDPOINT",
+                "Value": {
+                  "Ref": "OtelEndpoint"
+                }
+              },
+              {
+                "Name": "OTEL_EXPORTER_OTLP_PROTOCOL",
+                "Value": "http/protobuf"
+              },
+              {
+                "Name": "OTEL_EXPORTER_OTLP_TIMEOUT",
+                "Value": {
+                  "Ref": "OtelTimeoutMs"
+                }
+              }
+            ],
+            "Secrets": [
+              {
+                "Name": "SEARCHLINT_POSTGRES_DATABASE_URL",
+                "ValueFrom": {
+                  "Ref": "PostgresDatabaseUrlSecretArn"
+                }
+              },
+              {
+                "Name": "SEARCHLINT_STRIPE_WEBHOOK_SECRET",
+                "ValueFrom": {
+                  "Ref": "StripeWebhookSecretArn"
+                }
+              },
+              {
+                "Fn::If": [
+                  "HasOtelHeadersSecret",
+                  {
+                    "Name": "OTEL_EXPORTER_OTLP_HEADERS",
+                    "ValueFrom": {
+                      "Ref": "OtelHeadersSecretArn"
+                    }
+                  },
+                  {
+                    "Ref": "AWS::NoValue"
+                  }
+                ]
+              }
+            ],
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "CloudApiLogGroup"
+                },
+                "awslogs-region": {
+                  "Ref": "AWS::Region"
+                },
+                "awslogs-stream-prefix": "searchlint-cloud-api"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "CloudApiService": {
+      "Type": "AWS::ECS::Service",
+      "DependsOn": ["CloudApiListener"],
+      "Properties": {
+        "Cluster": {
+          "Ref": "ClusterArn"
+        },
+        "DesiredCount": {
+          "Ref": "ApiDesiredCount"
+        },
+        "LaunchType": "FARGATE",
+        "TaskDefinition": {
+          "Ref": "CloudApiTaskDefinition"
+        },
+        "NetworkConfiguration": {
+          "AwsvpcConfiguration": {
+            "AssignPublicIp": "DISABLED",
+            "Subnets": {
+              "Ref": "VpcSubnets"
+            },
+            "SecurityGroups": [
+              {
+                "Ref": "CloudApiServiceSecurityGroup"
+              }
+            ]
+          }
+        },
+        "LoadBalancers": [
+          {
+            "ContainerName": "cloud-api",
+            "ContainerPort": 3000,
+            "TargetGroupArn": {
+              "Ref": "CloudApiTargetGroup"
+            }
+          }
+        ]
+      }
+    },
+    "CloudApiHttpApi": {
+      "Type": "AWS::ApiGatewayV2::Api",
+      "Properties": {
+        "Name": {
+          "Fn::Sub": "searchlint-${EnvironmentName}-cloud-api"
+        },
+        "ProtocolType": "HTTP"
+      }
+    },
+    "CloudApiVpcLink": {
+      "Type": "AWS::ApiGatewayV2::VpcLink",
+      "Properties": {
+        "Name": {
+          "Fn::Sub": "searchlint-${EnvironmentName}-cloud-api"
+        },
+        "SubnetIds": {
+          "Ref": "VpcSubnets"
+        },
+        "SecurityGroupIds": [
+          {
+            "Ref": "CloudApiLoadBalancerSecurityGroup"
+          }
+        ]
+      }
+    },
+    "CloudApiIntegration": {
+      "Type": "AWS::ApiGatewayV2::Integration",
+      "Properties": {
+        "ApiId": {
+          "Ref": "CloudApiHttpApi"
+        },
+        "IntegrationType": "HTTP_PROXY",
+        "IntegrationMethod": "ANY",
+        "ConnectionType": "VPC_LINK",
+        "ConnectionId": {
+          "Ref": "CloudApiVpcLink"
+        },
+        "IntegrationUri": {
+          "Ref": "CloudApiListener"
+        },
+        "PayloadFormatVersion": "1.0",
+        "TimeoutInMillis": 30000
+      }
+    },
+    "CloudApiDefaultRoute": {
+      "Type": "AWS::ApiGatewayV2::Route",
+      "Properties": {
+        "ApiId": {
+          "Ref": "CloudApiHttpApi"
+        },
+        "RouteKey": "$default",
+        "Target": {
+          "Fn::Sub": "integrations/${CloudApiIntegration}"
+        }
+      }
+    },
+    "CloudApiHealthRoute": {
+      "Type": "AWS::ApiGatewayV2::Route",
+      "Properties": {
+        "ApiId": {
+          "Ref": "CloudApiHttpApi"
+        },
+        "RouteKey": "GET /healthz",
+        "Target": {
+          "Fn::Sub": "integrations/${CloudApiIntegration}"
+        }
+      }
+    },
+    "CloudApiStage": {
+      "Type": "AWS::ApiGatewayV2::Stage",
+      "Properties": {
+        "ApiId": {
+          "Ref": "CloudApiHttpApi"
+        },
+        "StageName": "v1",
+        "AutoDeploy": true
+      }
+    }
+  },
+  "Outputs": {
+    "CloudApiEndpoint": {
+      "Value": {
+        "Fn::Sub": "https://${CloudApiHttpApi}.execute-api.${AWS::Region}.amazonaws.com/v1"
+      }
+    },
+    "CloudApiServiceName": {
+      "Value": {
+        "Fn::GetAtt": ["CloudApiService", "Name"]
+      }
+    },
+    "CloudApiTaskDefinitionArn": {
+      "Value": {
+        "Ref": "CloudApiTaskDefinition"
+      }
+    }
+  }
+}

@@ -1,0 +1,160 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "SearchLint Cognito user pool for Cloud API OIDC/JWT authentication. Tenant RBAC remains SearchLint-owned PostgreSQL membership data.",
+  "Parameters": {
+    "EnvironmentName": {
+      "Type": "String",
+      "Default": "prod",
+      "AllowedPattern": "^[a-z0-9-]+$"
+    },
+    "AppBaseUrl": {
+      "Type": "String",
+      "Default": "https://app.searchlint.example",
+      "AllowedPattern": "^https://[^/]+.*$"
+    },
+    "HostedUiDomainPrefix": {
+      "Type": "String",
+      "Default": "searchlint-prod-auth",
+      "AllowedPattern": "^[a-z0-9-]+$"
+    }
+  },
+  "Resources": {
+    "SearchLintUserPool": {
+      "Type": "AWS::Cognito::UserPool",
+      "Properties": {
+        "UserPoolName": {
+          "Fn::Sub": "searchlint-${EnvironmentName}-cloud-users"
+        },
+        "UsernameAttributes": ["email"],
+        "AutoVerifiedAttributes": ["email"],
+        "Policies": {
+          "PasswordPolicy": {
+            "MinimumLength": 12,
+            "RequireLowercase": true,
+            "RequireUppercase": true,
+            "RequireNumbers": true,
+            "RequireSymbols": true
+          }
+        },
+        "MfaConfiguration": "OPTIONAL",
+        "EnabledMfas": ["SOFTWARE_TOKEN_MFA"],
+        "UserAttributeUpdateSettings": {
+          "AttributesRequireVerificationBeforeUpdate": ["email"]
+        },
+        "AccountRecoverySetting": {
+          "RecoveryMechanisms": [
+            {
+              "Name": "verified_email",
+              "Priority": 1
+            }
+          ]
+        },
+        "AdminCreateUserConfig": {
+          "AllowAdminCreateUserOnly": false
+        },
+        "Schema": [
+          {
+            "Name": "email",
+            "AttributeDataType": "String",
+            "Required": true,
+            "Mutable": true
+          }
+        ]
+      }
+    },
+    "SearchLintCloudApiAppClient": {
+      "Type": "AWS::Cognito::UserPoolClient",
+      "Properties": {
+        "ClientName": "searchlint-cloud-api",
+        "UserPoolId": {
+          "Ref": "SearchLintUserPool"
+        },
+        "GenerateSecret": false,
+        "PreventUserExistenceErrors": "ENABLED",
+        "AllowedOAuthFlowsUserPoolClient": true,
+        "AllowedOAuthFlows": ["code"],
+        "AllowedOAuthScopes": ["openid", "email", "profile"],
+        "CallbackURLs": [
+          {
+            "Fn::Sub": "${AppBaseUrl}/auth/callback"
+          }
+        ],
+        "LogoutURLs": [
+          {
+            "Fn::Sub": "${AppBaseUrl}/signed-out"
+          }
+        ],
+        "ExplicitAuthFlows": [
+          "ALLOW_REFRESH_TOKEN_AUTH",
+          "ALLOW_USER_SRP_AUTH"
+        ],
+        "SupportedIdentityProviders": ["COGNITO"],
+        "AccessTokenValidity": 60,
+        "IdTokenValidity": 60,
+        "RefreshTokenValidity": 30,
+        "TokenValidityUnits": {
+          "AccessToken": "minutes",
+          "IdToken": "minutes",
+          "RefreshToken": "days"
+        }
+      }
+    },
+    "SearchLintUserPoolDomain": {
+      "Type": "AWS::Cognito::UserPoolDomain",
+      "Properties": {
+        "Domain": {
+          "Ref": "HostedUiDomainPrefix"
+        },
+        "UserPoolId": {
+          "Ref": "SearchLintUserPool"
+        }
+      }
+    },
+    "SearchLintPlatformAccessGroup": {
+      "Type": "AWS::Cognito::UserPoolGroup",
+      "Properties": {
+        "GroupName": "searchlint-platform-access",
+        "Description": "Coarse SearchLint platform access only. Tenant RBAC is stored in SearchLint PostgreSQL memberships.",
+        "UserPoolId": {
+          "Ref": "SearchLintUserPool"
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "SearchLintCognitoIssuer": {
+      "Description": "Set SEARCHLINT_COGNITO_ISSUER to this value.",
+      "Value": {
+        "Fn::Sub": "https://cognito-idp.${AWS::Region}.amazonaws.com/${SearchLintUserPool}"
+      }
+    },
+    "SearchLintCognitoAudience": {
+      "Description": "Set SEARCHLINT_COGNITO_AUDIENCE to this app client ID.",
+      "Value": {
+        "Ref": "SearchLintCloudApiAppClient"
+      }
+    },
+    "SearchLintCognitoJwksUrl": {
+      "Description": "Set SEARCHLINT_COGNITO_JWKS_URL to this value.",
+      "Value": {
+        "Fn::Sub": "https://cognito-idp.${AWS::Region}.amazonaws.com/${SearchLintUserPool}/.well-known/jwks.json"
+      }
+    },
+    "SearchLintCognitoTokenUse": {
+      "Description": "Set SEARCHLINT_COGNITO_TOKEN_USE to this value.",
+      "Value": "access"
+    },
+    "SearchLintCognitoPlatformAccessGroup": {
+      "Description": "Coarse platform access group. Not a tenant RBAC source.",
+      "Value": {
+        "Ref": "SearchLintPlatformAccessGroup"
+      }
+    },
+    "SearchLintCognitoHostedUiDomain": {
+      "Description": "Cognito Hosted UI domain prefix for signup/login flows.",
+      "Value": {
+        "Ref": "SearchLintUserPoolDomain"
+      }
+    }
+  }
+}

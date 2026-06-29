@@ -1,10 +1,11 @@
 {
   "name": "@searchlint/next",
-  "version": "1.0.0-beta.13",
+  "version": "1.0.0-beta.62",
   "description": "SearchLint Next.js development integration",
   "license": "Apache-2.0",
   "sideEffects": false,
   "type": "module",
+  "types": "./dist/src/index.d.ts",
   "files": [
     "dist/src",
     "RULE_CATALOG.yaml",
@@ -34,8 +35,7 @@
     "@searchlint/overlay": "workspace:*"
   },
   "engines": {
-    "node": ">=24.0.0",
-    "pnpm": ">=11.0.0 <12.0.0"
+    "node": ">=24.0.0"
   },
   "keywords": [
     "searchlint",

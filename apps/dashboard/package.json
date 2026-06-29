@@ -1,0 +1,84 @@
+{
+  "name": "@searchlint/dashboard",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "files": [
+    "dist/src",
+    "package.json"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
+    },
+    "./browser-entry": {
+      "types": "./dist/src/browser-entry.d.ts",
+      "import": "./dist/src/browser-entry.js"
+    },
+    "./browser-entry.auto": {
+      "types": "./dist/src/browser-entry.auto.d.ts",
+      "import": "./dist/src/browser-entry.auto.js"
+    }
+  },
+  "scripts": {
+    "build": "node ../../scripts/build-package.mjs",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@searchlint/api": "workspace:*",
+    "@searchlint/core": "workspace:*"
+  },
+  "searchlint": {
+    "layer": "app",
+    "dashboardBrowserAssets": [
+      {
+        "name": "searchlint-dashboard-browser-entry",
+        "manifest": "dist/assets/searchlint-dashboard-assets.json",
+        "moduleScript": "/assets/searchlint-dashboard/browser-entry.auto.js",
+        "bundle": {
+          "name": "searchlint-dashboard-browser-entry-bundle",
+          "asset": "dist/assets/searchlint-dashboard/searchlint-dashboard.bundle.min.js",
+          "moduleScript": "/assets/searchlint-dashboard/searchlint-dashboard.bundle.min.js"
+        },
+        "modules": [
+          {
+            "name": "searchlint-dashboard-browser-entry-auto",
+            "source": "dist/src/browser-entry.auto.js",
+            "asset": "dist/assets/searchlint-dashboard/browser-entry.auto.js",
+            "moduleScript": "/assets/searchlint-dashboard/browser-entry.auto.js"
+          },
+          {
+            "name": "searchlint-dashboard-browser-entry",
+            "source": "dist/src/browser-entry.js",
+            "asset": "dist/assets/searchlint-dashboard/browser-entry.js",
+            "moduleScript": "/assets/searchlint-dashboard/browser-entry.js"
+          },
+          {
+            "name": "searchlint-dashboard-index",
+            "source": "dist/src/index.js",
+            "asset": "dist/assets/searchlint-dashboard/index.js",
+            "moduleScript": "/assets/searchlint-dashboard/index.js"
+          },
+          {
+            "name": "searchlint-dashboard-api-client",
+            "source": "dist/src/api-client.js",
+            "asset": "dist/assets/searchlint-dashboard/api-client.js",
+            "moduleScript": "/assets/searchlint-dashboard/api-client.js"
+          }
+        ],
+        "importMap": {
+          "imports": {
+            "@searchlint/api/http-contracts": {
+              "name": "searchlint-api-http-contracts",
+              "source": "../../services/api/dist/src/http-contracts.js",
+              "asset": "dist/assets/searchlint-dashboard/vendor/searchlint-api/http-contracts.js",
+              "moduleScript": "/assets/searchlint-dashboard/vendor/searchlint-api/http-contracts.js"
+            }
+          }
+        }
+      }
+    ]
+  }
+}

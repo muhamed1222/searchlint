@@ -1,0 +1,425 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "SearchLint report artifact cleanup schedule: EventBridge Scheduler launches an ECS/Fargate task that deletes expired report artifacts from S3 and marks PostgreSQL metadata deleted.",
+  "Parameters": {
+    "EnvironmentName": {
+      "Type": "String",
+      "Default": "prod",
+      "AllowedPattern": "^[a-z0-9-]+$"
+    },
+    "ClusterArn": {
+      "Type": "String"
+    },
+    "WorkerImageUri": {
+      "Type": "String"
+    },
+    "VpcSubnets": {
+      "Type": "List<AWS::EC2::Subnet::Id>"
+    },
+    "SecurityGroups": {
+      "Type": "List<AWS::EC2::SecurityGroup::Id>"
+    },
+    "PostgresDatabaseUrlSecretArn": {
+      "Type": "String"
+    },
+    "ReportArtifactBucketArn": {
+      "Type": "String"
+    },
+    "KmsKeyArn": {
+      "Type": "String",
+      "Default": ""
+    },
+    "CleanupPollIntervalMs": {
+      "Type": "Number",
+      "Default": 60000,
+      "MinValue": 1
+    },
+    "CleanupBatchSize": {
+      "Type": "Number",
+      "Default": 25,
+      "MinValue": 1,
+      "MaxValue": 100
+    },
+    "PostgresSslMode": {
+      "Type": "String",
+      "Default": "require",
+      "AllowedValues": [
+        "disable",
+        "allow",
+        "prefer",
+        "require",
+        "verify-ca",
+        "verify-full"
+      ]
+    },
+    "OtelHeadersSecretArn": {
+      "Type": "String",
+      "Default": ""
+    },
+    "TaskCpu": {
+      "Type": "String",
+      "Default": "256",
+      "AllowedValues": ["256", "512", "1024", "2048", "4096"]
+    },
+    "TaskMemory": {
+      "Type": "String",
+      "Default": "512",
+      "AllowedValues": ["512", "1024", "2048", "3072", "4096", "8192"]
+    }
+  },
+  "Conditions": {
+    "HasKmsKey": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            {
+              "Ref": "KmsKeyArn"
+            },
+            ""
+          ]
+        }
+      ]
+    },
+    "HasOtelHeadersSecret": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            {
+              "Ref": "OtelHeadersSecretArn"
+            },
+            ""
+          ]
+        }
+      ]
+    }
+  },
+  "Resources": {
+    "ReportArtifactCleanupLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": {
+          "Fn::Sub": "/aws/ecs/searchlint/${EnvironmentName}/report-artifact-cleanup"
+        },
+        "RetentionInDays": 30
+      }
+    },
+    "ReportArtifactCleanupDeadLetterQueue": {
+      "Type": "AWS::SQS::Queue",
+      "Properties": {
+        "MessageRetentionPeriod": 1209600,
+        "SqsManagedSseEnabled": true
+      }
+    },
+    "ReportArtifactCleanupTaskExecutionRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": "searchlint-report-artifact-cleanup-task-execution",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": ["logs:CreateLogStream", "logs:PutLogEvents"],
+                  "Resource": {
+                    "Fn::GetAtt": ["ReportArtifactCleanupLogGroup", "Arn"]
+                  }
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": ["secretsmanager:GetSecretValue"],
+                  "Resource": [
+                    {
+                      "Ref": "PostgresDatabaseUrlSecretArn"
+                    },
+                    {
+                      "Fn::If": [
+                        "HasOtelHeadersSecret",
+                        {
+                          "Ref": "OtelHeadersSecretArn"
+                        },
+                        {
+                          "Ref": "AWS::NoValue"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "Fn::If": [
+                    "HasKmsKey",
+                    {
+                      "Effect": "Allow",
+                      "Action": ["kms:Decrypt"],
+                      "Resource": {
+                        "Ref": "KmsKeyArn"
+                      }
+                    },
+                    {
+                      "Ref": "AWS::NoValue"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "ReportArtifactCleanupTaskRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": "searchlint-report-artifact-cleanup-task",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": ["s3:DeleteObject"],
+                  "Resource": {
+                    "Fn::Sub": "${ReportArtifactBucketArn}/*"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "ReportArtifactCleanupTaskDefinition": {
+      "Type": "AWS::ECS::TaskDefinition",
+      "Properties": {
+        "Family": {
+          "Fn::Sub": "searchlint-${EnvironmentName}-report-artifact-cleanup"
+        },
+        "RequiresCompatibilities": ["FARGATE"],
+        "NetworkMode": "awsvpc",
+        "Cpu": {
+          "Ref": "TaskCpu"
+        },
+        "Memory": {
+          "Ref": "TaskMemory"
+        },
+        "ExecutionRoleArn": {
+          "Fn::GetAtt": ["ReportArtifactCleanupTaskExecutionRole", "Arn"]
+        },
+        "TaskRoleArn": {
+          "Fn::GetAtt": ["ReportArtifactCleanupTaskRole", "Arn"]
+        },
+        "ContainerDefinitions": [
+          {
+            "Name": "report-artifact-cleanup",
+            "Image": {
+              "Ref": "WorkerImageUri"
+            },
+            "Essential": true,
+            "Command": ["node", "dist/src/report-artifact-cleanup-bin.js"],
+            "Environment": [
+              {
+                "Name": "SEARCHLINT_POSTGRES_SSL_MODE",
+                "Value": {
+                  "Ref": "PostgresSslMode"
+                }
+              },
+              {
+                "Name": "SEARCHLINT_WORKER_REPORT_ARTIFACT_CLEANUP_POLL_INTERVAL_MS",
+                "Value": {
+                  "Ref": "CleanupPollIntervalMs"
+                }
+              },
+              {
+                "Name": "SEARCHLINT_WORKER_REPORT_ARTIFACT_CLEANUP_BATCH_SIZE",
+                "Value": {
+                  "Ref": "CleanupBatchSize"
+                }
+              }
+            ],
+            "Secrets": [
+              {
+                "Name": "SEARCHLINT_POSTGRES_DATABASE_URL",
+                "ValueFrom": {
+                  "Ref": "PostgresDatabaseUrlSecretArn"
+                }
+              },
+              {
+                "Fn::If": [
+                  "HasOtelHeadersSecret",
+                  {
+                    "Name": "OTEL_EXPORTER_OTLP_HEADERS",
+                    "ValueFrom": {
+                      "Ref": "OtelHeadersSecretArn"
+                    }
+                  },
+                  {
+                    "Ref": "AWS::NoValue"
+                  }
+                ]
+              }
+            ],
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "ReportArtifactCleanupLogGroup"
+                },
+                "awslogs-region": {
+                  "Ref": "AWS::Region"
+                },
+                "awslogs-stream-prefix": "searchlint-report-artifact-cleanup"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "ReportArtifactCleanupSchedulerRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "scheduler.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": "searchlint-report-artifact-cleanup-scheduler",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": ["ecs:RunTask"],
+                  "Resource": {
+                    "Ref": "ReportArtifactCleanupTaskDefinition"
+                  }
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": ["iam:PassRole"],
+                  "Resource": [
+                    {
+                      "Fn::GetAtt": [
+                        "ReportArtifactCleanupTaskExecutionRole",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": ["ReportArtifactCleanupTaskRole", "Arn"]
+                    }
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": ["sqs:SendMessage"],
+                  "Resource": {
+                    "Fn::GetAtt": [
+                      "ReportArtifactCleanupDeadLetterQueue",
+                      "Arn"
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "ReportArtifactCleanupSchedule": {
+      "Type": "AWS::Scheduler::Schedule",
+      "Properties": {
+        "Name": {
+          "Fn::Sub": "searchlint-${EnvironmentName}-report-artifact-cleanup"
+        },
+        "ScheduleExpression": "rate(15 minutes)",
+        "FlexibleTimeWindow": {
+          "Mode": "OFF"
+        },
+        "Target": {
+          "Arn": {
+            "Ref": "ClusterArn"
+          },
+          "RoleArn": {
+            "Fn::GetAtt": ["ReportArtifactCleanupSchedulerRole", "Arn"]
+          },
+          "DeadLetterConfig": {
+            "Arn": {
+              "Fn::GetAtt": ["ReportArtifactCleanupDeadLetterQueue", "Arn"]
+            }
+          },
+          "RetryPolicy": {
+            "MaximumRetryAttempts": 2
+          },
+          "EcsParameters": {
+            "TaskDefinitionArn": {
+              "Ref": "ReportArtifactCleanupTaskDefinition"
+            },
+            "LaunchType": "FARGATE",
+            "PlatformVersion": "LATEST",
+            "NetworkConfiguration": {
+              "AwsVpcConfiguration": {
+                "AssignPublicIp": "DISABLED",
+                "Subnets": {
+                  "Ref": "VpcSubnets"
+                },
+                "SecurityGroups": {
+                  "Ref": "SecurityGroups"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "ReportArtifactCleanupScheduleName": {
+      "Value": {
+        "Ref": "ReportArtifactCleanupSchedule"
+      }
+    },
+    "ReportArtifactCleanupTaskDefinitionArn": {
+      "Value": {
+        "Ref": "ReportArtifactCleanupTaskDefinition"
+      }
+    },
+    "ReportArtifactCleanupDeadLetterQueueArn": {
+      "Value": {
+        "Fn::GetAtt": ["ReportArtifactCleanupDeadLetterQueue", "Arn"]
+      }
+    }
+  }
+}

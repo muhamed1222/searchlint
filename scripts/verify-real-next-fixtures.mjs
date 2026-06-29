@@ -96,7 +96,7 @@ try {
   console.log(`Real Next.js fixture report: ${reportPath}`);
 } finally {
   if (process.env.SEARCHLINT_KEEP_NEXT_FIXTURES !== "1") {
-    await rm(workDir, { recursive: true, force: true });
+    await removeFixtureWorkDir(workDir);
   } else {
     console.log(`Kept fixture workspace: ${workDir}`);
   }
@@ -1120,6 +1120,23 @@ function assert(condition, message) {
   if (!condition) {
     throw new Error(message);
   }
+}
+
+async function removeFixtureWorkDir(directory) {
+  let lastError;
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    try {
+      await rm(directory, { recursive: true, force: true, maxRetries: 3 });
+      return;
+    } catch (error) {
+      lastError = error;
+      if (!["ENOTEMPTY", "EBUSY", "EPERM"].includes(error?.code)) {
+        throw error;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 250 * (attempt + 1)));
+    }
+  }
+  throw lastError;
 }
 
 function readFixtureFilter() {

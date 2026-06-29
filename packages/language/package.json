@@ -1,6 +1,6 @@
 {
   "name": "@searchlint/language",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta.2",
   "description": "SearchLint .seo DSL parser and compiler",
   "license": "Apache-2.0",
   "sideEffects": false,
@@ -24,8 +24,7 @@
     "@searchlint/core": "workspace:*"
   },
   "engines": {
-    "node": ">=24.0.0",
-    "pnpm": ">=11.0.0 <12.0.0"
+    "node": ">=24.0.0"
   },
   "keywords": [
     "searchlint",

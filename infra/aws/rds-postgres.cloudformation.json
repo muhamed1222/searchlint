@@ -1,0 +1,276 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "SearchLint Cloud PostgreSQL storage: private encrypted Amazon RDS PostgreSQL instance and Secrets Manager database URL for API and worker tasks.",
+  "Parameters": {
+    "EnvironmentName": {
+      "Type": "String",
+      "Default": "prod",
+      "AllowedPattern": "^[a-z0-9-]+$"
+    },
+    "VpcId": {
+      "Type": "AWS::EC2::VPC::Id"
+    },
+    "DatabaseSubnets": {
+      "Type": "List<AWS::EC2::Subnet::Id>"
+    },
+    "ApiServiceSecurityGroupId": {
+      "Type": "AWS::EC2::SecurityGroup::Id"
+    },
+    "WorkerServiceSecurityGroupId": {
+      "Type": "AWS::EC2::SecurityGroup::Id"
+    },
+    "DatabaseName": {
+      "Type": "String",
+      "Default": "searchlint",
+      "AllowedPattern": "^[a-zA-Z][a-zA-Z0-9_]{0,62}$"
+    },
+    "DatabaseUsername": {
+      "Type": "String",
+      "Default": "searchlint_app",
+      "AllowedPattern": "^[a-zA-Z][a-zA-Z0-9_]{0,62}$"
+    },
+    "DatabaseInstanceClass": {
+      "Type": "String",
+      "Default": "db.t4g.small"
+    },
+    "AllocatedStorageGb": {
+      "Type": "Number",
+      "Default": 50,
+      "MinValue": 20
+    },
+    "BackupRetentionDays": {
+      "Type": "Number",
+      "Default": 7,
+      "MinValue": 1,
+      "MaxValue": 35
+    },
+    "DeletionProtection": {
+      "Type": "String",
+      "Default": "true",
+      "AllowedValues": ["true", "false"]
+    },
+    "KmsKeyArn": {
+      "Type": "String",
+      "Default": ""
+    }
+  },
+  "Conditions": {
+    "HasKmsKey": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            {
+              "Ref": "KmsKeyArn"
+            },
+            ""
+          ]
+        }
+      ]
+    },
+    "EnableDeletionProtection": {
+      "Fn::Equals": [
+        {
+          "Ref": "DeletionProtection"
+        },
+        "true"
+      ]
+    }
+  },
+  "Resources": {
+    "PostgresPasswordSecret": {
+      "Type": "AWS::SecretsManager::Secret",
+      "Properties": {
+        "Name": {
+          "Fn::Sub": "searchlint/${EnvironmentName}/postgres/password"
+        },
+        "Description": "Generated SearchLint Cloud PostgreSQL application password.",
+        "GenerateSecretString": {
+          "PasswordLength": 40,
+          "ExcludeCharacters": "\"@/\\:?'#[]{}$&+,;=%<>`|~ ",
+          "RequireEachIncludedType": true
+        },
+        "KmsKeyId": {
+          "Fn::If": [
+            "HasKmsKey",
+            {
+              "Ref": "KmsKeyArn"
+            },
+            {
+              "Ref": "AWS::NoValue"
+            }
+          ]
+        }
+      }
+    },
+    "PostgresSubnetGroup": {
+      "Type": "AWS::RDS::DBSubnetGroup",
+      "Properties": {
+        "DBSubnetGroupDescription": "Private SearchLint Cloud PostgreSQL subnets",
+        "SubnetIds": {
+          "Ref": "DatabaseSubnets"
+        }
+      }
+    },
+    "PostgresSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "SearchLint Cloud PostgreSQL access",
+        "VpcId": {
+          "Ref": "VpcId"
+        },
+        "SecurityGroupIngress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 5432,
+            "ToPort": 5432,
+            "SourceSecurityGroupId": {
+              "Ref": "ApiServiceSecurityGroupId"
+            }
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 5432,
+            "ToPort": 5432,
+            "SourceSecurityGroupId": {
+              "Ref": "WorkerServiceSecurityGroupId"
+            }
+          }
+        ],
+        "SecurityGroupEgress": [
+          {
+            "IpProtocol": "-1",
+            "CidrIp": "0.0.0.0/0"
+          }
+        ]
+      }
+    },
+    "PostgresInstance": {
+      "Type": "AWS::RDS::DBInstance",
+      "Properties": {
+        "DBInstanceIdentifier": {
+          "Fn::Sub": "searchlint-${EnvironmentName}-postgres"
+        },
+        "Engine": "postgres",
+        "DBName": {
+          "Ref": "DatabaseName"
+        },
+        "MasterUsername": {
+          "Ref": "DatabaseUsername"
+        },
+        "MasterUserPassword": {
+          "Fn::Sub": [
+            "{{resolve:secretsmanager:${PasswordSecretArn}:SecretString}}",
+            {
+              "PasswordSecretArn": {
+                "Ref": "PostgresPasswordSecret"
+              }
+            }
+          ]
+        },
+        "DBInstanceClass": {
+          "Ref": "DatabaseInstanceClass"
+        },
+        "AllocatedStorage": {
+          "Ref": "AllocatedStorageGb"
+        },
+        "StorageType": "gp3",
+        "StorageEncrypted": true,
+        "KmsKeyId": {
+          "Fn::If": [
+            "HasKmsKey",
+            {
+              "Ref": "KmsKeyArn"
+            },
+            {
+              "Ref": "AWS::NoValue"
+            }
+          ]
+        },
+        "PubliclyAccessible": false,
+        "BackupRetentionPeriod": {
+          "Ref": "BackupRetentionDays"
+        },
+        "DeletionProtection": {
+          "Fn::If": ["EnableDeletionProtection", true, false]
+        },
+        "DBSubnetGroupName": {
+          "Ref": "PostgresSubnetGroup"
+        },
+        "VPCSecurityGroups": [
+          {
+            "Ref": "PostgresSecurityGroup"
+          }
+        ]
+      }
+    },
+    "PostgresDatabaseUrlSecret": {
+      "Type": "AWS::SecretsManager::Secret",
+      "Properties": {
+        "Name": {
+          "Fn::Sub": "searchlint/${EnvironmentName}/postgres/database-url"
+        },
+        "Description": "SearchLint Cloud SEARCHLINT_POSTGRES_DATABASE_URL for API and worker tasks.",
+        "SecretString": {
+          "Fn::Sub": [
+            "postgres://${DatabaseUsername}:{{resolve:secretsmanager:${PasswordSecretArn}:SecretString}}@${EndpointAddress}:${EndpointPort}/${DatabaseName}",
+            {
+              "DatabaseUsername": {
+                "Ref": "DatabaseUsername"
+              },
+              "PasswordSecretArn": {
+                "Ref": "PostgresPasswordSecret"
+              },
+              "EndpointAddress": {
+                "Fn::GetAtt": ["PostgresInstance", "Endpoint.Address"]
+              },
+              "EndpointPort": {
+                "Fn::GetAtt": ["PostgresInstance", "Endpoint.Port"]
+              },
+              "DatabaseName": {
+                "Ref": "DatabaseName"
+              }
+            }
+          ]
+        },
+        "KmsKeyId": {
+          "Fn::If": [
+            "HasKmsKey",
+            {
+              "Ref": "KmsKeyArn"
+            },
+            {
+              "Ref": "AWS::NoValue"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "PostgresDatabaseUrlSecretArn": {
+      "Description": "Use this ARN for SEARCHLINT_POSTGRES_DATABASE_URL ECS container secrets.",
+      "Value": {
+        "Ref": "PostgresDatabaseUrlSecret"
+      }
+    },
+    "PostgresEndpointAddress": {
+      "Value": {
+        "Fn::GetAtt": ["PostgresInstance", "Endpoint.Address"]
+      }
+    },
+    "PostgresEndpointPort": {
+      "Value": {
+        "Fn::GetAtt": ["PostgresInstance", "Endpoint.Port"]
+      }
+    },
+    "PostgresSecurityGroupId": {
+      "Value": {
+        "Ref": "PostgresSecurityGroup"
+      }
+    },
+    "PostgresSslMode": {
+      "Description": "Set SEARCHLINT_POSTGRES_SSL_MODE to this value for deployed API and worker tasks.",
+      "Value": "require"
+    }
+  }
+}

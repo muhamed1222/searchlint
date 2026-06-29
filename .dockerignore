@@ -1,0 +1,14 @@
+.DS_Store
+.git
+.github
+.turbo
+.vscode
+coverage
+dist
+node_modules
+reports
+tmp
+*.log
+.env
+.env.*
+!.env.example

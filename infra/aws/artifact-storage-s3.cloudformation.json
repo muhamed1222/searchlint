@@ -1,0 +1,393 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "SearchLint Cloud artifact storage: private encrypted S3 buckets for crawl artifacts and report artifacts.",
+  "Parameters": {
+    "EnvironmentName": {
+      "Type": "String",
+      "Default": "prod",
+      "AllowedPattern": "^[a-z0-9-]+$"
+    },
+    "CrawlArtifactKeyPrefix": {
+      "Type": "String",
+      "Default": "crawl-artifacts",
+      "AllowedPattern": "^[A-Za-z0-9!_.*'()/ -]+$"
+    },
+    "CrawlArtifactExpirationDays": {
+      "Type": "Number",
+      "Default": 14,
+      "MinValue": 1,
+      "MaxValue": 365
+    },
+    "KmsKeyArn": {
+      "Type": "String",
+      "Default": ""
+    }
+  },
+  "Conditions": {
+    "HasKmsKey": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            {
+              "Ref": "KmsKeyArn"
+            },
+            ""
+          ]
+        }
+      ]
+    }
+  },
+  "Resources": {
+    "ArtifactAccessLogBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": {
+          "Fn::Sub": "searchlint-${EnvironmentName}-artifact-access-logs-${AWS::AccountId}-${AWS::Region}"
+        },
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true
+        },
+        "OwnershipControls": {
+          "Rules": [
+            {
+              "ObjectOwnership": "BucketOwnerPreferred"
+            }
+          ]
+        },
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "SSEAlgorithm": {
+                  "Fn::If": ["HasKmsKey", "aws:kms", "AES256"]
+                },
+                "KMSMasterKeyID": {
+                  "Fn::If": [
+                    "HasKmsKey",
+                    {
+                      "Ref": "KmsKeyArn"
+                    },
+                    {
+                      "Ref": "AWS::NoValue"
+                    }
+                  ]
+                }
+              },
+              "BucketKeyEnabled": {
+                "Fn::If": ["HasKmsKey", true, false]
+              }
+            }
+          ]
+        },
+        "VersioningConfiguration": {
+          "Status": "Enabled"
+        },
+        "LifecycleConfiguration": {
+          "Rules": [
+            {
+              "Id": "expire-artifact-access-logs",
+              "Status": "Enabled",
+              "ExpirationInDays": 365,
+              "NoncurrentVersionExpiration": {
+                "NoncurrentDays": 365
+              },
+              "AbortIncompleteMultipartUpload": {
+                "DaysAfterInitiation": 7
+              }
+            }
+          ]
+        }
+      }
+    },
+    "CrawlArtifactBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": {
+          "Fn::Sub": "searchlint-${EnvironmentName}-crawl-artifacts-${AWS::AccountId}-${AWS::Region}"
+        },
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true
+        },
+        "OwnershipControls": {
+          "Rules": [
+            {
+              "ObjectOwnership": "BucketOwnerEnforced"
+            }
+          ]
+        },
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "SSEAlgorithm": {
+                  "Fn::If": ["HasKmsKey", "aws:kms", "AES256"]
+                },
+                "KMSMasterKeyID": {
+                  "Fn::If": [
+                    "HasKmsKey",
+                    {
+                      "Ref": "KmsKeyArn"
+                    },
+                    {
+                      "Ref": "AWS::NoValue"
+                    }
+                  ]
+                }
+              },
+              "BucketKeyEnabled": {
+                "Fn::If": ["HasKmsKey", true, false]
+              }
+            }
+          ]
+        },
+        "VersioningConfiguration": {
+          "Status": "Enabled"
+        },
+        "LoggingConfiguration": {
+          "DestinationBucketName": {
+            "Ref": "ArtifactAccessLogBucket"
+          },
+          "LogFilePrefix": {
+            "Fn::Sub": "crawl-artifacts/${EnvironmentName}/"
+          }
+        },
+        "LifecycleConfiguration": {
+          "Rules": [
+            {
+              "Id": "expire-raw-crawl-artifacts",
+              "Status": "Enabled",
+              "Prefix": {
+                "Fn::Sub": "${CrawlArtifactKeyPrefix}/"
+              },
+              "ExpirationInDays": {
+                "Ref": "CrawlArtifactExpirationDays"
+              },
+              "NoncurrentVersionExpiration": {
+                "NoncurrentDays": {
+                  "Ref": "CrawlArtifactExpirationDays"
+                }
+              },
+              "AbortIncompleteMultipartUpload": {
+                "DaysAfterInitiation": 7
+              }
+            }
+          ]
+        }
+      }
+    },
+    "ReportArtifactBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": {
+          "Fn::Sub": "searchlint-${EnvironmentName}-report-artifacts-${AWS::AccountId}-${AWS::Region}"
+        },
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true
+        },
+        "OwnershipControls": {
+          "Rules": [
+            {
+              "ObjectOwnership": "BucketOwnerEnforced"
+            }
+          ]
+        },
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "SSEAlgorithm": {
+                  "Fn::If": ["HasKmsKey", "aws:kms", "AES256"]
+                },
+                "KMSMasterKeyID": {
+                  "Fn::If": [
+                    "HasKmsKey",
+                    {
+                      "Ref": "KmsKeyArn"
+                    },
+                    {
+                      "Ref": "AWS::NoValue"
+                    }
+                  ]
+                }
+              },
+              "BucketKeyEnabled": {
+                "Fn::If": ["HasKmsKey", true, false]
+              }
+            }
+          ]
+        },
+        "VersioningConfiguration": {
+          "Status": "Enabled"
+        },
+        "LoggingConfiguration": {
+          "DestinationBucketName": {
+            "Ref": "ArtifactAccessLogBucket"
+          },
+          "LogFilePrefix": {
+            "Fn::Sub": "report-artifacts/${EnvironmentName}/"
+          }
+        },
+        "LifecycleConfiguration": {
+          "Rules": [
+            {
+              "Id": "abort-incomplete-report-artifact-uploads",
+              "Status": "Enabled",
+              "AbortIncompleteMultipartUpload": {
+                "DaysAfterInitiation": 7
+              }
+            }
+          ]
+        }
+      }
+    },
+    "ArtifactAccessLogBucketPolicy": {
+      "Type": "AWS::S3::BucketPolicy",
+      "Properties": {
+        "Bucket": {
+          "Ref": "ArtifactAccessLogBucket"
+        },
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "DenyInsecureTransport",
+              "Effect": "Deny",
+              "Principal": "*",
+              "Action": "s3:*",
+              "Resource": [
+                {
+                  "Fn::GetAtt": ["ArtifactAccessLogBucket", "Arn"]
+                },
+                {
+                  "Fn::Sub": "${ArtifactAccessLogBucket.Arn}/*"
+                }
+              ],
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": "false"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "CrawlArtifactBucketPolicy": {
+      "Type": "AWS::S3::BucketPolicy",
+      "Properties": {
+        "Bucket": {
+          "Ref": "CrawlArtifactBucket"
+        },
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "DenyInsecureTransport",
+              "Effect": "Deny",
+              "Principal": "*",
+              "Action": "s3:*",
+              "Resource": [
+                {
+                  "Fn::GetAtt": ["CrawlArtifactBucket", "Arn"]
+                },
+                {
+                  "Fn::Sub": "${CrawlArtifactBucket.Arn}/*"
+                }
+              ],
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": "false"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "ReportArtifactBucketPolicy": {
+      "Type": "AWS::S3::BucketPolicy",
+      "Properties": {
+        "Bucket": {
+          "Ref": "ReportArtifactBucket"
+        },
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "DenyInsecureTransport",
+              "Effect": "Deny",
+              "Principal": "*",
+              "Action": "s3:*",
+              "Resource": [
+                {
+                  "Fn::GetAtt": ["ReportArtifactBucket", "Arn"]
+                },
+                {
+                  "Fn::Sub": "${ReportArtifactBucket.Arn}/*"
+                }
+              ],
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": "false"
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "CrawlArtifactBucketName": {
+      "Description": "Use this value for SEARCHLINT_CRAWL_ARTIFACT_BUCKET.",
+      "Value": {
+        "Ref": "CrawlArtifactBucket"
+      }
+    },
+    "CrawlArtifactBucketArn": {
+      "Description": "Use this ARN for crawler worker S3 write permissions.",
+      "Value": {
+        "Fn::GetAtt": ["CrawlArtifactBucket", "Arn"]
+      }
+    },
+    "CrawlArtifactKeyPrefix": {
+      "Description": "Use this value for SEARCHLINT_CRAWL_ARTIFACT_KEY_PREFIX.",
+      "Value": {
+        "Ref": "CrawlArtifactKeyPrefix"
+      }
+    },
+    "ReportArtifactBucketName": {
+      "Description": "Bucket for generated report artifact payloads.",
+      "Value": {
+        "Ref": "ReportArtifactBucket"
+      }
+    },
+    "ReportArtifactBucketArn": {
+      "Description": "Use this ARN for report artifact cleanup delete permissions.",
+      "Value": {
+        "Fn::GetAtt": ["ReportArtifactBucket", "Arn"]
+      }
+    },
+    "ArtifactAccessLogBucketName": {
+      "Description": "Bucket that stores S3 server access logs for artifact buckets.",
+      "Value": {
+        "Ref": "ArtifactAccessLogBucket"
+      }
+    },
+    "ArtifactAccessLogBucketArn": {
+      "Description": "ARN of the artifact S3 server access log bucket.",
+      "Value": {
+        "Fn::GetAtt": ["ArtifactAccessLogBucket", "Arn"]
+      }
+    }
+  }
+}

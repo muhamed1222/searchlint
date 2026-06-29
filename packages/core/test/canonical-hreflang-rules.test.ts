@@ -205,6 +205,37 @@ describe("createCoreCanonicalHreflangRules", () => {
     ).not.toContain("SL-CANON-007");
   });
 
+  it("compares local dev canonical origin conflicts against the configured site origin", async () => {
+    const result = await runWithSiteUrl(
+      {
+        ...snapshot(
+          '<head><link rel="canonical" href="https://www.moolt.site/"></head>'
+        ),
+        pageUrl: "http://127.0.0.1:3000/",
+        http: {
+          statusCode: 200,
+          finalUrl: "http://127.0.0.1:3000/",
+          headers: { "content-type": "text/html" },
+          redirectChain: []
+        }
+      },
+      "https://moolt.site"
+    );
+    const diagnostics = result.diagnostics.map((diagnostic) => diagnostic.ruleId);
+    const hostDiagnostic = result.diagnostics.find(
+      (diagnostic) => diagnostic.ruleId === "SL-CANON-007"
+    );
+
+    expect(diagnostics).not.toContain("SL-CANON-006");
+    expect(diagnostics).toContain("SL-CANON-007");
+    expect(hostDiagnostic).toMatchObject({
+      evidence:
+        "Expected canonical host is 'moolt.site' but canonical host is 'www.moolt.site'.",
+      expected: "moolt.site",
+      actual: "www.moolt.site"
+    });
+  });
+
   it("detects self-canonical policy violations only when policy is explicit", async () => {
     const page = snapshot(
       '<head><link rel="canonical" href="https://example.com/products/2"></head>'
