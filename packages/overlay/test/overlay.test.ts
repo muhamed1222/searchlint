@@ -542,7 +542,7 @@ describe("diagnostic filtering and rendering", () => {
     expect(html).toContain("Copy diagnostic");
     expect(html).not.toContain("Suppress");
     expect(html).not.toContain("Rerun analysis");
-    expect(html).not.toContain('aria-label="Close SearchLint diagnostics"');
+    expect(html).toContain('aria-label="Close SearchLint diagnostics"');
     expect(html).not.toContain('data-action="language-toggle"');
     expect(html).not.toContain("Переключить язык на русский");
     expect(html).not.toContain('class="sl-icon-button sl-language-button"');
@@ -949,16 +949,16 @@ describe("diagnostic filtering and rendering", () => {
     expect(html).toContain('aria-label="Highlight SL-META-005 evidence"');
   });
 
-  it("does not render header icon actions", () => {
+  it("renders close header action without rerun or language actions by default", () => {
     const html = renderOverlayHtml({
       status: "errors",
       diagnostics: [diagnostic("SL-META-005", "error")]
     });
 
-    expect(html).not.toContain('class="sl-header-actions"');
+    expect(html).toContain('class="sl-header-actions"');
     expect(html).not.toContain('data-action="rerun"');
     expect(html).not.toContain('data-action="language-toggle"');
-    expect(html).not.toContain('aria-label="Close SearchLint diagnostics"');
+    expect(html).toContain('aria-label="Close SearchLint diagnostics"');
   });
 
   it("renders the header and tab labels in Russian language mode", () => {

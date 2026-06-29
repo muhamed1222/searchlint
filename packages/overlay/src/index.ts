@@ -4304,7 +4304,7 @@ function renderIssueRow(
   const location = diagnostic.sourceLocation;
   const selector =
     location?.selector !== undefined
-      ? `<button type="button" class="sl-issue-icon-action" data-action="highlight" aria-label="Highlight">${renderFeedIcon("warning", diagnostic.severity === "info" ? "info" : "warn")}</button>`
+      ? `<button type="button" class="sl-issue-icon-action" data-action="highlight" aria-label="${language === "ru" ? "Подсветить evidence для" : "Highlight"} ${escapeHtml(diagnostic.ruleId)} ${language === "ru" ? "диагностики" : "evidence"}">${renderFeedIcon("warning", diagnostic.severity === "info" ? "info" : "warn")}</button>`
       : renderFeedIcon(
           "warning",
           diagnostic.severity === "info" ? "info" : "warn"
@@ -4322,8 +4322,8 @@ function renderIssueRow(
     <div class="sl-issue-actions">
       <span>${escapeHtml(severityLabelForLanguage(diagnostic.severity, language))}</span>
       <button class="sl-issue-primary-action" type="button" data-action="copy-fix-prompt" aria-label="${language === "ru" ? "Скопировать fix prompt для" : "Copy fix prompt for"} ${escapeHtml(diagnostic.ruleId)}">${language === "ru" ? "Скопировать prompt" : "Copy fix prompt"}</button>
-      <button type="button" data-action="copy" aria-label="${language === "ru" ? "Скопировать диагностику" : "Copy diagnostic"}">${language === "ru" ? "Диагностика" : "Diagnostic"}</button>
-      ${suppressEnabled ? `<button type="button" data-action="suppress" aria-label="${language === "ru" ? "Скрыть диагностику" : "Suppress"}">${language === "ru" ? "Скрыть" : "Suppress"}</button>` : ""}
+      <button type="button" data-action="copy" aria-label="${language === "ru" ? "Скопировать диагностику" : "Copy"} ${escapeHtml(diagnostic.ruleId)} ${language === "ru" ? "" : "diagnostic"}">${language === "ru" ? "Диагностика" : "Diagnostic"}</button>
+      ${suppressEnabled ? `<button type="button" data-action="suppress" aria-label="${language === "ru" ? "Скрыть диагностику" : "Suppress"} ${escapeHtml(diagnostic.ruleId)} ${language === "ru" ? "" : "diagnostic"}">${language === "ru" ? "Скрыть" : "Suppress"}</button>` : ""}
     </div>
   </article>`;
 }
@@ -4711,7 +4711,7 @@ function renderDiagnosticCard(
       : "";
   const selector =
     location?.selector !== undefined
-      ? `<p><strong>Selector</strong> <code>${escapeHtml(location.selector)}</code> <button type="button" data-action="highlight" aria-label="Highlight">Highlight</button></p>`
+      ? `<p><strong>Selector</strong> <code>${escapeHtml(location.selector)}</code> <button type="button" data-action="highlight" aria-label="Highlight ${escapeHtml(diagnostic.ruleId)} evidence">Highlight</button></p>`
       : "";
   return `<article class="sl-card sl-card--${diagnostic.severity}" role="listitem" tabindex="0" data-fingerprint="${escapeHtml(diagnostic.fingerprint)}" data-searchlint-rule-id="${escapeHtml(diagnostic.ruleId)}" data-searchlint-severity="${escapeHtml(diagnostic.severity)}" data-searchlint-category="${escapeHtml(categoryForRuleId(diagnostic.ruleId))}" data-searchlint-source="${escapeHtml(diagnostic.source)}">
     <div class="sl-card__head">
@@ -4733,8 +4733,8 @@ function renderDiagnosticCard(
     ${diagnostic.rawHtmlSnippet ? `<details><summary>Raw HTML</summary><pre>${escapeHtml(diagnostic.rawHtmlSnippet)}</pre></details>` : ""}
     ${diagnostic.renderedDomSnippet ? `<details><summary>Rendered DOM</summary><pre>${escapeHtml(diagnostic.renderedDomSnippet)}</pre></details>` : ""}
     <div class="sl-card__actions">
-      <button type="button" data-action="copy" aria-label="Copy diagnostic">Copy diagnostic</button>
-      ${suppressEnabled ? `<button type="button" data-action="suppress" aria-label="Suppress">Suppress</button>` : ""}
+      <button type="button" data-action="copy" aria-label="Copy ${escapeHtml(diagnostic.ruleId)} diagnostic">Copy diagnostic</button>
+      ${suppressEnabled ? `<button type="button" data-action="suppress" aria-label="Suppress ${escapeHtml(diagnostic.ruleId)} diagnostic">Suppress</button>` : ""}
     </div>
   </article>`;
 }

@@ -20,7 +20,7 @@ describe("createS3PageSnapshotArtifactStore", () => {
       artifactUri:
         "s3://searchlint-artifacts/prod/organizations/org-1/projects/project-1/environments/env-1/snapshots/snapshot-1/snapshot.json",
       byteSize: JSON.stringify(artifact).length,
-      sha256: "da15a92a00e6815c798f4ef68085ad596cba5d0dc35b5c9c5b536a07d6d4b6af"
+      sha256: "9a6d2460d24a6c8e2c3fa4ef36b95ad1dcee29087fa789a0e3735c26c964133c"
     });
 
     expect(harness.commands).toHaveLength(1);
@@ -34,7 +34,7 @@ describe("createS3PageSnapshotArtifactStore", () => {
         "searchlint-artifact-type": "page.snapshot",
         "searchlint-byte-size": String(JSON.stringify(artifact).length),
         "searchlint-sha256":
-          "da15a92a00e6815c798f4ef68085ad596cba5d0dc35b5c9c5b536a07d6d4b6af"
+          "9a6d2460d24a6c8e2c3fa4ef36b95ad1dcee29087fa789a0e3735c26c964133c"
       }
     });
   });
@@ -114,11 +114,12 @@ function pageSnapshot(): PageSnapshot {
     route: "/",
     capturedAt: "2026-06-23T00:00:00.000Z",
     http: {
-      status: 200,
+      statusCode: 200,
       finalUrl: "https://example.com/",
       headers: {
         "content-type": "text/html"
-      }
+      },
+      redirectChain: []
     },
     rawHtml: "<html><head><title>Example</title></head><body></body></html>",
     renderedDom:
