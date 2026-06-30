@@ -58,6 +58,7 @@ Use:
 - docs/RELEASE_EVIDENCE_CONTROL_BOARD.md
 - docs/RELEASE_EXTERNAL_OWNER_ACTION_QUEUE.md
 - docs/RELEASE_OWNER_OUTREACH_MESSAGE_KIT.md
+- .github/PULL_REQUEST_TEMPLATE/release-owner-evidence.md
 
 Do not create v1.0.0, run final npm publish, run final vsce publish, publish
 the public website as SearchLint 1.0, or announce SearchLint 1.0 while
@@ -134,6 +135,11 @@ When posting a fresh digest:
 4. Copy the digest text above and replace baseline values if they changed.
 5. Link any newly returned evidence files and the verifier output that proves
    them.
+
+When a real evidence PR is opened, use
+`.github/PULL_REQUEST_TEMPLATE/release-owner-evidence.md` and keep the PR
+limited to the required evidence files plus any directly required generated
+status updates.
 
 If a real evidence file arrives, do not mark the lane complete from the digest.
 Run the lane-specific verifier first, then rerun:
