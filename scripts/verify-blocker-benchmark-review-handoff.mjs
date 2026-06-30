@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { createHash } from "node:crypto";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { execFileSync } from "node:child_process";
+import { access, mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import { format } from "prettier";
@@ -28,6 +29,7 @@ const reviewerOutputPaths = [
   `${reviewDir}/reviewer-2.review.json`
 ];
 
+await ensureBenchmarkReport();
 const benchmark = JSON.parse(await readFile(benchmarkPath, "utf8"));
 const caseIndex = expandBenchmarkCases(benchmark);
 const requiredPacketEvidence = await verifyRequiredPacketFiles();
@@ -63,6 +65,18 @@ async function verifyRequiredPacketFiles() {
     });
   }
   return evidence;
+}
+
+async function ensureBenchmarkReport() {
+  try {
+    await access(benchmarkPath);
+  } catch {
+    execFileSync("pnpm", ["rule-qa"], {
+      cwd: process.cwd(),
+      env: process.env,
+      stdio: "inherit"
+    });
+  }
 }
 
 function createHandoffManifest(caseIndex) {
