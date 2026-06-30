@@ -24,9 +24,9 @@
   },
   "summary": {
     "gateCount": 20,
-    "presentCount": 4,
-    "blockedOrMissingCount": 16,
-    "releaseBlockerCount": 16
+    "presentCount": 5,
+    "blockedOrMissingCount": 15,
+    "releaseBlockerCount": 15
   },
   "requiredEvidence": [
     {
@@ -75,11 +75,13 @@
     },
     {
       "id": "branch-protection-ci",
-      "status": "missing",
-      "evidenceFiles": [],
-      "blockers": [
-        "protected branch and required hosted CI checks are not configured evidence"
-      ]
+      "status": "present",
+      "evidenceFiles": [
+        "docs/github/hosted-governance-evidence.json",
+        "docs/github/branch-protection-main.json",
+        "reports/hosted-github-governance-evidence-report.json"
+      ],
+      "blockers": []
     },
     {
       "id": "npm-publication",
