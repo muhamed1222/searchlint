@@ -1,6 +1,7 @@
 #!/usr/bin/env node
+import { execFileSync } from "node:child_process";
 import { existsSync } from "node:fs";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { access, mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import { format } from "prettier";
@@ -14,6 +15,10 @@ const reportPath = "reports/legal-release-approval-owner-guide-report.json";
 const samplePath =
   "docs/examples/legal-release-approval-owner-guide-report.sample.json";
 const generatedAt = "2026-06-23T00:00:00.000Z";
+
+await ensureReport(packageStatusReportPath, "pnpm", [
+  "release:owner-evidence-package-status"
+]);
 
 const template = await readJson(templatePath);
 const packageStatus = await readJson(packageStatusReportPath);
@@ -103,6 +108,19 @@ console.log(
 console.log(`Document: ${markdownPath}`);
 console.log(`Report: ${reportPath}`);
 console.log(`Sample: ${samplePath}`);
+
+async function ensureReport(filePath, command, args) {
+  try {
+    await access(filePath);
+  } catch {
+    execFileSync(command, args, {
+      cwd: process.cwd(),
+      env: process.env,
+      stdio: "inherit"
+    });
+    await access(filePath);
+  }
+}
 
 async function readJson(filePath) {
   return JSON.parse(await readFile(filePath, "utf8"));
