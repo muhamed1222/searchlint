@@ -1,0 +1,173 @@
+{
+  "generatedBy": "searchlint-public-website-onboarding-verifier",
+  "generatedAt": "2026-06-22T00:00:00.000Z",
+  "status": "passed",
+  "scope": {
+    "proofType": "deterministic public website/onboarding source proof",
+    "doesNotClaim": [
+      "deployed public website",
+      "production domain or CDN",
+      "live signup flow",
+      "analytics/tracking setup",
+      "final marketing/legal approval"
+    ]
+  },
+  "cases": {
+    "files": [
+      { "path": "README.md", "bytes": 9634 },
+      { "path": "docs/PUBLIC_WEBSITE_ONBOARDING.md", "bytes": 4708 },
+      { "path": "docs/ONBOARDING_GUIDE.md", "bytes": 2524 },
+      { "path": "docs/FAQ.md", "bytes": 1492 },
+      { "path": "docs/TROUBLESHOOTING.md", "bytes": 1273 },
+      { "path": "docs/API_DOCUMENTATION.md", "bytes": 992 },
+      { "path": "docs/NEXTJS_INSTALLATION.md", "bytes": 674 },
+      { "path": "docs/CLI_CI_USAGE.md", "bytes": 708 },
+      { "path": "docs/VSCODE_LSP_USAGE.md", "bytes": 5567 },
+      { "path": "docs/GOOGLE_SEARCH_CONSOLE_ACCEPTANCE.md", "bytes": 3527 },
+      { "path": "docs/YANDEX_ACCEPTANCE.md", "bytes": 4490 },
+      { "path": "docs/rules/README.md", "bytes": 18824 },
+      { "path": "specs/SEARCHLINT_LANGUAGE_SPEC.md", "bytes": 6443 },
+      { "path": "docs/examples/demo-project/README.md", "bytes": 510 },
+      { "path": "docs/examples/demo-project/searchlint.seo", "bytes": 392 }
+    ],
+    "coverage": [
+      {
+        "id": "product",
+        "filePath": "docs/PUBLIC_WEBSITE_ONBOARDING.md",
+        "marker": "Product Overview",
+        "status": "covered"
+      },
+      {
+        "id": "local-tools",
+        "filePath": "docs/PUBLIC_WEBSITE_ONBOARDING.md",
+        "marker": "Local Tools",
+        "status": "covered"
+      },
+      {
+        "id": "cloud-platform",
+        "filePath": "docs/PUBLIC_WEBSITE_ONBOARDING.md",
+        "marker": "Cloud Platform",
+        "status": "covered"
+      },
+      {
+        "id": "pricing",
+        "filePath": "docs/PUBLIC_WEBSITE_ONBOARDING.md",
+        "marker": "Pricing",
+        "status": "covered"
+      },
+      {
+        "id": "installation",
+        "filePath": "docs/ONBOARDING_GUIDE.md",
+        "marker": "Installation",
+        "status": "covered"
+      },
+      {
+        "id": "quick-start",
+        "filePath": "docs/ONBOARDING_GUIDE.md",
+        "marker": "Quick Start",
+        "status": "covered"
+      },
+      {
+        "id": "nextjs",
+        "filePath": "docs/ONBOARDING_GUIDE.md",
+        "marker": "Next.js Guide",
+        "status": "covered"
+      },
+      {
+        "id": "cli",
+        "filePath": "docs/ONBOARDING_GUIDE.md",
+        "marker": "CLI Guide",
+        "status": "covered"
+      },
+      {
+        "id": "vscode",
+        "filePath": "docs/ONBOARDING_GUIDE.md",
+        "marker": "VS Code Guide",
+        "status": "covered"
+      },
+      {
+        "id": "google-yandex",
+        "filePath": "docs/ONBOARDING_GUIDE.md",
+        "marker": "Google and Yandex Guide",
+        "status": "covered"
+      },
+      {
+        "id": "rule-catalog",
+        "filePath": "docs/PUBLIC_WEBSITE_ONBOARDING.md",
+        "marker": "docs/rules/README.md",
+        "status": "covered"
+      },
+      {
+        "id": "dsl",
+        "filePath": "docs/PUBLIC_WEBSITE_ONBOARDING.md",
+        "marker": "specs/SEARCHLINT_LANGUAGE_SPEC.md",
+        "status": "covered"
+      },
+      {
+        "id": "api",
+        "filePath": "docs/API_DOCUMENTATION.md",
+        "marker": "Cloud API",
+        "status": "covered"
+      },
+      {
+        "id": "examples",
+        "filePath": "docs/PUBLIC_WEBSITE_ONBOARDING.md",
+        "marker": "docs/examples/demo-project/README.md",
+        "status": "covered"
+      },
+      {
+        "id": "faq",
+        "filePath": "docs/FAQ.md",
+        "marker": "SearchLint FAQ",
+        "status": "covered"
+      },
+      {
+        "id": "troubleshooting",
+        "filePath": "docs/TROUBLESHOOTING.md",
+        "marker": "SearchLint Troubleshooting",
+        "status": "covered"
+      },
+      {
+        "id": "onboarding-wizard",
+        "filePath": "docs/ONBOARDING_GUIDE.md",
+        "marker": "Onboarding Wizard Source",
+        "status": "covered"
+      },
+      {
+        "id": "demo-project",
+        "filePath": "docs/examples/demo-project/README.md",
+        "marker": "SearchLint Demo Project",
+        "status": "covered"
+      },
+      {
+        "id": "contact-support",
+        "filePath": "docs/PUBLIC_WEBSITE_ONBOARDING.md",
+        "marker": "/support",
+        "status": "covered"
+      }
+    ],
+    "demoProject": {
+      "configPath": "docs/examples/demo-project/searchlint.seo",
+      "readmePath": "docs/examples/demo-project/README.md",
+      "routes": ["/", "/products/[slug]", "/admin/**"],
+      "status": "covered"
+    },
+    "releaseHonesty": {
+      "status": "covered",
+      "blockedClaims": [
+        "npm publication",
+        "VS Code Marketplace publication",
+        "live cloud availability",
+        "live Google/Yandex integrations",
+        "security/pentest completion"
+      ]
+    }
+  },
+  "remainingReleaseGates": [
+    "Deploy public website to the approved domain/CDN.",
+    "Approve final marketing, pricing, legal, privacy, and support copy.",
+    "Connect live onboarding/signup when cloud release gates are complete.",
+    "Add analytics/tracking only after privacy review.",
+    "Verify public links and screenshots against the deployed website."
+  ]
+}
