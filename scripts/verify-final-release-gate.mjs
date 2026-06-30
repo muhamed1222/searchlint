@@ -10,6 +10,7 @@ const rcMatrixSamplePath =
   "docs/examples/searchlint-1-0-rc-matrix-report.sample.json";
 const evidenceReadinessReportPath =
   "reports/release-evidence-readiness-summary-report.json";
+const ownerGateReportPath = "reports/release-owner-gate-actions-report.json";
 const evidenceReadinessSamplePath =
   "docs/examples/release-evidence-readiness-summary-report.sample.json";
 const hostedGithubGovernanceReportPath =
@@ -190,7 +191,9 @@ async function main() {
 
   const rcMatrix = await readJson(rcMatrixSamplePath);
   const evidenceReadiness = await readJson(evidenceReadinessReportPath);
+  const ownerGateReport = await readJson(ownerGateReportPath);
   verifyEvidenceReadiness(evidenceReadiness);
+  verifyOwnerGateReport(ownerGateReport, evidenceReadiness);
   if (rcMatrix.status !== "blocked") {
     throw new Error(
       `Expected RC matrix sample to be blocked, received ${JSON.stringify(
@@ -247,19 +250,7 @@ async function main() {
       "public website release",
       "SearchLint 1.0 announcement"
     ],
-    requiredFutureCommands: [
-      "pnpm rule-qa:review",
-      "pnpm package:dry-run",
-      "pnpm zero-impact:final",
-      "pnpm reports:final-readiness",
-      "pnpm docs:final-readiness",
-      "pnpm onboarding:final",
-      "pnpm release:evidence-readiness",
-      "pnpm legal:release-gate",
-      "pnpm backup:restore-live-gate",
-      "pnpm rc:matrix",
-      "pnpm final-release:gate"
-    ]
+    requiredFutureCommands: requiredFutureCommands(ownerGateReport)
   };
 
   assertNoSensitiveValues(JSON.stringify(report));
@@ -418,6 +409,46 @@ function verifyEvidenceReadiness(report) {
   if (report.summary?.releaseGateClaim !== "not_claimed") {
     throw new Error("Evidence readiness must not claim release gates.");
   }
+}
+
+function verifyOwnerGateReport(report, evidenceReadiness) {
+  if (!Array.isArray(report.openGates)) {
+    throw new Error("Owner gate report must include openGates.");
+  }
+  if (report.actionability?.status !== "passed") {
+    throw new Error("Owner gate report actionability must pass.");
+  }
+  if (
+    report.openGates.length !== evidenceReadiness.summary?.openGateCount ||
+    report.source?.openItems !== evidenceReadiness.summary?.openGateCount
+  ) {
+    throw new Error(
+      "Owner gate report open gates must match evidence readiness."
+    );
+  }
+}
+
+function requiredFutureCommands(ownerGateReport) {
+  const commands = new Set([
+    "pnpm release:evidence-readiness",
+    "pnpm final-release:gate"
+  ]);
+
+  for (const gate of ownerGateReport.openGates) {
+    if (typeof gate.relatedCommand === "string") {
+      commands.add(gate.relatedCommand);
+    }
+  }
+
+  return [...commands].sort((left, right) =>
+    commandSortKey(left).localeCompare(commandSortKey(right))
+  );
+}
+
+function commandSortKey(command) {
+  if (command === "pnpm release:evidence-readiness") return "00";
+  if (command === "pnpm final-release:gate") return "99";
+  return `50:${command}`;
 }
 
 async function verifyRequiredDocuments() {
