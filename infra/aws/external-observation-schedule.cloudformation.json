@@ -1,0 +1,697 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "SearchLint external observation schedule: EventBridge Scheduler launches an ECS/Fargate task that collects Google and Yandex external observations with bounded one-shot execution.",
+  "Parameters": {
+    "EnvironmentName": {
+      "Type": "String",
+      "Default": "prod",
+      "AllowedPattern": "^[a-z0-9-]+$"
+    },
+    "ClusterArn": {
+      "Type": "String"
+    },
+    "WorkerImageUri": {
+      "Type": "String"
+    },
+    "VpcSubnets": {
+      "Type": "List<AWS::EC2::Subnet::Id>"
+    },
+    "SecurityGroups": {
+      "Type": "List<AWS::EC2::SecurityGroup::Id>"
+    },
+    "PostgresDatabaseUrlSecretArn": {
+      "Type": "String"
+    },
+    "ExternalObservationSecretsArn": {
+      "Type": "String"
+    },
+    "OAuthSecretNamePrefix": {
+      "Type": "String",
+      "Default": ""
+    },
+    "GoogleOAuthClientIdSecretArn": {
+      "Type": "String",
+      "Default": ""
+    },
+    "GoogleOAuthClientSecretSecretArn": {
+      "Type": "String",
+      "Default": ""
+    },
+    "YandexOAuthClientIdSecretArn": {
+      "Type": "String",
+      "Default": ""
+    },
+    "YandexOAuthClientSecretSecretArn": {
+      "Type": "String",
+      "Default": ""
+    },
+    "KmsKeyArn": {
+      "Type": "String",
+      "Default": ""
+    },
+    "Provider": {
+      "Type": "String",
+      "Default": "all",
+      "AllowedValues": ["all", "google", "yandex"]
+    },
+    "ExternalObservationPollIntervalMs": {
+      "Type": "Number",
+      "Default": 60000,
+      "MinValue": 1
+    },
+    "ExternalObservationBatchSize": {
+      "Type": "Number",
+      "Default": 25,
+      "MinValue": 1,
+      "MaxValue": 100
+    },
+    "ExternalObservationMaxBatches": {
+      "Type": "Number",
+      "Default": 1,
+      "MinValue": 1,
+      "MaxValue": 1000
+    },
+    "DiscoverySiteUrls": {
+      "Type": "String",
+      "Default": ""
+    },
+    "DiscoverySitemapUrls": {
+      "Type": "String",
+      "Default": ""
+    },
+    "DiscoveryMaxSubjectUrls": {
+      "Type": "Number",
+      "Default": 100,
+      "MinValue": 1,
+      "MaxValue": 10000
+    },
+    "GooglePageSpeedEnabled": {
+      "Type": "String",
+      "Default": "false",
+      "AllowedValues": ["true", "false"]
+    },
+    "GoogleCruxEnabled": {
+      "Type": "String",
+      "Default": "false",
+      "AllowedValues": ["true", "false"]
+    },
+    "PostgresSslMode": {
+      "Type": "String",
+      "Default": "require",
+      "AllowedValues": [
+        "disable",
+        "allow",
+        "prefer",
+        "require",
+        "verify-ca",
+        "verify-full"
+      ]
+    },
+    "OtelHeadersSecretArn": {
+      "Type": "String",
+      "Default": ""
+    },
+    "TaskCpu": {
+      "Type": "String",
+      "Default": "256",
+      "AllowedValues": ["256", "512", "1024", "2048", "4096"]
+    },
+    "TaskMemory": {
+      "Type": "String",
+      "Default": "512",
+      "AllowedValues": ["512", "1024", "2048", "3072", "4096", "8192"]
+    }
+  },
+  "Conditions": {
+    "HasKmsKey": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            {
+              "Ref": "KmsKeyArn"
+            },
+            ""
+          ]
+        }
+      ]
+    },
+    "HasOtelHeadersSecret": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            {
+              "Ref": "OtelHeadersSecretArn"
+            },
+            ""
+          ]
+        }
+      ]
+    },
+    "HasGoogleOAuthClientIdSecret": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            {
+              "Ref": "GoogleOAuthClientIdSecretArn"
+            },
+            ""
+          ]
+        }
+      ]
+    },
+    "HasGoogleOAuthClientSecretSecret": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            {
+              "Ref": "GoogleOAuthClientSecretSecretArn"
+            },
+            ""
+          ]
+        }
+      ]
+    },
+    "HasYandexOAuthClientIdSecret": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            {
+              "Ref": "YandexOAuthClientIdSecretArn"
+            },
+            ""
+          ]
+        }
+      ]
+    },
+    "HasYandexOAuthClientSecretSecret": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            {
+              "Ref": "YandexOAuthClientSecretSecretArn"
+            },
+            ""
+          ]
+        }
+      ]
+    }
+  },
+  "Resources": {
+    "ExternalObservationLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": {
+          "Fn::Sub": "/aws/ecs/searchlint/${EnvironmentName}/external-observation"
+        },
+        "RetentionInDays": 30
+      }
+    },
+    "ExternalObservationDeadLetterQueue": {
+      "Type": "AWS::SQS::Queue",
+      "Properties": {
+        "MessageRetentionPeriod": 1209600,
+        "SqsManagedSseEnabled": true
+      }
+    },
+    "ExternalObservationTaskExecutionRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": "searchlint-external-observation-task-execution",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": ["logs:CreateLogStream", "logs:PutLogEvents"],
+                  "Resource": {
+                    "Fn::GetAtt": ["ExternalObservationLogGroup", "Arn"]
+                  }
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": ["secretsmanager:GetSecretValue"],
+                  "Resource": [
+                    {
+                      "Ref": "PostgresDatabaseUrlSecretArn"
+                    },
+                    {
+                      "Ref": "ExternalObservationSecretsArn"
+                    },
+                    {
+                      "Fn::If": [
+                        "HasGoogleOAuthClientIdSecret",
+                        {
+                          "Ref": "GoogleOAuthClientIdSecretArn"
+                        },
+                        {
+                          "Ref": "AWS::NoValue"
+                        }
+                      ]
+                    },
+                    {
+                      "Fn::If": [
+                        "HasGoogleOAuthClientSecretSecret",
+                        {
+                          "Ref": "GoogleOAuthClientSecretSecretArn"
+                        },
+                        {
+                          "Ref": "AWS::NoValue"
+                        }
+                      ]
+                    },
+                    {
+                      "Fn::If": [
+                        "HasYandexOAuthClientIdSecret",
+                        {
+                          "Ref": "YandexOAuthClientIdSecretArn"
+                        },
+                        {
+                          "Ref": "AWS::NoValue"
+                        }
+                      ]
+                    },
+                    {
+                      "Fn::If": [
+                        "HasYandexOAuthClientSecretSecret",
+                        {
+                          "Ref": "YandexOAuthClientSecretSecretArn"
+                        },
+                        {
+                          "Ref": "AWS::NoValue"
+                        }
+                      ]
+                    },
+                    {
+                      "Fn::If": [
+                        "HasOtelHeadersSecret",
+                        {
+                          "Ref": "OtelHeadersSecretArn"
+                        },
+                        {
+                          "Ref": "AWS::NoValue"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "Fn::If": [
+                    "HasKmsKey",
+                    {
+                      "Effect": "Allow",
+                      "Action": ["kms:Decrypt"],
+                      "Resource": {
+                        "Ref": "KmsKeyArn"
+                      }
+                    },
+                    {
+                      "Ref": "AWS::NoValue"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "ExternalObservationTaskRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": "searchlint-external-observation-task",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "secretsmanager:GetSecretValue",
+                    "secretsmanager:PutSecretValue"
+                  ],
+                  "Resource": {
+                    "Ref": "ExternalObservationSecretsArn"
+                  }
+                },
+                {
+                  "Fn::If": [
+                    "HasKmsKey",
+                    {
+                      "Effect": "Allow",
+                      "Action": ["kms:Decrypt", "kms:Encrypt"],
+                      "Resource": {
+                        "Ref": "KmsKeyArn"
+                      }
+                    },
+                    {
+                      "Ref": "AWS::NoValue"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "ExternalObservationTaskDefinition": {
+      "Type": "AWS::ECS::TaskDefinition",
+      "Properties": {
+        "Family": {
+          "Fn::Sub": "searchlint-${EnvironmentName}-external-observation"
+        },
+        "RequiresCompatibilities": ["FARGATE"],
+        "NetworkMode": "awsvpc",
+        "Cpu": {
+          "Ref": "TaskCpu"
+        },
+        "Memory": {
+          "Ref": "TaskMemory"
+        },
+        "ExecutionRoleArn": {
+          "Fn::GetAtt": ["ExternalObservationTaskExecutionRole", "Arn"]
+        },
+        "TaskRoleArn": {
+          "Fn::GetAtt": ["ExternalObservationTaskRole", "Arn"]
+        },
+        "ContainerDefinitions": [
+          {
+            "Name": "external-observation",
+            "Image": {
+              "Ref": "WorkerImageUri"
+            },
+            "Essential": true,
+            "Command": [
+              "node",
+              "dist/src/external-observation-collection-bin.js"
+            ],
+            "Environment": [
+              {
+                "Name": "SEARCHLINT_POSTGRES_SSL_MODE",
+                "Value": {
+                  "Ref": "PostgresSslMode"
+                }
+              },
+              {
+                "Name": "SEARCHLINT_WORKER_EXTERNAL_OBSERVATION_PROVIDER",
+                "Value": {
+                  "Ref": "Provider"
+                }
+              },
+              {
+                "Name": "SEARCHLINT_WORKER_EXTERNAL_OBSERVATION_POLL_INTERVAL_MS",
+                "Value": {
+                  "Ref": "ExternalObservationPollIntervalMs"
+                }
+              },
+              {
+                "Name": "SEARCHLINT_WORKER_EXTERNAL_OBSERVATION_BATCH_SIZE",
+                "Value": {
+                  "Ref": "ExternalObservationBatchSize"
+                }
+              },
+              {
+                "Name": "SEARCHLINT_WORKER_EXTERNAL_OBSERVATION_SECRET_NAME_PREFIX",
+                "Value": {
+                  "Ref": "OAuthSecretNamePrefix"
+                }
+              },
+              {
+                "Name": "SEARCHLINT_WORKER_EXTERNAL_OBSERVATION_MAX_BATCHES",
+                "Value": {
+                  "Ref": "ExternalObservationMaxBatches"
+                }
+              },
+              {
+                "Name": "SEARCHLINT_WORKER_EXTERNAL_OBSERVATION_DISCOVERY_SITE_URLS",
+                "Value": {
+                  "Ref": "DiscoverySiteUrls"
+                }
+              },
+              {
+                "Name": "SEARCHLINT_WORKER_EXTERNAL_OBSERVATION_DISCOVERY_SITEMAP_URLS",
+                "Value": {
+                  "Ref": "DiscoverySitemapUrls"
+                }
+              },
+              {
+                "Name": "SEARCHLINT_WORKER_EXTERNAL_OBSERVATION_DISCOVERY_MAX_SUBJECT_URLS",
+                "Value": {
+                  "Ref": "DiscoveryMaxSubjectUrls"
+                }
+              },
+              {
+                "Name": "SEARCHLINT_WORKER_EXTERNAL_OBSERVATION_GOOGLE_PAGESPEED_ENABLED",
+                "Value": {
+                  "Ref": "GooglePageSpeedEnabled"
+                }
+              },
+              {
+                "Name": "SEARCHLINT_WORKER_EXTERNAL_OBSERVATION_GOOGLE_CRUX_ENABLED",
+                "Value": {
+                  "Ref": "GoogleCruxEnabled"
+                }
+              }
+            ],
+            "Secrets": [
+              {
+                "Name": "SEARCHLINT_POSTGRES_DATABASE_URL",
+                "ValueFrom": {
+                  "Ref": "PostgresDatabaseUrlSecretArn"
+                }
+              },
+              {
+                "Fn::If": [
+                  "HasOtelHeadersSecret",
+                  {
+                    "Name": "OTEL_EXPORTER_OTLP_HEADERS",
+                    "ValueFrom": {
+                      "Ref": "OtelHeadersSecretArn"
+                    }
+                  },
+                  {
+                    "Ref": "AWS::NoValue"
+                  }
+                ]
+              },
+              {
+                "Fn::If": [
+                  "HasGoogleOAuthClientIdSecret",
+                  {
+                    "Name": "SEARCHLINT_WORKER_GOOGLE_OAUTH_CLIENT_ID",
+                    "ValueFrom": {
+                      "Ref": "GoogleOAuthClientIdSecretArn"
+                    }
+                  },
+                  {
+                    "Ref": "AWS::NoValue"
+                  }
+                ]
+              },
+              {
+                "Fn::If": [
+                  "HasGoogleOAuthClientSecretSecret",
+                  {
+                    "Name": "SEARCHLINT_WORKER_GOOGLE_OAUTH_CLIENT_SECRET",
+                    "ValueFrom": {
+                      "Ref": "GoogleOAuthClientSecretSecretArn"
+                    }
+                  },
+                  {
+                    "Ref": "AWS::NoValue"
+                  }
+                ]
+              },
+              {
+                "Fn::If": [
+                  "HasYandexOAuthClientIdSecret",
+                  {
+                    "Name": "SEARCHLINT_WORKER_YANDEX_OAUTH_CLIENT_ID",
+                    "ValueFrom": {
+                      "Ref": "YandexOAuthClientIdSecretArn"
+                    }
+                  },
+                  {
+                    "Ref": "AWS::NoValue"
+                  }
+                ]
+              },
+              {
+                "Fn::If": [
+                  "HasYandexOAuthClientSecretSecret",
+                  {
+                    "Name": "SEARCHLINT_WORKER_YANDEX_OAUTH_CLIENT_SECRET",
+                    "ValueFrom": {
+                      "Ref": "YandexOAuthClientSecretSecretArn"
+                    }
+                  },
+                  {
+                    "Ref": "AWS::NoValue"
+                  }
+                ]
+              }
+            ],
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "ExternalObservationLogGroup"
+                },
+                "awslogs-region": {
+                  "Ref": "AWS::Region"
+                },
+                "awslogs-stream-prefix": "searchlint-external-observation"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "ExternalObservationSchedulerRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "scheduler.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": "searchlint-external-observation-scheduler",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": ["ecs:RunTask"],
+                  "Resource": {
+                    "Ref": "ExternalObservationTaskDefinition"
+                  }
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": ["iam:PassRole"],
+                  "Resource": [
+                    {
+                      "Fn::GetAtt": [
+                        "ExternalObservationTaskExecutionRole",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": ["ExternalObservationTaskRole", "Arn"]
+                    }
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": ["sqs:SendMessage"],
+                  "Resource": {
+                    "Fn::GetAtt": ["ExternalObservationDeadLetterQueue", "Arn"]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "ExternalObservationSchedule": {
+      "Type": "AWS::Scheduler::Schedule",
+      "Properties": {
+        "Name": {
+          "Fn::Sub": "searchlint-${EnvironmentName}-external-observation"
+        },
+        "ScheduleExpression": "rate(1 hour)",
+        "FlexibleTimeWindow": {
+          "Mode": "OFF"
+        },
+        "Target": {
+          "Arn": {
+            "Ref": "ClusterArn"
+          },
+          "RoleArn": {
+            "Fn::GetAtt": ["ExternalObservationSchedulerRole", "Arn"]
+          },
+          "DeadLetterConfig": {
+            "Arn": {
+              "Fn::GetAtt": ["ExternalObservationDeadLetterQueue", "Arn"]
+            }
+          },
+          "RetryPolicy": {
+            "MaximumRetryAttempts": 2
+          },
+          "EcsParameters": {
+            "TaskDefinitionArn": {
+              "Ref": "ExternalObservationTaskDefinition"
+            },
+            "LaunchType": "FARGATE",
+            "PlatformVersion": "LATEST",
+            "NetworkConfiguration": {
+              "AwsVpcConfiguration": {
+                "AssignPublicIp": "DISABLED",
+                "Subnets": {
+                  "Ref": "VpcSubnets"
+                },
+                "SecurityGroups": {
+                  "Ref": "SecurityGroups"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "ExternalObservationScheduleName": {
+      "Value": {
+        "Ref": "ExternalObservationSchedule"
+      }
+    },
+    "ExternalObservationTaskDefinitionArn": {
+      "Value": {
+        "Ref": "ExternalObservationTaskDefinition"
+      }
+    },
+    "ExternalObservationDeadLetterQueueArn": {
+      "Value": {
+        "Fn::GetAtt": ["ExternalObservationDeadLetterQueue", "Arn"]
+      }
+    }
+  }
+}

@@ -104,6 +104,11 @@ export type SearchLintNextIntegrationOptions = {
   configPath?: string;
   siteUrl?: string;
   enabled?: boolean;
+  pageSpeed?: {
+    enabled?: boolean;
+    strategy?: "mobile" | "desktop";
+    apiKey?: string;
+  };
 };
 
 export const nextDevelopmentServerPhase = "phase-development-server";
@@ -128,11 +133,7 @@ export type NextWebpackConfig = {
 };
 
 export type NextConfigLike = {
-  webpack?: (
-    config: NextWebpackConfig,
-    context: NextWebpackContext
-  ) => NextWebpackConfig;
-  [key: string]: unknown;
+  webpack?: ((config: any, context: any) => any) | null;
 };
 
 export type NextConfigFactory<TConfig extends NextConfigLike> = (
@@ -140,12 +141,32 @@ export type NextConfigFactory<TConfig extends NextConfigLike> = (
   defaults?: unknown
 ) => TConfig;
 
+export type AsyncNextConfigFactory<TConfig extends NextConfigLike> = (
+  phase: string,
+  defaults?: unknown
+) => Promise<TConfig>;
+
 export type SearchLintNextConfig<TConfig extends NextConfigLike> = (
   phase: string,
   defaults?: unknown
 ) =>
   | TConfig
   | (Omit<TConfig, "webpack"> & Required<Pick<NextConfigLike, "webpack">>);
+
+export type SearchLintAsyncNextConfig<TConfig extends NextConfigLike> = (
+  phase: string,
+  defaults?: unknown
+) => Promise<
+  | TConfig
+  | (Omit<TConfig, "webpack"> & Required<Pick<NextConfigLike, "webpack">>)
+>;
+
+type SearchLintMaybeAsyncNextConfig<TConfig extends NextConfigLike> = (
+  phase: string,
+  defaults?: unknown
+) =>
+  | ReturnType<SearchLintNextConfig<TConfig>>
+  | ReturnType<SearchLintAsyncNextConfig<TConfig>>;
 
 const sourceExtensions = new Set(["js", "jsx", "ts", "tsx", "mjs", "cjs"]);
 const pageExtensions = new Set(["js", "jsx", "ts", "tsx"]);
@@ -158,25 +179,70 @@ const ignoredSegments = new Set([
 ]);
 
 export function createSearchLintNextConfig<TConfig extends NextConfigLike>(
-  nextConfig: TConfig | NextConfigFactory<TConfig>,
+  nextConfig: TConfig,
+  options?: SearchLintNextIntegrationOptions
+): SearchLintNextConfig<TConfig>;
+export function createSearchLintNextConfig<TConfig extends NextConfigLike>(
+  nextConfig: NextConfigFactory<TConfig>,
+  options?: SearchLintNextIntegrationOptions
+): SearchLintNextConfig<TConfig>;
+export function createSearchLintNextConfig<TConfig extends NextConfigLike>(
+  nextConfig: AsyncNextConfigFactory<TConfig>,
+  options?: SearchLintNextIntegrationOptions
+): SearchLintAsyncNextConfig<TConfig>;
+export function createSearchLintNextConfig<TConfig extends NextConfigLike>(
+  nextConfig:
+    | TConfig
+    | NextConfigFactory<TConfig>
+    | AsyncNextConfigFactory<TConfig>,
   options: SearchLintNextIntegrationOptions = {}
-): SearchLintNextConfig<TConfig> {
-  return function searchLintNextConfig(phase: string, defaults?: unknown) {
-    const resolvedConfig =
-      typeof nextConfig === "function"
-        ? nextConfig(phase, defaults)
-        : nextConfig;
+): SearchLintNextConfig<TConfig> | SearchLintAsyncNextConfig<TConfig> {
+  const searchLintNextConfig: SearchLintMaybeAsyncNextConfig<TConfig> =
+    function searchLintNextConfig(phase: string, defaults?: unknown) {
+      const resolvedConfig =
+        typeof nextConfig === "function"
+          ? nextConfig(phase, defaults)
+          : nextConfig;
 
-    if (
-      options.enabled === false ||
-      phase === nextProductionBuildPhase ||
-      phase !== nextDevelopmentServerPhase
-    ) {
-      return resolvedConfig;
-    }
+      if (isPromiseLike(resolvedConfig)) {
+        return resolvedConfig.then((config) =>
+          resolveSearchLintNextConfig(config, phase, options)
+        );
+      }
 
-    return createSearchLintDevelopmentConfig(resolvedConfig, options);
-  };
+      return resolveSearchLintNextConfig(resolvedConfig, phase, options);
+    };
+  return searchLintNextConfig as
+    | SearchLintNextConfig<TConfig>
+    | SearchLintAsyncNextConfig<TConfig>;
+}
+
+function resolveSearchLintNextConfig<TConfig extends NextConfigLike>(
+  resolvedConfig: TConfig,
+  phase: string,
+  options: SearchLintNextIntegrationOptions
+):
+  | TConfig
+  | (Omit<TConfig, "webpack"> & Required<Pick<NextConfigLike, "webpack">>) {
+  if (
+    options.enabled === false ||
+    phase === nextProductionBuildPhase ||
+    phase !== nextDevelopmentServerPhase
+  ) {
+    return resolvedConfig;
+  }
+
+  return createSearchLintDevelopmentConfig(resolvedConfig, options);
+}
+
+function isPromiseLike<TValue>(
+  value: TValue | Promise<TValue>
+): value is Promise<TValue> {
+  return (
+    value !== null &&
+    typeof value === "object" &&
+    typeof (value as { then?: unknown }).then === "function"
+  );
 }
 
 function createSearchLintDevelopmentConfig<TConfig extends NextConfigLike>(
@@ -187,9 +253,10 @@ function createSearchLintDevelopmentConfig<TConfig extends NextConfigLike>(
   return {
     ...nextConfig,
     webpack(config: NextWebpackConfig, context: NextWebpackContext) {
-      const resolvedConfig = originalWebpack
-        ? originalWebpack(config, context)
-        : config;
+      const resolvedConfig =
+        typeof originalWebpack === "function"
+          ? originalWebpack(config, context)
+          : config;
 
       if (options.enabled === false || !context.dev || context.isServer) {
         return resolvedConfig;
@@ -197,12 +264,22 @@ function createSearchLintDevelopmentConfig<TConfig extends NextConfigLike>(
 
       const catalogText = options.catalogText ?? readCatalogText(options);
       const siteUrl = options.siteUrl ?? readConfigSiteUrl(options);
+      const pageSpeed = options.pageSpeed ?? {};
       if (context.webpack?.DefinePlugin) {
         resolvedConfig.plugins = [
           ...(resolvedConfig.plugins ?? []),
           new context.webpack.DefinePlugin({
             __SEARCHLINT_RULE_CATALOG__: JSON.stringify(catalogText),
-            __SEARCHLINT_SITE_URL__: JSON.stringify(siteUrl)
+            __SEARCHLINT_SITE_URL__: JSON.stringify(siteUrl),
+            __SEARCHLINT_PAGESPEED_ENABLED__: JSON.stringify(
+              pageSpeed.enabled === true
+            ),
+            __SEARCHLINT_PAGESPEED_STRATEGY__: JSON.stringify(
+              pageSpeed.strategy ?? "mobile"
+            ),
+            __SEARCHLINT_PAGESPEED_API_KEY__: JSON.stringify(
+              pageSpeed.apiKey ?? ""
+            )
           })
         ];
       }

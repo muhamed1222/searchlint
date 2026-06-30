@@ -88,6 +88,7 @@ export type CliIo = {
   listFiles?(root: string): Promise<readonly string[]>;
   fetchUrl?(url: string): Promise<CrawlResponse>;
   crawlSignal?: CrawlOptions["signal"];
+  nodeVersion?: string;
 };
 
 export type CliRunResult = {
@@ -172,12 +173,20 @@ type CliParsedCommand =
       error: string;
     };
 
-export const searchLintCliVersion = "1.0.0-beta.27";
-const searchLintCliPackageRange = "beta";
-const searchLintNextPackageRange = "beta";
+export const searchLintCliVersion = "1.0.0-beta.110";
 const searchLintCliUpgradeVersion = searchLintCliVersion;
-const searchLintNextUpgradeVersion = "1.0.0-beta.13";
+const searchLintNextUpgradeVersion = "1.0.0-beta.61";
 const searchLintWrapperUpgradeVersion = searchLintCliVersion;
+const searchLintCliPackageRange = searchLintCliUpgradeVersion;
+const searchLintNextPackageRange = searchLintNextUpgradeVersion;
+const typeScriptPackageRange = "^5.9.0";
+const reactTypesPackageRange = "^19.0.0";
+const nodeTypesPackageRange = "^24.0.0";
+const typeScriptConfigDependencies = [
+  ["typescript", typeScriptPackageRange],
+  ["@types/react", reactTypesPackageRange],
+  ["@types/node", nodeTypesPackageRange]
+] as const;
 
 const severityRank: Record<Severity, number> = {
   blocker: 4,
@@ -217,9 +226,10 @@ export async function runSearchLintCli(
     }
 
     if (parsed.command === "doctor") {
+      const doctor = await doctorResult(io);
       return {
-        exitCode: 0,
-        stdout: await doctorText(io),
+        exitCode: doctor.ok ? 0 : 1,
+        stdout: doctor.text,
         stderr: ""
       };
     }
@@ -1458,8 +1468,9 @@ async function initializeLocalProject(
   const changed: string[] = [];
   const created: string[] = [];
   const resolvedSite = resolveInitSite(siteUrl, packageJson);
+  const searchLintConfigExists = await io.exists("searchlint.seo");
 
-  if (!(await io.exists("searchlint.seo"))) {
+  if (!searchLintConfigExists) {
     await io.writeText(
       "searchlint.seo",
       defaultConfigTemplate(resolvedSite.url)
@@ -1470,9 +1481,15 @@ async function initializeLocalProject(
   const nextConfigResult = await ensureNextConfig(io, nextConfigPath);
   changed.push(...nextConfigResult.changed);
   created.push(...nextConfigResult.created);
+  const missingTypeScriptConfigDependencies = nextConfigResult.path.endsWith(
+    ".ts"
+  )
+    ? await findMissingTypeScriptConfigDependencies(io)
+    : [];
 
   const packageUpdate = ensurePackageOnboarding(packageJson, {
-    upgradeSearchLintPackages: options.upgradeSearchLintPackages === true
+    upgradeSearchLintPackages: options.upgradeSearchLintPackages === true,
+    addTypeScriptConfigDependencies: missingTypeScriptConfigDependencies
   });
   const packageManager = await detectPackageManager(io, packageJson);
   if (packageUpdate.changed) {
@@ -1488,7 +1505,9 @@ async function initializeLocalProject(
     "",
     created.length > 0 ? `Created: ${created.join(", ")}` : "Created: none",
     changed.length > 0 ? `Updated: ${changed.join(", ")}` : "Updated: none",
-    `Site: ${resolvedSite.url} (${resolvedSite.source})`,
+    searchLintConfigExists
+      ? initExistingConfigLine(siteUrl)
+      : `Site: ${resolvedSite.url} (${resolvedSite.source})`,
     "",
     "Next step:",
     ...(packageUpdate.requiresInstall
@@ -1505,6 +1524,12 @@ async function initializeLocalProject(
     stdout: `${lines.join("\n")}\n`,
     stderr: ""
   };
+}
+
+function initExistingConfigLine(siteUrl: string | undefined): string {
+  return siteUrl === undefined
+    ? "Config: existing searchlint.seo kept"
+    : "Config: existing searchlint.seo kept; --site only applies when creating a new config";
 }
 
 type PackageManager = "npm" | "pnpm" | "yarn";
@@ -1526,13 +1551,39 @@ async function detectPackageManager(
     }
   }
 
-  if ((await io.exists?.("pnpm-lock.yaml")) === true) {
+  if (await anyPathExists(io, parentSearchPaths("pnpm-lock.yaml"))) {
     return "pnpm";
   }
-  if ((await io.exists?.("yarn.lock")) === true) {
+  if (await anyPathExists(io, parentSearchPaths("yarn.lock"))) {
     return "yarn";
   }
+  if (await anyPathExists(io, parentSearchPaths("package-lock.json"))) {
+    return "npm";
+  }
   return "npm";
+}
+
+function parentSearchPaths(fileName: string): readonly string[] {
+  return [
+    fileName,
+    `../${fileName}`,
+    `../../${fileName}`,
+    `../../../${fileName}`,
+    `../../../../${fileName}`,
+    `../../../../../${fileName}`
+  ];
+}
+
+async function anyPathExists(
+  io: CliIo,
+  paths: readonly string[]
+): Promise<boolean> {
+  for (const path of paths) {
+    if ((await io.exists?.(path)) === true) {
+      return true;
+    }
+  }
+  return false;
 }
 
 function installCommand(packageManager: PackageManager): string {
@@ -1587,10 +1638,10 @@ function packageUsesDependency(
 }
 
 const nextConfigCandidates = [
-  "next.config.mjs",
   "next.config.js",
-  "next.config.cjs",
-  "next.config.ts"
+  "next.config.mjs",
+  "next.config.ts",
+  "next.config.cjs"
 ] as const;
 
 async function findNextConfigPath(io: CliIo): Promise<string | undefined> {
@@ -1603,6 +1654,7 @@ async function findNextConfigPath(io: CliIo): Promise<string | undefined> {
 }
 
 type FileMutationResult = {
+  path: string;
   created: string[];
   changed: string[];
 };
@@ -1620,36 +1672,58 @@ async function ensureNextConfig(
       "next.config.mjs",
       `import { withSearchLint } from "@searchlint/next";\n\nconst nextConfig = {};\n\nexport default withSearchLint(nextConfig);\n`
     );
-    return { created: ["next.config.mjs"], changed: [] };
+    return {
+      path: "next.config.mjs",
+      created: ["next.config.mjs"],
+      changed: []
+    };
   }
+  assertSupportedNextConfigPath(nextConfigPath);
 
   const current = await io.readText(nextConfigPath);
-  if (current.includes("withSearchLint(")) {
-    return { created: [], changed: [] };
+  if (usesSearchLintNextIntegration(current)) {
+    return { path: nextConfigPath, created: [], changed: [] };
   }
 
   const patched = patchNextConfig(current, nextConfigPath);
   await io.writeText(nextConfigPath, patched);
-  return { created: [], changed: [nextConfigPath] };
+  return { path: nextConfigPath, created: [], changed: [nextConfigPath] };
 }
 
 function patchNextConfig(source: string, filePath: string): string {
-  if (filePath.endsWith(".mjs")) {
-    return patchEsmNextConfig(source, filePath);
-  }
-  if (filePath.endsWith(".ts")) {
-    return patchEsmNextConfig(source, filePath);
-  }
-  if (filePath.endsWith(".js")) {
-    if (isCommonJsNextConfig(source)) {
-      return patchCommonJsNextConfig(source, filePath);
+  const patched = (() => {
+    if (filePath.endsWith(".mjs")) {
+      return patchEsmNextConfig(source, filePath);
     }
-    return patchEsmNextConfig(source, filePath);
-  }
+    if (filePath.endsWith(".ts")) {
+      return patchEsmNextConfig(source, filePath);
+    }
+    if (filePath.endsWith(".js")) {
+      if (isCommonJsNextConfig(source)) {
+        return patchCommonJsNextConfig(source, filePath);
+      }
+      return patchEsmNextConfig(source, filePath);
+    }
+    if (filePath.endsWith(".cjs")) {
+      throw new Error(unsupportedCjsNextConfigMessage());
+    }
+    throw new Error(`Unsupported Next.js config file: ${filePath}`);
+  })();
+  return ensureTrailingNewline(patched);
+}
+
+function ensureTrailingNewline(value: string): string {
+  return value.endsWith("\n") ? value : `${value}\n`;
+}
+
+function assertSupportedNextConfigPath(filePath: string): void {
   if (filePath.endsWith(".cjs")) {
-    return patchCommonJsNextConfig(source, filePath);
+    throw new Error(unsupportedCjsNextConfigMessage());
   }
-  throw new Error(`Unsupported Next.js config file: ${filePath}`);
+}
+
+function unsupportedCjsNextConfigMessage(): string {
+  return "next.config.cjs is not supported by Next.js. Rename it to next.config.js, next.config.mjs, or next.config.ts, then run searchlint init again.";
 }
 
 function patchEsmNextConfig(source: string, filePath: string): string {
@@ -1658,8 +1732,102 @@ function patchEsmNextConfig(source: string, filePath: string): string {
     ? source
     : `${importLine}\n${source}`;
 
+  const namedFunctionExportMatch = withImport.match(
+    /export\s+default\s+(async\s+)?function\s+([A-Za-z_$][\w$]*)\s*\(/
+  );
+  if (namedFunctionExportMatch) {
+    const functionName = namedFunctionExportMatch[2];
+    const withoutDefaultExport = withImport.replace(
+      namedFunctionExportMatch[0],
+      `${namedFunctionExportMatch[1] ?? ""}function ${functionName}(`
+    );
+    return `${withoutDefaultExport.trimEnd()}\n\nexport default withSearchLint(${functionName});\n`;
+  }
+
+  const inlineArrowFunctionMatch = withImport.match(
+    /export\s+default\s+((?:async\s+)?\([^;]*?=>[\s\S]*);?\s*$/
+  );
+  if (inlineArrowFunctionMatch?.[1] !== undefined) {
+    return wrapInlineDefaultNextConfigExpression(
+      withImport,
+      inlineArrowFunctionMatch
+    );
+  }
+
+  const singleParameterArrowFunctionMatch = withImport.match(
+    /export\s+default\s+((?:async\s+)?[A-Za-z_$][\w$]*\s*=>[\s\S]*);?\s*$/
+  );
+  if (singleParameterArrowFunctionMatch?.[1] !== undefined) {
+    return wrapInlineDefaultNextConfigExpression(
+      withImport,
+      singleParameterArrowFunctionMatch
+    );
+  }
+
+  const anonymousFunctionExportMatch = withImport.match(
+    /export\s+default\s+((?:async\s+)?function\s*\([\s\S]*);?\s*$/
+  );
+  if (anonymousFunctionExportMatch?.[1] !== undefined) {
+    return wrapInlineDefaultNextConfigExpression(
+      withImport,
+      anonymousFunctionExportMatch
+    );
+  }
+
+  const callExpressionExportMatch = withImport.match(
+    /export\s+default\s+([A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*)?\([\s\S]*\));?\s*$/
+  );
+  if (callExpressionExportMatch?.[1] !== undefined) {
+    return wrapInlineDefaultNextConfigExpression(
+      withImport,
+      callExpressionExportMatch
+    );
+  }
+
+  const satisfiesBindingExportMatch = withImport.match(
+    /export\s+default\s+([A-Za-z_$][\w$]*)\s+satisfies\s+[^;]+;?\s*$/
+  );
+  if (satisfiesBindingExportMatch?.[1] !== undefined) {
+    const binding = satisfiesBindingExportMatch[1];
+    return withImport.replace(
+      satisfiesBindingExportMatch[0],
+      `export default withSearchLint(${binding});`
+    );
+  }
+
+  const satisfiesExpressionExportMatch = withImport.match(
+    /export\s+default\s+((?:{[\s\S]*?}|[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*)?\([\s\S]*\))\s+satisfies\s+[^;]+);?\s*$/
+  );
+  if (satisfiesExpressionExportMatch?.[1] !== undefined) {
+    return wrapInlineDefaultNextConfigExpression(
+      withImport,
+      satisfiesExpressionExportMatch
+    );
+  }
+
+  const typeAssertionBindingExportMatch = withImport.match(
+    /export\s+default\s+([A-Za-z_$][\w$]*)\s+as\s+[^;]+;?\s*$/
+  );
+  if (typeAssertionBindingExportMatch?.[1] !== undefined) {
+    const binding = typeAssertionBindingExportMatch[1];
+    return withImport.replace(
+      typeAssertionBindingExportMatch[0],
+      `export default withSearchLint(${binding});`
+    );
+  }
+
+  const typeAssertionExpressionExportMatch = withImport.match(
+    /export\s+default\s+((?:{[\s\S]*?}|[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*)?\([\s\S]*\))\s+as\s+[^;]+);?\s*$/
+  );
+  if (typeAssertionExpressionExportMatch?.[1] !== undefined) {
+    return wrapInlineDefaultNextConfigExpression(
+      withImport,
+      typeAssertionExpressionExportMatch
+    );
+  }
+
   const exportDefaultMatch = withImport.match(
-    /export\s+default\s+([A-Za-z_$][\w$]*);?/
+    /export\s+default\s+([A-Za-z_$][\w$]*)\s*;?\s*$/
   );
   if (exportDefaultMatch) {
     const binding = exportDefaultMatch[1];
@@ -1680,13 +1848,74 @@ function patchEsmNextConfig(source: string, filePath: string): string {
   }
 
   throw new Error(
-    `searchlint init could not safely patch ${filePath}. Expected 'export default nextConfig' or an inline object export.`
+    unsupportedNextConfigPatchMessage(
+      filePath,
+      "Expected 'export default nextConfig', 'export default function nextConfig(...)', an inline object export, or an inline function export."
+    )
+  );
+}
+
+function wrapInlineDefaultNextConfigExpression(
+  source: string,
+  match: RegExpMatchArray
+): string {
+  const expression = match[1]?.trim().replace(/;$/, "");
+  if (expression === undefined || expression.length === 0) {
+    return source;
+  }
+  return source.replace(
+    match[0],
+    `const __searchlintNextConfig = ${expression};\n\nexport default withSearchLint(__searchlintNextConfig);\n`
   );
 }
 
 function patchCommonJsNextConfig(source: string, filePath: string): string {
+  const inlineObjectMatch = source.match(
+    /module\.exports\s*=\s*({[\s\S]*?});?\s*$/
+  );
+  if (inlineObjectMatch) {
+    return wrapCommonJsDefaultNextConfigExpression(source, inlineObjectMatch);
+  }
+
+  const inlineParenthesizedArrowMatch = source.match(
+    /module\.exports\s*=\s*((?:async\s+)?\([^;]*?=>[\s\S]*);?\s*$/
+  );
+  if (inlineParenthesizedArrowMatch?.[1] !== undefined) {
+    return wrapCommonJsDefaultNextConfigExpression(
+      source,
+      inlineParenthesizedArrowMatch
+    );
+  }
+
+  const inlineSingleParameterArrowMatch = source.match(
+    /module\.exports\s*=\s*((?:async\s+)?[A-Za-z_$][\w$]*\s*=>[\s\S]*);?\s*$/
+  );
+  if (inlineSingleParameterArrowMatch?.[1] !== undefined) {
+    return wrapCommonJsDefaultNextConfigExpression(
+      source,
+      inlineSingleParameterArrowMatch
+    );
+  }
+
+  const inlineFunctionMatch = source.match(
+    /module\.exports\s*=\s*((?:async\s+)?function(?:\s+[A-Za-z_$][\w$]*)?\s*\([\s\S]*);?\s*$/
+  );
+  if (inlineFunctionMatch?.[1] !== undefined) {
+    return wrapCommonJsDefaultNextConfigExpression(source, inlineFunctionMatch);
+  }
+
+  const callExpressionExportMatch = source.match(
+    /module\.exports\s*=\s*([A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*)?\([\s\S]*\));?\s*$/
+  );
+  if (callExpressionExportMatch?.[1] !== undefined) {
+    return wrapCommonJsDefaultNextConfigExpression(
+      source,
+      callExpressionExportMatch
+    );
+  }
+
   const moduleExportMatch = source.match(
-    /module\.exports\s*=\s*([A-Za-z_$][\w$]*);?/
+    /module\.exports\s*=\s*([A-Za-z_$][\w$]*)\s*;?\s*$/
   );
   if (moduleExportMatch) {
     const binding = moduleExportMatch[1];
@@ -1697,20 +1926,38 @@ function patchCommonJsNextConfig(source: string, filePath: string): string {
     return `${withoutExport.trimEnd()}\n\nmodule.exports = async (phase, defaults) => {\n  const { withSearchLint } = await import("@searchlint/next");\n  return withSearchLint(__searchlintNextConfig)(phase, defaults);\n};\n`;
   }
 
-  const inlineObjectMatch = source.match(
-    /module\.exports\s*=\s*({[\s\S]*?});?\s*$/
-  );
-  if (inlineObjectMatch) {
-    const withoutExport = source.replace(
-      inlineObjectMatch[0],
-      `const __searchlintNextConfig = ${inlineObjectMatch[1]};\n`
-    );
-    return `${withoutExport.trimEnd()}\n\nmodule.exports = async (phase, defaults) => {\n  const { withSearchLint } = await import("@searchlint/next");\n  return withSearchLint(__searchlintNextConfig)(phase, defaults);\n};\n`;
-  }
-
   throw new Error(
-    `searchlint init could not safely patch ${filePath}. Expected 'module.exports = nextConfig' or an inline object export.`
+    unsupportedNextConfigPatchMessage(
+      filePath,
+      "Expected 'module.exports = nextConfig', an inline object export, or an inline function export."
+    )
   );
+}
+
+function unsupportedNextConfigPatchMessage(
+  filePath: string,
+  expectedShape: string
+): string {
+  return [
+    `searchlint init could not safely patch ${filePath}.`,
+    expectedShape,
+    'Manual fallback: import { withSearchLint } from "@searchlint/next" and export withSearchLint(nextConfig).'
+  ].join(" ");
+}
+
+function wrapCommonJsDefaultNextConfigExpression(
+  source: string,
+  match: RegExpMatchArray
+): string {
+  const expression = match[1]?.trim().replace(/;$/, "");
+  if (expression === undefined || expression.length === 0) {
+    return source;
+  }
+  const withoutExport = source.replace(
+    match[0],
+    `const __searchlintNextConfig = ${expression};\n`
+  );
+  return `${withoutExport.trimEnd()}\n\nmodule.exports = async (phase, defaults) => {\n  const { withSearchLint } = await import("@searchlint/next");\n  return withSearchLint(__searchlintNextConfig)(phase, defaults);\n};\n`;
 }
 
 function isCommonJsNextConfig(source: string): boolean {
@@ -1719,7 +1966,10 @@ function isCommonJsNextConfig(source: string): boolean {
 
 function ensurePackageOnboarding(
   packageJson: Record<string, unknown>,
-  options: { upgradeSearchLintPackages?: boolean } = {}
+  options: {
+    upgradeSearchLintPackages?: boolean;
+    addTypeScriptConfigDependencies?: readonly (readonly [string, string])[];
+  } = {}
 ): {
   changed: boolean;
   addedDependencies: string[];
@@ -1744,7 +1994,7 @@ function ensurePackageOnboarding(
     typeof scripts.dev === "string" &&
     shouldForceWebpackDevScript(scripts.dev, nextVersion)
   ) {
-    scripts.dev = `${scripts.dev} --webpack`;
+    scripts.dev = forceWebpackDevScript(scripts.dev);
     changed = true;
   }
   if (scripts.searchlint === undefined) {
@@ -1778,6 +2028,22 @@ function ensurePackageOnboarding(
   if (addedNext) {
     addedDependencies.push("@searchlint/next");
     changed = true;
+  }
+  if (options.addTypeScriptConfigDependencies !== undefined) {
+    for (const [
+      dependencyName,
+      versionRange
+    ] of options.addTypeScriptConfigDependencies) {
+      const added = ensureDevDependency(
+        packageJson,
+        dependencyName,
+        versionRange
+      );
+      if (added) {
+        addedDependencies.push(dependencyName);
+        changed = true;
+      }
+    }
   }
   if (options.upgradeSearchLintPackages === true) {
     const upgradedCli = setExistingDependencyVersion(
@@ -1902,11 +2168,22 @@ function shouldForceWebpackDevScript(
   if (!usesNext16OrNewer(nextVersion)) {
     return false;
   }
-  const normalized = devScript.trim().replace(/\s+/g, " ");
-  if (!/^next dev(?:\s|$)/.test(normalized)) {
-    return false;
-  }
-  return !/\s--(?:webpack|turbo|turbopack)(?:\s|$)/.test(normalized);
+  return forceWebpackDevScript(devScript) !== devScript;
+}
+
+function forceWebpackDevScript(devScript: string): string {
+  return devScript.replace(
+    /(^|[\s;&|])next\s+dev((?:(?!\s(?:&&|\|\||;)\s).)*)(?=$|\s(?:&&|\|\||;)\s)/g,
+    (match: string, prefix: string, args: string) => {
+      if (/\s--webpack(?:\s|$)/.test(args)) {
+        return match;
+      }
+      const withoutTurbopack = args
+        .replace(/\s--(?:turbo|turbopack)(?=\s|$)/g, "")
+        .trimEnd();
+      return `${prefix}next dev${withoutTurbopack} --webpack`;
+    }
+  );
 }
 
 function usesNext16OrNewer(versionRange: string | undefined): boolean {
@@ -1918,38 +2195,107 @@ function usesNext16OrNewer(versionRange: string | undefined): boolean {
 }
 
 export async function doctorText(io?: CliIo): Promise<string> {
+  return (await doctorResult(io)).text;
+}
+
+async function doctorResult(
+  io?: CliIo
+): Promise<{ ok: boolean; text: string }> {
+  const nodeStatus = doctorNodeStatus(io?.nodeVersion ?? currentNodeVersion());
+  const projectStatusResult =
+    io === undefined
+      ? { ok: true, message: "" }
+      : await doctorProjectStatusResult(io);
+  const configStatus =
+    io === undefined
+      ? { ok: true, message: "" }
+      : await doctorConfigStatusResult(io);
+  const nextStatus =
+    io === undefined
+      ? { ok: true, message: "" }
+      : await doctorNextStatusResult(io);
   const projectStatus =
     io === undefined
       ? []
       : [
-          `project: ${await doctorProjectStatus(io)}`,
-          `config: ${await doctorConfigStatus(io)}`,
-          `next: ${await doctorNextStatus(io)}`
+          `package-manager: ${await doctorPackageManagerStatus(io)}`,
+          `project: ${projectStatusResult.message}`,
+          `config: ${configStatus.message}`,
+          `next: ${nextStatus.message}`
         ];
+  const ok =
+    nodeStatus.ok && projectStatusResult.ok && configStatus.ok && nextStatus.ok;
 
-  return `SearchLint doctor
+  const text = `SearchLint doctor
 
 version: ${searchLintCliVersion}
-node: >=24.0.0 required
-package-manager: pnpm >=11.0.0 <12.0.0 supported
-${projectStatus.length > 0 ? `${projectStatus.join("\n")}\n` : ""}config: run "searchlint config validate --config searchlint.seo"
-status: local CLI runtime checks passed
+node: ${nodeStatus.message}
+${io === undefined ? "package-manager: npm, pnpm, and yarn supported\n" : ""}${projectStatus.length > 0 ? `${projectStatus.join("\n")}\n` : ""}config: run "searchlint config validate --config searchlint.seo"
+status: ${ok ? "local CLI runtime checks passed" : "local CLI runtime checks failed"}
 `;
+  return { ok, text };
 }
 
-async function doctorProjectStatus(io: CliIo): Promise<string> {
-  return (await pathExists(io, "package.json"))
-    ? "package.json found"
-    : "package.json not found; run from a project root";
+function doctorNodeStatus(version: string): { ok: boolean; message: string } {
+  const normalized = version.startsWith("v") ? version : `v${version}`;
+  const [majorSegment = ""] = normalized.replace(/^v/, "").split(".");
+  const major = Number.parseInt(majorSegment, 10);
+  const ok = Number.isFinite(major) && major >= 24;
+  return {
+    ok,
+    message: `${normalized} ${ok ? "ok" : "unsupported"} (requires >=24.0.0)`
+  };
 }
 
-async function doctorConfigStatus(io: CliIo): Promise<string> {
-  return (await pathExists(io, "searchlint.seo"))
-    ? "searchlint.seo found"
-    : 'searchlint.seo missing; run "searchlint init"';
+function currentNodeVersion(): string {
+  const runtime = globalThis as typeof globalThis & {
+    process?: { version?: string };
+  };
+  return runtime.process?.version ?? "unknown";
 }
 
-async function doctorNextStatus(io: CliIo): Promise<string> {
+async function doctorPackageManagerStatus(io: CliIo): Promise<string> {
+  const packageJson = await readJsonIfExists(io, "package.json");
+  if (packageJson === undefined) {
+    return "not detected; npm, pnpm, and yarn are supported";
+  }
+  const packageManager = await detectPackageManager(io, packageJson);
+  if (packageManager === "pnpm") {
+    return "pnpm detected";
+  }
+  if (packageManager === "yarn") {
+    return "yarn detected";
+  }
+  return "npm detected";
+}
+
+async function doctorProjectStatusResult(
+  io: CliIo
+): Promise<{ ok: boolean; message: string }> {
+  const found = await pathExists(io, "package.json");
+  return {
+    ok: found,
+    message: found
+      ? "package.json found"
+      : "package.json not found; run from a project root"
+  };
+}
+
+async function doctorConfigStatusResult(
+  io: CliIo
+): Promise<{ ok: boolean; message: string }> {
+  const found = await pathExists(io, "searchlint.seo");
+  return {
+    ok: found,
+    message: found
+      ? "searchlint.seo found"
+      : 'searchlint.seo missing; run "searchlint init"'
+  };
+}
+
+async function doctorNextStatusResult(
+  io: CliIo
+): Promise<{ ok: boolean; message: string }> {
   const packageJson = await readJsonIfExists(io, "package.json");
   const nextVersion =
     packageJson === undefined
@@ -1958,18 +2304,90 @@ async function doctorNextStatus(io: CliIo): Promise<string> {
   const nextConfig = await findNextConfigStatus(io);
 
   if (nextVersion === undefined && nextConfig === undefined) {
-    return "Next.js not detected";
+    return { ok: true, message: "Next.js not detected" };
   }
 
   if (nextConfig === undefined) {
-    return "Next.js dependency found; next.config.* missing";
+    return {
+      ok: false,
+      message:
+        'Next.js dependency found; next.config.* missing; run "searchlint init"'
+    };
   }
 
-  if (nextConfig.usesSearchLint) {
-    return `${nextConfig.path} uses withSearchLint`;
+  if (nextConfig.path.endsWith(".cjs")) {
+    return { ok: false, message: unsupportedCjsNextConfigMessage() };
   }
 
-  return `${nextConfig.path} does not use withSearchLint; run "searchlint init"`;
+  if (!nextConfig.usesSearchLint) {
+    return {
+      ok: false,
+      message: `${nextConfig.path} does not use withSearchLint; run "searchlint init"`
+    };
+  }
+
+  const missingTypeScriptConfigDependencies = nextConfig.path.endsWith(".ts")
+    ? await findMissingTypeScriptConfigDependencies(io)
+    : [];
+  if (missingTypeScriptConfigDependencies.length > 0) {
+    const missingDependencyNames = missingTypeScriptConfigDependencies.map(
+      ([dependencyName]) => dependencyName
+    );
+    const packageManager =
+      packageJson === undefined
+        ? "npm"
+        : await detectPackageManager(io, packageJson);
+    const installCommand =
+      typeScriptConfigDependencyInstallCommand(packageManager);
+    return {
+      ok: false,
+      message: `next.config.ts requires TypeScript config dependencies: ${missingDependencyNames.join(
+        ", "
+      )}; run ${installCommand} typescript @types/react @types/node or rename the config to next.config.mjs`
+    };
+  }
+
+  return { ok: true, message: `${nextConfig.path} uses withSearchLint` };
+}
+
+async function hasPackageDependencyInProjectOrParents(
+  io: CliIo,
+  dependencyName: string
+): Promise<boolean> {
+  for (const path of parentSearchPaths("package.json")) {
+    const packageJson = await readJsonIfExists(io, path);
+    if (
+      packageJson !== undefined &&
+      findPackageDependencyVersion(packageJson, dependencyName) !== undefined
+    ) {
+      return true;
+    }
+  }
+  return false;
+}
+
+async function findMissingTypeScriptConfigDependencies(
+  io: CliIo
+): Promise<readonly (readonly [string, string])[]> {
+  const missingDependencies: (readonly [string, string])[] = [];
+  for (const [dependencyName, versionRange] of typeScriptConfigDependencies) {
+    if (!(await hasPackageDependencyInProjectOrParents(io, dependencyName))) {
+      missingDependencies.push([dependencyName, versionRange]);
+    }
+  }
+  return missingDependencies;
+}
+
+function typeScriptConfigDependencyInstallCommand(
+  packageManager: PackageManager
+): string {
+  if (packageManager === "pnpm") {
+    return "pnpm add -D";
+  }
+  if (packageManager === "yarn") {
+    return "yarn add -D";
+  }
+  return "npm install -D";
 }
 
 async function readJsonIfExists(
@@ -1999,10 +2417,55 @@ async function findNextConfigStatus(
     }
     return {
       path,
-      usesSearchLint: (await io.readText(path)).includes("withSearchLint(")
+      usesSearchLint: usesSearchLintNextIntegration(await io.readText(path))
     };
   }
   return undefined;
+}
+
+function usesSearchLintNextIntegration(source: string): boolean {
+  const normalized = stripJavaScriptComments(source);
+  if (/export\s+default\s+withSearchLint\s*\(/.test(normalized)) {
+    return true;
+  }
+  if (/module\.exports\s*=\s*withSearchLint\s*\(/.test(normalized)) {
+    return true;
+  }
+  if (
+    /module\.exports\s*=\s*(?:async\s+)?(?:function(?:\s+[A-Za-z_$][\w$]*)?\s*\([^)]*\)|\([^)]*\)\s*=>|[A-Za-z_$][\w$]*\s*=>)[\s\S]*withSearchLint\s*\(/.test(
+      normalized
+    )
+  ) {
+    return true;
+  }
+
+  const wrappedBindingMatch = normalized.match(
+    /\b(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s*=\s*withSearchLint\s*\(/
+  );
+  const wrappedBinding = wrappedBindingMatch?.[1];
+  if (wrappedBinding === undefined) {
+    return false;
+  }
+
+  const escapedBinding = escapeRegExp(wrappedBinding);
+  return (
+    new RegExp(`export\\s+default\\s+${escapedBinding}\\s*;?`).test(
+      normalized
+    ) ||
+    new RegExp(`module\\.exports\\s*=\\s*${escapedBinding}\\s*;?`).test(
+      normalized
+    )
+  );
+}
+
+function stripJavaScriptComments(source: string): string {
+  return source
+    .replace(/\/\*[\s\S]*?\*\//g, "")
+    .replace(/(^|[^:])\/\/.*$/gm, "$1");
+}
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 async function pathExists(io: CliIo, path: string): Promise<boolean> {

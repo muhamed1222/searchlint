@@ -1,6 +1,6 @@
 {
   "name": "@searchlint/cli",
-  "version": "1.0.0-beta.27",
+  "version": "1.0.0-beta.110",
   "description": "SearchLint command line interface",
   "license": "Apache-2.0",
   "sideEffects": false,
@@ -40,8 +40,7 @@
     "@searchlint/source": "workspace:*"
   },
   "engines": {
-    "node": ">=24.0.0",
-    "pnpm": ">=11.0.0 <12.0.0"
+    "node": ">=24.0.0"
   },
   "keywords": [
     "searchlint",

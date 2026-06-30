@@ -1,0 +1,43 @@
+{
+  "name": "@searchlint/workers",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "files": [
+    "dist/src",
+    "package.json"
+  ],
+  "bin": {
+    "searchlint-crawler-worker": "./dist/src/bin.js",
+    "searchlint-report-artifact-cleanup-worker": "./dist/src/report-artifact-cleanup-bin.js",
+    "searchlint-external-observation-worker": "./dist/src/external-observation-collection-bin.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
+    },
+    "./node": {
+      "types": "./dist/src/node.d.ts",
+      "import": "./dist/src/node.js"
+    }
+  },
+  "scripts": {
+    "build": "node ../../scripts/build-package.mjs",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1073.0",
+    "@aws-sdk/client-secrets-manager": "^3.1073.0",
+    "@aws-sdk/client-sqs": "^3.1073.0",
+    "@searchlint/api": "workspace:*",
+    "@searchlint/core": "workspace:*",
+    "@searchlint/crawler": "workspace:*",
+    "@searchlint/html": "workspace:*",
+    "@searchlint/http": "workspace:*"
+  },
+  "searchlint": {
+    "layer": "service"
+  }
+}

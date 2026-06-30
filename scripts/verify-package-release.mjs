@@ -83,6 +83,10 @@ async function verifyManifest(packageDir) {
     `${manifest.name} must declare package exports or bin entries`
   );
   assert(
+    manifest.engines?.pnpm === undefined,
+    `${manifest.name} must not publish engines.pnpm; package-manager requirements belong to repository tooling, not consumer package metadata`
+  );
+  assert(
     targets.every((target) => !target.startsWith("./src/")),
     `${manifest.name} exports/bin must not point at src`
   );
@@ -134,6 +138,10 @@ async function verifyTarballContents(packageName, tarballPath) {
     packedManifest.peerDependencies,
     packedManifest.optionalDependencies
   ].filter(Boolean);
+  assert(
+    packedManifest.engines?.pnpm === undefined,
+    `${packageName} packed manifest must not include engines.pnpm`
+  );
   for (const dependencies of dependencyBlocks) {
     for (const [dependencyName, range] of Object.entries(dependencies)) {
       assert(

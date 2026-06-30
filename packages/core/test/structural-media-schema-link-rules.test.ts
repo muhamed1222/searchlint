@@ -440,6 +440,24 @@ describe("createCoreStructuralMediaSchemaLinkRules", () => {
     );
   });
 
+  it("does not mark visible H1 as hidden when only child wrappers are aria-hidden", async () => {
+    const result = await run(
+      snapshot(
+        cleanHtml(),
+        `<html><head><title>Portfolio page</title></head><body>
+          <h1 aria-label="Portfolio, pricing, and contacts">
+            <span aria-hidden="true"><span>Portfolio, pricing</span></span>
+            <span aria-hidden="true"><span>and contacts</span></span>
+          </h1>
+        </body></html>`
+      )
+    );
+
+    expect(
+      result.diagnostics.map((diagnostic) => diagnostic.ruleId)
+    ).not.toContain("SL-HEAD-007");
+  });
+
   it("compares title and H1 tokens with Unicode-aware meaningful terms", async () => {
     const matching = await run(
       snapshot(
@@ -621,6 +639,80 @@ describe("createCoreStructuralMediaSchemaLinkRules", () => {
     ).toBe(false);
   });
 
+  it("builds highlightable selectors for Next image URLs with escaped query separators", async () => {
+    const result = await run(
+      snapshot(`<html><head>
+        <meta property="og:image" content="/og.png">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta name="twitter:image" content="/twitter.png">
+      </head><body>
+        <h1>Product Detail</h1>
+        <img src="/_next/image?url=%2Fscenario-travel-orange-v2.jpg&amp;w=3840&amp;q=75" alt="">
+      </body></html>`)
+    );
+
+    const emptyAlt = result.diagnostics.find(
+      (diagnostic) => diagnostic.ruleId === "SL-IMG-007"
+    );
+
+    expect(emptyAlt?.sourceLocation?.selector).toBe(
+      'img[src="/_next/image?url=%2Fscenario-travel-orange-v2.jpg&w=3840&q=75"]'
+    );
+    expect(emptyAlt?.evidence).toBe(
+      "Rendered DOM contains image #1 src '/_next/image?url=%2Fscenario-travel-orange-v2.jpg&amp;w=3840&amp;q=75' with an empty alt attribute."
+    );
+  });
+
+  it("does not flag badge and icon empty-alt image candidates", async () => {
+    const result = await run(
+      snapshot(`<html><head>
+        <meta property="og:image" content="/og.png">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta name="twitter:image" content="/twitter.png">
+      </head><body>
+        <h1>Product Detail</h1>
+        <em><img src="/figma/pricing-icons/basic-badge.svg" alt="">Free</em>
+        <span><img src="/social/icon-telegram.svg" alt="">Telegram</span>
+        <img src="/empty-alt.png" alt="">
+      </body></html>`)
+    );
+
+    const imageDiagnostics = result.diagnostics.filter(
+      (diagnostic) => diagnostic.ruleId === "SL-IMG-007"
+    );
+
+    expect(imageDiagnostics).toHaveLength(1);
+    expect(imageDiagnostics[0]?.sourceLocation?.selector).toBe(
+      'img[src="/empty-alt.png"]'
+    );
+  });
+
+  it("does not flag analytics tracking pixels as content images", async () => {
+    const result = await run(
+      snapshot(`<html><head>
+        <meta property="og:image" content="/og.png">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta name="twitter:image" content="/twitter.png">
+      </head><body>
+        <h1>Product Detail</h1>
+        <noscript><img src="https://mc.yandex.ru/watch/109411864" alt=""></noscript>
+        <img src="/empty-alt.png" alt="">
+      </body></html>`)
+    );
+
+    const imageDiagnostics = result.diagnostics.filter(
+      (diagnostic) => diagnostic.ruleId === "SL-IMG-007"
+    );
+
+    expect(imageDiagnostics).toHaveLength(1);
+    expect(imageDiagnostics[0]?.sourceLocation?.selector).toBe(
+      'img[src="/empty-alt.png"]'
+    );
+  });
+
   it("does not flag explicitly decorative empty-alt images", async () => {
     const result = await run(
       snapshot(`<html><head>
@@ -632,6 +724,32 @@ describe("createCoreStructuralMediaSchemaLinkRules", () => {
         <h1>Product Detail</h1>
         <img src="/hero-accent.png" alt="" aria-hidden="true">
         <img src="/layout-line.png" alt="" role="presentation">
+        <img src="/content.png" alt="Product photo">
+      </body></html>`)
+    );
+
+    expect(
+      result.diagnostics.some(
+        (diagnostic) => diagnostic.ruleId === "SL-IMG-007"
+      )
+    ).toBe(false);
+  });
+
+  it("does not flag empty-alt images inside decorative ancestors", async () => {
+    const result = await run(
+      snapshot(`<html><head>
+        <meta property="og:image" content="/og.png">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta name="twitter:image" content="/twitter.png">
+      </head><body>
+        <h1>Product Detail</h1>
+        <div class="trust-visual vpn-visual" aria-hidden="true">
+          <img src="/_next/image?url=%2Ftrust-vpn-route.png&amp;w=3840&amp;q=75" alt="">
+        </div>
+        <div role="presentation">
+          <img src="/layout-line.png" alt="">
+        </div>
         <img src="/content.png" alt="Product photo">
       </body></html>`)
     );
@@ -1146,6 +1264,36 @@ describe("createCoreStructuralMediaSchemaLinkRules", () => {
     ).not.toContain("SL-SCHEMA-007");
   });
 
+  it("treats schema root URLs with and without trailing slash as the same entity URL", async () => {
+    const result = await run(
+      snapshot(`<html><head>
+        <link rel="canonical" href="https://example.com/">
+        <script type="application/ld+json">{"@type":"Organization","url":"https://example.com"}</script>
+      </head><body><h1>Example</h1></body></html>`)
+    );
+
+    expect(
+      result.diagnostics.map((diagnostic) => diagnostic.ruleId)
+    ).not.toContain("SL-SCHEMA-007");
+  });
+
+  it("does not compare site-level entity URLs to localized page URLs", async () => {
+    const result = await run(
+      snapshot(`<html><head>
+        <link rel="canonical" href="https://www.example.com/ru">
+        <script type="application/ld+json">[
+          {"@type":"Organization","url":"https://www.example.com"},
+          {"@type":"WebSite","url":"https://www.example.com"},
+          {"@type":"Service","url":"https://www.example.com"}
+        ]</script>
+      </head><body><h1>Example</h1></body></html>`)
+    );
+
+    expect(
+      result.diagnostics.map((diagnostic) => diagnostic.ruleId)
+    ).not.toContain("SL-SCHEMA-007");
+  });
+
   it("detects schema rendered only", async () => {
     const result = await run(
       snapshot("<html><body><h1>Product Detail</h1></body></html>", cleanHtml())
@@ -1302,6 +1450,25 @@ describe("createCoreStructuralMediaSchemaLinkRules", () => {
     expect(result.diagnostics.map((diagnostic) => diagnostic.ruleId)).toEqual(
       expect.arrayContaining(["SL-LINK-006", "SL-LINK-007", "SL-LINK-010"])
     );
+  });
+
+  it("does not mark visual-only links as empty when they have accessible names", async () => {
+    const result = await run(
+      snapshot(
+        cleanHtml(),
+        `<html><head>${cleanHtml()}</head><body>
+          <h1>Product Detail</h1>
+          <span id="article-label">Read article</span>
+          <a href="/article" aria-label="Read article"><img src="/cover.png" alt=""></a>
+          <a href="/title" title="Open title link"><svg aria-hidden="true"></svg></a>
+          <a href="/labelled" aria-labelledby="article-label"><img src="/labelled.png" alt=""></a>
+        </body></html>`
+      )
+    );
+
+    expect(
+      result.diagnostics.map((diagnostic) => diagnostic.ruleId)
+    ).not.toContain("SL-LINK-007");
   });
 
   it("detects deterministic crawl site graph link diagnostics", async () => {

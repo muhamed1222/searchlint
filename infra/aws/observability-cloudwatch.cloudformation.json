@@ -1,0 +1,300 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "SearchLint Cloud observability: CloudWatch log groups, metric filters, and alarms for API and worker runtimes.",
+  "Parameters": {
+    "EnvironmentName": {
+      "Type": "String",
+      "Default": "prod",
+      "AllowedPattern": "^[a-z0-9-]+$"
+    },
+    "KmsKeyArn": {
+      "Type": "String"
+    },
+    "LogRetentionDays": {
+      "Type": "Number",
+      "Default": 30,
+      "MinValue": 1
+    },
+    "AlarmEvaluationPeriods": {
+      "Type": "Number",
+      "Default": 1,
+      "MinValue": 1
+    },
+    "AlarmPeriodSeconds": {
+      "Type": "Number",
+      "Default": 300,
+      "AllowedValues": [60, 300, 900]
+    }
+  },
+  "Resources": {
+    "CloudApiLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": {
+          "Fn::Sub": "/aws/ecs/searchlint/${EnvironmentName}/cloud-api"
+        },
+        "RetentionInDays": {
+          "Ref": "LogRetentionDays"
+        },
+        "KmsKeyId": {
+          "Ref": "KmsKeyArn"
+        }
+      }
+    },
+    "CrawlerWorkerLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": {
+          "Fn::Sub": "/aws/ecs/searchlint/${EnvironmentName}/crawler-worker"
+        },
+        "RetentionInDays": {
+          "Ref": "LogRetentionDays"
+        },
+        "KmsKeyId": {
+          "Ref": "KmsKeyArn"
+        }
+      }
+    },
+    "ReportArtifactCleanupLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": {
+          "Fn::Sub": "/aws/ecs/searchlint/${EnvironmentName}/report-artifact-cleanup"
+        },
+        "RetentionInDays": {
+          "Ref": "LogRetentionDays"
+        },
+        "KmsKeyId": {
+          "Ref": "KmsKeyArn"
+        }
+      }
+    },
+    "ApiServerErrorMetricFilter": {
+      "Type": "AWS::Logs::MetricFilter",
+      "Properties": {
+        "LogGroupName": {
+          "Ref": "CloudApiLogGroup"
+        },
+        "FilterPattern": "{ $.event = \"searchlint.api.request\" && $.http.response.status_code >= 500 }",
+        "MetricTransformations": [
+          {
+            "MetricNamespace": "SearchLint/Cloud",
+            "MetricName": "ApiServerErrors",
+            "MetricValue": "1",
+            "DefaultValue": 0
+          }
+        ]
+      }
+    },
+    "ApiTimeoutMetricFilter": {
+      "Type": "AWS::Logs::MetricFilter",
+      "Properties": {
+        "LogGroupName": {
+          "Ref": "CloudApiLogGroup"
+        },
+        "FilterPattern": "{ $.event = \"searchlint.api.request\" && $.searchlint.timed_out = true }",
+        "MetricTransformations": [
+          {
+            "MetricNamespace": "SearchLint/Cloud",
+            "MetricName": "ApiTimedOutRequests",
+            "MetricValue": "1",
+            "DefaultValue": 0
+          }
+        ]
+      }
+    },
+    "CrawlerFailureMetricFilter": {
+      "Type": "AWS::Logs::MetricFilter",
+      "Properties": {
+        "LogGroupName": {
+          "Ref": "CrawlerWorkerLogGroup"
+        },
+        "FilterPattern": "{ $.event = \"searchlint.worker.crawler_batch\" && $.searchlint.crawler.failed > 0 }",
+        "MetricTransformations": [
+          {
+            "MetricNamespace": "SearchLint/Cloud",
+            "MetricName": "CrawlerFailedJobs",
+            "MetricValue": "$.searchlint.crawler.failed",
+            "DefaultValue": 0
+          }
+        ]
+      }
+    },
+    "ReportCleanupFailureMetricFilter": {
+      "Type": "AWS::Logs::MetricFilter",
+      "Properties": {
+        "LogGroupName": {
+          "Ref": "ReportArtifactCleanupLogGroup"
+        },
+        "FilterPattern": "{ $.event = \"searchlint.worker.report_artifact_cleanup_batch\" && $.searchlint.report_artifact_cleanup.failed > 0 }",
+        "MetricTransformations": [
+          {
+            "MetricNamespace": "SearchLint/Cloud",
+            "MetricName": "ReportArtifactCleanupFailed",
+            "MetricValue": "$.searchlint.report_artifact_cleanup.failed",
+            "DefaultValue": 0
+          }
+        ]
+      }
+    },
+    "WorkerErrorMetricFilter": {
+      "Type": "AWS::Logs::MetricFilter",
+      "Properties": {
+        "LogGroupName": {
+          "Ref": "CrawlerWorkerLogGroup"
+        },
+        "FilterPattern": "{ $.event = \"searchlint.worker.error\" }",
+        "MetricTransformations": [
+          {
+            "MetricNamespace": "SearchLint/Cloud",
+            "MetricName": "WorkerErrors",
+            "MetricValue": "1",
+            "DefaultValue": 0
+          }
+        ]
+      }
+    },
+    "ApiServerErrorAlarm": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "AlarmName": {
+          "Fn::Sub": "searchlint-${EnvironmentName}-api-5xx"
+        },
+        "Namespace": "SearchLint/Cloud",
+        "MetricName": "ApiServerErrors",
+        "Statistic": "Sum",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Threshold": 0,
+        "EvaluationPeriods": {
+          "Ref": "AlarmEvaluationPeriods"
+        },
+        "Period": {
+          "Ref": "AlarmPeriodSeconds"
+        },
+        "TreatMissingData": "notBreaching"
+      }
+    },
+    "ApiTimeoutAlarm": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "AlarmName": {
+          "Fn::Sub": "searchlint-${EnvironmentName}-api-timeouts"
+        },
+        "Namespace": "SearchLint/Cloud",
+        "MetricName": "ApiTimedOutRequests",
+        "Statistic": "Sum",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Threshold": 0,
+        "EvaluationPeriods": {
+          "Ref": "AlarmEvaluationPeriods"
+        },
+        "Period": {
+          "Ref": "AlarmPeriodSeconds"
+        },
+        "TreatMissingData": "notBreaching"
+      }
+    },
+    "CrawlerFailureAlarm": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "AlarmName": {
+          "Fn::Sub": "searchlint-${EnvironmentName}-crawler-failures"
+        },
+        "Namespace": "SearchLint/Cloud",
+        "MetricName": "CrawlerFailedJobs",
+        "Statistic": "Sum",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Threshold": 0,
+        "EvaluationPeriods": {
+          "Ref": "AlarmEvaluationPeriods"
+        },
+        "Period": {
+          "Ref": "AlarmPeriodSeconds"
+        },
+        "TreatMissingData": "notBreaching"
+      }
+    },
+    "ReportCleanupFailureAlarm": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "AlarmName": {
+          "Fn::Sub": "searchlint-${EnvironmentName}-report-cleanup-failures"
+        },
+        "Namespace": "SearchLint/Cloud",
+        "MetricName": "ReportArtifactCleanupFailed",
+        "Statistic": "Sum",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Threshold": 0,
+        "EvaluationPeriods": {
+          "Ref": "AlarmEvaluationPeriods"
+        },
+        "Period": {
+          "Ref": "AlarmPeriodSeconds"
+        },
+        "TreatMissingData": "notBreaching"
+      }
+    },
+    "WorkerErrorAlarm": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "AlarmName": {
+          "Fn::Sub": "searchlint-${EnvironmentName}-worker-errors"
+        },
+        "Namespace": "SearchLint/Cloud",
+        "MetricName": "WorkerErrors",
+        "Statistic": "Sum",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Threshold": 0,
+        "EvaluationPeriods": {
+          "Ref": "AlarmEvaluationPeriods"
+        },
+        "Period": {
+          "Ref": "AlarmPeriodSeconds"
+        },
+        "TreatMissingData": "notBreaching"
+      }
+    }
+  },
+  "Outputs": {
+    "CloudApiLogGroupName": {
+      "Value": {
+        "Ref": "CloudApiLogGroup"
+      }
+    },
+    "CrawlerWorkerLogGroupName": {
+      "Value": {
+        "Ref": "CrawlerWorkerLogGroup"
+      }
+    },
+    "ReportArtifactCleanupLogGroupName": {
+      "Value": {
+        "Ref": "ReportArtifactCleanupLogGroup"
+      }
+    },
+    "ApiServerErrorAlarmName": {
+      "Value": {
+        "Ref": "ApiServerErrorAlarm"
+      }
+    },
+    "ApiTimeoutAlarmName": {
+      "Value": {
+        "Ref": "ApiTimeoutAlarm"
+      }
+    },
+    "CrawlerFailureAlarmName": {
+      "Value": {
+        "Ref": "CrawlerFailureAlarm"
+      }
+    },
+    "ReportCleanupFailureAlarmName": {
+      "Value": {
+        "Ref": "ReportCleanupFailureAlarm"
+      }
+    },
+    "WorkerErrorAlarmName": {
+      "Value": {
+        "Ref": "WorkerErrorAlarm"
+      }
+    }
+  }
+}

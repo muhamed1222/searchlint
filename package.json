@@ -183,7 +183,7 @@
     "cli:ci-environments": "node scripts/verify-ci-environments-acceptance-packet.mjs",
     "cli:linux-acceptance": "node scripts/verify-linux-cli-acceptance-packet.mjs",
     "cli:windows-acceptance": "node scripts/verify-windows-cli-acceptance-packet.mjs",
-    "package:registry-install": "node scripts/verify-npm-like-registry-install.mjs",
+    "package:registry-install": "node scripts/verify-npm-like-registry-install.mjs && node scripts/verify-public-npm-registry-install.mjs",
     "package:release-workflow": "node scripts/verify-npm-release-workflow.mjs",
     "package:metadata-approval": "node scripts/verify-public-package-metadata-approval.mjs",
     "package:beta-prep": "node scripts/verify-prerelease-beta-preparation.mjs",

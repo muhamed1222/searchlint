@@ -1,6 +1,6 @@
 {
   "name": "@searchlint/browser",
-  "version": "1.0.0-beta.4",
+  "version": "1.0.0-beta.12",
   "description": "SearchLint browser collector helpers",
   "license": "Apache-2.0",
   "sideEffects": false,
@@ -24,8 +24,7 @@
     "@searchlint/core": "workspace:*"
   },
   "engines": {
-    "node": ">=24.0.0",
-    "pnpm": ">=11.0.0 <12.0.0"
+    "node": ">=24.0.0"
   },
   "keywords": [
     "searchlint",

@@ -1,0 +1,640 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "SearchLint crawler worker: SQS crawl request queue with DLQ and an ECS/Fargate service running the Node crawler worker.",
+  "Parameters": {
+    "EnvironmentName": {
+      "Type": "String",
+      "Default": "prod",
+      "AllowedPattern": "^[a-z0-9-]+$"
+    },
+    "ClusterArn": {
+      "Type": "String"
+    },
+    "ClusterName": {
+      "Type": "String"
+    },
+    "WorkerImageUri": {
+      "Type": "String"
+    },
+    "VpcId": {
+      "Type": "AWS::EC2::VPC::Id"
+    },
+    "VpcSubnets": {
+      "Type": "List<AWS::EC2::Subnet::Id>"
+    },
+    "PostgresDatabaseUrlSecretArn": {
+      "Type": "String"
+    },
+    "CrawlArtifactBucketName": {
+      "Type": "String"
+    },
+    "CrawlArtifactBucketArn": {
+      "Type": "String"
+    },
+    "KmsKeyArn": {
+      "Type": "String",
+      "Default": ""
+    },
+    "WorkerDesiredCount": {
+      "Type": "Number",
+      "Default": 2,
+      "MinValue": 1
+    },
+    "WorkerMinCapacity": {
+      "Type": "Number",
+      "Default": 1,
+      "MinValue": 1
+    },
+    "WorkerMaxCapacity": {
+      "Type": "Number",
+      "Default": 10,
+      "MinValue": 1
+    },
+    "WorkerTargetBacklogPerTask": {
+      "Type": "Number",
+      "Default": 25,
+      "MinValue": 1
+    },
+    "CrawlerPollIntervalMs": {
+      "Type": "Number",
+      "Default": 1000,
+      "MinValue": 1
+    },
+    "CrawlerBatchSize": {
+      "Type": "Number",
+      "Default": 5,
+      "MinValue": 1,
+      "MaxValue": 10
+    },
+    "CrawlerWaitTimeSeconds": {
+      "Type": "Number",
+      "Default": 20,
+      "MinValue": 0,
+      "MaxValue": 20
+    },
+    "CrawlerVisibilityTimeoutSeconds": {
+      "Type": "Number",
+      "Default": 300,
+      "MinValue": 0
+    },
+    "CrawlerArtifactKeyPrefix": {
+      "Type": "String",
+      "Default": "crawl-artifacts"
+    },
+    "PostgresSslMode": {
+      "Type": "String",
+      "Default": "require",
+      "AllowedValues": [
+        "disable",
+        "allow",
+        "prefer",
+        "require",
+        "verify-ca",
+        "verify-full"
+      ]
+    },
+    "OtelEndpoint": {
+      "Type": "String"
+    },
+    "OtelHeadersSecretArn": {
+      "Type": "String",
+      "Default": ""
+    },
+    "OtelTimeoutMs": {
+      "Type": "Number",
+      "Default": 10000,
+      "MinValue": 1
+    },
+    "TaskCpu": {
+      "Type": "String",
+      "Default": "512",
+      "AllowedValues": ["256", "512", "1024", "2048", "4096"]
+    },
+    "TaskMemory": {
+      "Type": "String",
+      "Default": "1024",
+      "AllowedValues": ["512", "1024", "2048", "3072", "4096", "8192"]
+    }
+  },
+  "Conditions": {
+    "HasKmsKey": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            {
+              "Ref": "KmsKeyArn"
+            },
+            ""
+          ]
+        }
+      ]
+    },
+    "HasOtelHeadersSecret": {
+      "Fn::Not": [
+        {
+          "Fn::Equals": [
+            {
+              "Ref": "OtelHeadersSecretArn"
+            },
+            ""
+          ]
+        }
+      ]
+    }
+  },
+  "Resources": {
+    "CrawlerWorkerLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": {
+          "Fn::Sub": "/aws/ecs/searchlint/${EnvironmentName}/crawler-worker"
+        },
+        "RetentionInDays": 30
+      }
+    },
+    "CrawlerWorkerDeadLetterQueue": {
+      "Type": "AWS::SQS::Queue",
+      "Properties": {
+        "QueueName": {
+          "Fn::Sub": "searchlint-${EnvironmentName}-crawl-requests-dlq"
+        },
+        "MessageRetentionPeriod": 1209600,
+        "SqsManagedSseEnabled": true
+      }
+    },
+    "CrawlerWorkerQueue": {
+      "Type": "AWS::SQS::Queue",
+      "Properties": {
+        "QueueName": {
+          "Fn::Sub": "searchlint-${EnvironmentName}-crawl-requests"
+        },
+        "VisibilityTimeout": {
+          "Ref": "CrawlerVisibilityTimeoutSeconds"
+        },
+        "MessageRetentionPeriod": 1209600,
+        "ReceiveMessageWaitTimeSeconds": {
+          "Ref": "CrawlerWaitTimeSeconds"
+        },
+        "SqsManagedSseEnabled": true,
+        "RedrivePolicy": {
+          "deadLetterTargetArn": {
+            "Fn::GetAtt": ["CrawlerWorkerDeadLetterQueue", "Arn"]
+          },
+          "maxReceiveCount": 5
+        }
+      }
+    },
+    "CrawlerWorkerServiceSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "SearchLint crawler worker ECS service",
+        "VpcId": {
+          "Ref": "VpcId"
+        },
+        "SecurityGroupEgress": [
+          {
+            "IpProtocol": "-1",
+            "CidrIp": "0.0.0.0/0"
+          }
+        ]
+      }
+    },
+    "CrawlerWorkerTaskExecutionRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": "searchlint-crawler-worker-task-execution",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": ["logs:CreateLogStream", "logs:PutLogEvents"],
+                  "Resource": {
+                    "Fn::GetAtt": ["CrawlerWorkerLogGroup", "Arn"]
+                  }
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": ["secretsmanager:GetSecretValue"],
+                  "Resource": [
+                    {
+                      "Ref": "PostgresDatabaseUrlSecretArn"
+                    },
+                    {
+                      "Fn::If": [
+                        "HasOtelHeadersSecret",
+                        {
+                          "Ref": "OtelHeadersSecretArn"
+                        },
+                        {
+                          "Ref": "AWS::NoValue"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "Fn::If": [
+                    "HasKmsKey",
+                    {
+                      "Effect": "Allow",
+                      "Action": ["kms:Decrypt"],
+                      "Resource": {
+                        "Ref": "KmsKeyArn"
+                      }
+                    },
+                    {
+                      "Ref": "AWS::NoValue"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "CrawlerWorkerTaskRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": "searchlint-crawler-worker-task",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "sqs:ReceiveMessage",
+                    "sqs:DeleteMessage",
+                    "sqs:ChangeMessageVisibility",
+                    "sqs:GetQueueAttributes"
+                  ],
+                  "Resource": {
+                    "Fn::GetAtt": ["CrawlerWorkerQueue", "Arn"]
+                  }
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": ["s3:PutObject"],
+                  "Resource": {
+                    "Fn::Sub": "${CrawlArtifactBucketArn}/${CrawlerArtifactKeyPrefix}/*"
+                  }
+                },
+                {
+                  "Fn::If": [
+                    "HasKmsKey",
+                    {
+                      "Effect": "Allow",
+                      "Action": ["kms:Encrypt", "kms:GenerateDataKey"],
+                      "Resource": {
+                        "Ref": "KmsKeyArn"
+                      }
+                    },
+                    {
+                      "Ref": "AWS::NoValue"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "CrawlerWorkerAutoscalingRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "application-autoscaling.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": "searchlint-crawler-worker-autoscaling",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "application-autoscaling:RegisterScalableTarget",
+                    "application-autoscaling:PutScalingPolicy",
+                    "application-autoscaling:DescribeScalableTargets",
+                    "application-autoscaling:DescribeScalingPolicies",
+                    "cloudwatch:PutMetricAlarm",
+                    "cloudwatch:DescribeAlarms",
+                    "sqs:GetQueueAttributes",
+                    "ecs:DescribeServices",
+                    "ecs:UpdateService"
+                  ],
+                  "Resource": "*"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "CrawlerWorkerTaskDefinition": {
+      "Type": "AWS::ECS::TaskDefinition",
+      "Properties": {
+        "Family": {
+          "Fn::Sub": "searchlint-${EnvironmentName}-crawler-worker"
+        },
+        "RequiresCompatibilities": ["FARGATE"],
+        "NetworkMode": "awsvpc",
+        "Cpu": {
+          "Ref": "TaskCpu"
+        },
+        "Memory": {
+          "Ref": "TaskMemory"
+        },
+        "ExecutionRoleArn": {
+          "Fn::GetAtt": ["CrawlerWorkerTaskExecutionRole", "Arn"]
+        },
+        "TaskRoleArn": {
+          "Fn::GetAtt": ["CrawlerWorkerTaskRole", "Arn"]
+        },
+        "ContainerDefinitions": [
+          {
+            "Name": "crawler-worker",
+            "Image": {
+              "Ref": "WorkerImageUri"
+            },
+            "Essential": true,
+            "Command": ["node", "dist/src/bin.js"],
+            "Environment": [
+              {
+                "Name": "SEARCHLINT_POSTGRES_SSL_MODE",
+                "Value": {
+                  "Ref": "PostgresSslMode"
+                }
+              },
+              {
+                "Name": "SEARCHLINT_CRAWL_QUEUE_URL",
+                "Value": {
+                  "Ref": "CrawlerWorkerQueue"
+                }
+              },
+              {
+                "Name": "SEARCHLINT_CRAWL_ARTIFACT_BUCKET",
+                "Value": {
+                  "Ref": "CrawlArtifactBucketName"
+                }
+              },
+              {
+                "Name": "SEARCHLINT_CRAWL_ARTIFACT_KEY_PREFIX",
+                "Value": {
+                  "Ref": "CrawlerArtifactKeyPrefix"
+                }
+              },
+              {
+                "Name": "SEARCHLINT_RULE_CATALOG_PATH",
+                "Value": "/app/specs/RULE_CATALOG.yaml"
+              },
+              {
+                "Name": "SEARCHLINT_WORKER_CRAWLER_POLL_INTERVAL_MS",
+                "Value": {
+                  "Ref": "CrawlerPollIntervalMs"
+                }
+              },
+              {
+                "Name": "SEARCHLINT_WORKER_CRAWLER_BATCH_SIZE",
+                "Value": {
+                  "Ref": "CrawlerBatchSize"
+                }
+              },
+              {
+                "Name": "SEARCHLINT_WORKER_CRAWLER_WAIT_TIME_SECONDS",
+                "Value": {
+                  "Ref": "CrawlerWaitTimeSeconds"
+                }
+              },
+              {
+                "Name": "SEARCHLINT_WORKER_CRAWLER_VISIBILITY_TIMEOUT_SECONDS",
+                "Value": {
+                  "Ref": "CrawlerVisibilityTimeoutSeconds"
+                }
+              },
+              {
+                "Name": "OTEL_SERVICE_NAME",
+                "Value": "searchlint-crawler-worker"
+              },
+              {
+                "Name": "SEARCHLINT_ENVIRONMENT",
+                "Value": {
+                  "Ref": "EnvironmentName"
+                }
+              },
+              {
+                "Name": "OTEL_EXPORTER_OTLP_ENDPOINT",
+                "Value": {
+                  "Ref": "OtelEndpoint"
+                }
+              },
+              {
+                "Name": "OTEL_EXPORTER_OTLP_PROTOCOL",
+                "Value": "http/protobuf"
+              },
+              {
+                "Name": "OTEL_EXPORTER_OTLP_TIMEOUT",
+                "Value": {
+                  "Ref": "OtelTimeoutMs"
+                }
+              }
+            ],
+            "Secrets": [
+              {
+                "Name": "SEARCHLINT_POSTGRES_DATABASE_URL",
+                "ValueFrom": {
+                  "Ref": "PostgresDatabaseUrlSecretArn"
+                }
+              },
+              {
+                "Fn::If": [
+                  "HasOtelHeadersSecret",
+                  {
+                    "Name": "OTEL_EXPORTER_OTLP_HEADERS",
+                    "ValueFrom": {
+                      "Ref": "OtelHeadersSecretArn"
+                    }
+                  },
+                  {
+                    "Ref": "AWS::NoValue"
+                  }
+                ]
+              }
+            ],
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "CrawlerWorkerLogGroup"
+                },
+                "awslogs-region": {
+                  "Ref": "AWS::Region"
+                },
+                "awslogs-stream-prefix": "crawler-worker"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "CrawlerWorkerService": {
+      "Type": "AWS::ECS::Service",
+      "Properties": {
+        "Cluster": {
+          "Ref": "ClusterArn"
+        },
+        "DesiredCount": {
+          "Ref": "WorkerDesiredCount"
+        },
+        "LaunchType": "FARGATE",
+        "TaskDefinition": {
+          "Ref": "CrawlerWorkerTaskDefinition"
+        },
+        "NetworkConfiguration": {
+          "AwsvpcConfiguration": {
+            "AssignPublicIp": "DISABLED",
+            "Subnets": {
+              "Ref": "VpcSubnets"
+            },
+            "SecurityGroups": [
+              {
+                "Ref": "CrawlerWorkerServiceSecurityGroup"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "CrawlerWorkerScalableTarget": {
+      "Type": "AWS::ApplicationAutoScaling::ScalableTarget",
+      "DependsOn": ["CrawlerWorkerService"],
+      "Properties": {
+        "MaxCapacity": {
+          "Ref": "WorkerMaxCapacity"
+        },
+        "MinCapacity": {
+          "Ref": "WorkerMinCapacity"
+        },
+        "ResourceId": {
+          "Fn::Sub": "service/${ClusterName}/${CrawlerWorkerService.Name}"
+        },
+        "RoleARN": {
+          "Fn::GetAtt": ["CrawlerWorkerAutoscalingRole", "Arn"]
+        },
+        "ScalableDimension": "ecs:service:DesiredCount",
+        "ServiceNamespace": "ecs"
+      }
+    },
+    "CrawlerWorkerBacklogScalingPolicy": {
+      "Type": "AWS::ApplicationAutoScaling::ScalingPolicy",
+      "Properties": {
+        "PolicyName": {
+          "Fn::Sub": "searchlint-${EnvironmentName}-crawler-worker-backlog"
+        },
+        "PolicyType": "TargetTrackingScaling",
+        "ScalingTargetId": {
+          "Ref": "CrawlerWorkerScalableTarget"
+        },
+        "TargetTrackingScalingPolicyConfiguration": {
+          "CustomizedMetricSpecification": {
+            "MetricName": "ApproximateNumberOfMessagesVisible",
+            "Namespace": "AWS/SQS",
+            "Dimensions": [
+              {
+                "Name": "QueueName",
+                "Value": {
+                  "Fn::GetAtt": ["CrawlerWorkerQueue", "QueueName"]
+                }
+              }
+            ],
+            "Statistic": "Average",
+            "Unit": "Count"
+          },
+          "DisableScaleIn": false,
+          "ScaleInCooldown": 300,
+          "ScaleOutCooldown": 60,
+          "TargetValue": {
+            "Ref": "WorkerTargetBacklogPerTask"
+          }
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "CrawlerWorkerQueueUrl": {
+      "Value": {
+        "Ref": "CrawlerWorkerQueue"
+      }
+    },
+    "CrawlerWorkerQueueArn": {
+      "Value": {
+        "Fn::GetAtt": ["CrawlerWorkerQueue", "Arn"]
+      }
+    },
+    "CrawlerWorkerDeadLetterQueueArn": {
+      "Value": {
+        "Fn::GetAtt": ["CrawlerWorkerDeadLetterQueue", "Arn"]
+      }
+    },
+    "CrawlerWorkerServiceName": {
+      "Value": {
+        "Fn::GetAtt": ["CrawlerWorkerService", "Name"]
+      }
+    },
+    "CrawlerWorkerTaskDefinitionArn": {
+      "Value": {
+        "Ref": "CrawlerWorkerTaskDefinition"
+      }
+    },
+    "CrawlerWorkerScalableTargetResourceId": {
+      "Value": {
+        "Fn::Sub": "service/${ClusterName}/${CrawlerWorkerService.Name}"
+      }
+    },
+    "CrawlerWorkerScalingPolicyArn": {
+      "Value": {
+        "Ref": "CrawlerWorkerBacklogScalingPolicy"
+      }
+    }
+  }
+}
