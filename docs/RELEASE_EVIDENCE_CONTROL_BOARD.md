@@ -8,20 +8,20 @@ evidence, and does not close any release gate.
 
 ## Last Verified Baseline
 
-- Verified baseline commit: `83994ab5924ac98a0930272d8652c21c87a273c8`
+- Verified baseline commit: `e198ecc4950a9fe8ba3d21478d2765e5ae062c40`
 - Baseline CI: passed in GitHub Actions run
-  `https://github.com/muhamed1222/searchlint/actions/runs/28461255762`
+  `https://github.com/muhamed1222/searchlint/actions/runs/28462082258`
 - Final release gate: `blocked`
 - Release readiness: 522/599 done; 77 remaining
 - Real owner evidence inputs: 0/60 present
 - Missing evidence paths: 108
 - `v1.0.0`: absent and must not be created yet
 
-This baseline includes the release evidence control board baseline refresh
-through ExecPlan 459. `main` may advance as orchestration-only changes are
-merged. Before using this board to close a release gate, rerun the affected
-verifier plus `pnpm release:evidence-readiness` and `pnpm final-release:gate`
-from a fresh checkout.
+This baseline includes the GitHub-readable P0 owner dispatch runbook through
+ExecPlan 460. `main` may advance as orchestration-only changes are merged.
+Before using this board to close a release gate, rerun the affected verifier
+plus `pnpm release:evidence-readiness` and `pnpm final-release:gate` from a
+fresh checkout.
 
 ## Source Of Truth
 
@@ -72,6 +72,8 @@ Ready-to-send owner instructions were prepared as local orchestration artifacts:
   `/tmp/searchlint-p1-dispatch/searchlint-p1-dispatch-packet.zip`
 - P1 dispatch SHA-256:
   `774c95b358fa4c2cd3f83f9a38332424ab4d9dcd0f4651c32ab2d521a0c96d9d`
+- GitHub-readable P1 dispatch runbook:
+  `docs/RELEASE_P1_OWNER_DISPATCH_RUNBOOK.md`
 
 These dispatch packets are not release evidence. They only reduce owner handoff
 ambiguity.
