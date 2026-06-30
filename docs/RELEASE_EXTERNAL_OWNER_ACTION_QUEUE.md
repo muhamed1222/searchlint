@@ -76,6 +76,9 @@ Ready-to-send outreach text for all lanes is in
 The short reusable owner follow-up digest is in
 `docs/RELEASE_OWNER_STATUS_DIGEST.md`.
 
+Real evidence PRs should use
+`.github/PULL_REQUEST_TEMPLATE/release-owner-evidence.md`.
+
 ### Reviewer Dispatch
 
 Use issue `#19` and `docs/RELEASE_P0_OWNER_DISPATCH_RUNBOOK.md`.
