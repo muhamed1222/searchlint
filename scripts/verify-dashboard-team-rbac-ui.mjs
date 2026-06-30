@@ -9,14 +9,14 @@ const samplePath = "docs/examples/dashboard-team-rbac-ui-report.sample.json";
 
 const commands = [
   {
+    name: "dashboardBuild",
+    command: "pnpm",
+    args: ["--filter", "@searchlint/dashboard...", "build"]
+  },
+  {
     name: "dashboardUnitTests",
     command: "pnpm",
     args: ["--filter", "@searchlint/dashboard", "test"]
-  },
-  {
-    name: "dashboardBuild",
-    command: "pnpm",
-    args: ["--filter", "@searchlint/dashboard", "build"]
   },
   {
     name: "hostedRouteFlows",

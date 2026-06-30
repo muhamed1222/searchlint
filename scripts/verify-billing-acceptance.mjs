@@ -12,6 +12,11 @@ const webhookSecret = "whsec_test_fixture_not_reported";
 
 const commands = [
   {
+    name: "dashboardBuild",
+    command: "pnpm",
+    args: ["--filter", "@searchlint/dashboard...", "build"]
+  },
+  {
     name: "apiBillingTests",
     command: "pnpm",
     args: [
@@ -41,11 +46,6 @@ const commands = [
     name: "apiBuild",
     command: "pnpm",
     args: ["--filter", "@searchlint/api", "build"]
-  },
-  {
-    name: "dashboardBuild",
-    command: "pnpm",
-    args: ["--filter", "@searchlint/dashboard", "build"]
   }
 ];
 

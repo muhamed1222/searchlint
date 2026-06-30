@@ -28,7 +28,7 @@ const commands = [
   {
     name: "dashboardBuild",
     command: "pnpm",
-    args: ["--filter", "@searchlint/dashboard", "build"]
+    args: ["--filter", "@searchlint/dashboard...", "build"]
   },
   {
     name: "reporterBuild",

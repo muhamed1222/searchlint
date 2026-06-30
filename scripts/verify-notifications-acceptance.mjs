@@ -10,6 +10,11 @@ const samplePath = "docs/examples/notifications-acceptance-report.sample.json";
 
 const commands = [
   {
+    name: "dashboardBuild",
+    command: "pnpm",
+    args: ["--filter", "@searchlint/dashboard...", "build"]
+  },
+  {
     name: "apiNotificationTests",
     command: "pnpm",
     args: ["--filter", "@searchlint/api", "test", "--", "notifications.test.ts"]
@@ -24,16 +29,6 @@ const commands = [
       "--",
       "dashboard.test.ts"
     ]
-  },
-  {
-    name: "apiBuild",
-    command: "pnpm",
-    args: ["--filter", "@searchlint/api", "build"]
-  },
-  {
-    name: "dashboardBuild",
-    command: "pnpm",
-    args: ["--filter", "@searchlint/dashboard", "build"]
   }
 ];
 

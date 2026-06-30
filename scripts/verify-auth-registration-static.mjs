@@ -36,6 +36,7 @@ function assert(condition, message) {
 }
 
 async function main() {
+  run("pnpm", ["--filter", "@searchlint/dashboard...", "build"]);
   run("pnpm", [
     "--filter",
     "@searchlint/api",
@@ -51,7 +52,6 @@ async function main() {
     "api-client.test.ts"
   ]);
   run("pnpm", ["--filter", "@searchlint/api", "build"]);
-  run("pnpm", ["--filter", "@searchlint/dashboard", "build"]);
 
   const api = await import("../services/api/dist/src/index.js");
   const dashboard = await import("../apps/dashboard/dist/src/api-client.js");
