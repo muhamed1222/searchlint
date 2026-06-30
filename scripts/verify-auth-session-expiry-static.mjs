@@ -36,6 +36,7 @@ function assert(condition, message) {
 }
 
 async function main() {
+  run("pnpm", ["--filter", "@searchlint/dashboard...", "build"]);
   run("pnpm", [
     "--filter",
     "@searchlint/dashboard",
@@ -44,7 +45,6 @@ async function main() {
     "api-client.test.ts",
     "dashboard.test.ts"
   ]);
-  run("pnpm", ["--filter", "@searchlint/dashboard", "build"]);
 
   const template = JSON.parse(await readText(cognitoTemplatePath));
   const appClient =

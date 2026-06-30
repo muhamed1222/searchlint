@@ -35,6 +35,7 @@ function assert(condition, message) {
 }
 
 async function main() {
+  run("pnpm", ["--filter", "@searchlint/dashboard...", "build"]);
   run("pnpm", [
     "--filter",
     "@searchlint/dashboard",
@@ -43,7 +44,6 @@ async function main() {
     "api-client.test.ts",
     "dashboard.test.ts"
   ]);
-  run("pnpm", ["--filter", "@searchlint/dashboard", "build"]);
 
   const dashboard = await import("../apps/dashboard/dist/src/index.js");
   const logoutUrl = new URL(

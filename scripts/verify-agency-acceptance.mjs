@@ -10,6 +10,11 @@ const samplePath = "docs/examples/agency-acceptance-report.sample.json";
 
 const commands = [
   {
+    name: "dashboardBuild",
+    command: "pnpm",
+    args: ["--filter", "@searchlint/dashboard...", "build"]
+  },
+  {
     name: "apiAgencyTests",
     command: "pnpm",
     args: ["--filter", "@searchlint/api", "test", "--", "agency-mode.test.ts"]
@@ -40,11 +45,6 @@ const commands = [
     name: "apiBuild",
     command: "pnpm",
     args: ["--filter", "@searchlint/api", "build"]
-  },
-  {
-    name: "dashboardBuild",
-    command: "pnpm",
-    args: ["--filter", "@searchlint/dashboard", "build"]
   },
   {
     name: "reporterBuild",

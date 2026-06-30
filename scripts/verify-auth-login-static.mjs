@@ -32,6 +32,7 @@ function assert(condition, message) {
 }
 
 async function main() {
+  run("pnpm", ["--filter", "@searchlint/dashboard...", "build"]);
   run("pnpm", [
     "--filter",
     "@searchlint/dashboard",
@@ -48,7 +49,6 @@ async function main() {
     "cognito-auth.test.ts",
     "node-http-server.test.ts"
   ]);
-  run("pnpm", ["--filter", "@searchlint/dashboard", "build"]);
   run("pnpm", ["--filter", "@searchlint/api", "build"]);
 
   const dashboard = await import("../apps/dashboard/dist/src/index.js");
