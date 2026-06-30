@@ -8,9 +8,9 @@ reviewer sign-off, legal approval, or release approval.
 
 ## Current Baseline
 
-- Baseline commit: `83994ab5924ac98a0930272d8652c21c87a273c8`
+- Baseline commit: `ae5cd871ae85ca030e06906b1eedc8646b097555`
 - Baseline CI: passed in GitHub Actions run
-  `https://github.com/muhamed1222/searchlint/actions/runs/28461255762`
+  `https://github.com/muhamed1222/searchlint/actions/runs/28462720725`
 - Final release gate: `BLOCKED`
 - Release readiness: 522/599 done; 77 remaining
 - Real owner evidence inputs: 0/60 present

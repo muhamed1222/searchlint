@@ -8,17 +8,17 @@ evidence, and does not close any release gate.
 
 ## Last Verified Baseline
 
-- Verified baseline commit: `e198ecc4950a9fe8ba3d21478d2765e5ae062c40`
+- Verified baseline commit: `ae5cd871ae85ca030e06906b1eedc8646b097555`
 - Baseline CI: passed in GitHub Actions run
-  `https://github.com/muhamed1222/searchlint/actions/runs/28462082258`
+  `https://github.com/muhamed1222/searchlint/actions/runs/28462720725`
 - Final release gate: `blocked`
 - Release readiness: 522/599 done; 77 remaining
 - Real owner evidence inputs: 0/60 present
 - Missing evidence paths: 108
 - `v1.0.0`: absent and must not be created yet
 
-This baseline includes the GitHub-readable P0 owner dispatch runbook through
-ExecPlan 460. `main` may advance as orchestration-only changes are merged.
+This baseline includes the GitHub-readable P1 owner dispatch runbook through
+ExecPlan 461. `main` may advance as orchestration-only changes are merged.
 Before using this board to close a release gate, rerun the affected verifier
 plus `pnpm release:evidence-readiness` and `pnpm final-release:gate` from a
 fresh checkout.
@@ -32,6 +32,7 @@ status:
 - `docs/RELEASE_EVIDENCE_INTAKE_STATUS.md`
 - `docs/RELEASE_OWNER_EVIDENCE_READINESS_INDEX.md`
 - `docs/SEARCHLINT_1_0_FINAL_RELEASE_GATE.md`
+- `docs/RELEASE_EXTERNAL_OWNER_ACTION_QUEUE.md`
 - `reports/release-evidence-readiness-summary-report.json`
 - `reports/release-evidence-intake-status-report.json`
 - `reports/release-owner-evidence-readiness-report.json`
@@ -74,6 +75,7 @@ Ready-to-send owner instructions were prepared as local orchestration artifacts:
   `774c95b358fa4c2cd3f83f9a38332424ab4d9dcd0f4651c32ab2d521a0c96d9d`
 - GitHub-readable P1 dispatch runbook:
   `docs/RELEASE_P1_OWNER_DISPATCH_RUNBOOK.md`
+- External owner action queue: `docs/RELEASE_EXTERNAL_OWNER_ACTION_QUEUE.md`
 
 These dispatch packets are not release evidence. They only reduce owner handoff
 ambiguity.
