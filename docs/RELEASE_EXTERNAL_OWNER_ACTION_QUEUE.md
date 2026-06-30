@@ -8,9 +8,9 @@ status, and does not approve SearchLint 1.0.
 
 ## Current Baseline
 
-- Baseline commit: `1c94ca5400dc98ae456db6b34e0db9618a9fb0ab`
+- Baseline commit: `32220f61d9e02613b131b97d0a72ba412133ffc8`
 - Baseline CI: passed in GitHub Actions run
-  `https://github.com/muhamed1222/searchlint/actions/runs/28464174357`
+  `https://github.com/muhamed1222/searchlint/actions/runs/28465399162`
 - Final release gate: `BLOCKED`
 - Release readiness: 522/599 done; 77 remaining
 - Real owner evidence inputs: 0/60 present

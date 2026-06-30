@@ -8,16 +8,16 @@ evidence, and does not close any release gate.
 
 ## Last Verified Baseline
 
-- Verified baseline commit: `1c94ca5400dc98ae456db6b34e0db9618a9fb0ab`
+- Verified baseline commit: `32220f61d9e02613b131b97d0a72ba412133ffc8`
 - Baseline CI: passed in GitHub Actions run
-  `https://github.com/muhamed1222/searchlint/actions/runs/28464174357`
+  `https://github.com/muhamed1222/searchlint/actions/runs/28465399162`
 - Final release gate: `blocked`
 - Release readiness: 522/599 done; 77 remaining
 - Real owner evidence inputs: 0/60 present
 - Missing evidence paths: 108
 - `v1.0.0`: absent and must not be created yet
 
-This baseline includes the owner outreach message kit through ExecPlan 463.
+This baseline includes the owner evidence PR template through ExecPlan 465.
 `main` may advance as orchestration-only changes are merged. Before using this
 board to close a release gate, rerun the affected verifier plus
 `pnpm release:evidence-readiness` and `pnpm final-release:gate` from a fresh
