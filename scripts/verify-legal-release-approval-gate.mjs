@@ -144,9 +144,19 @@ if (report.status !== "passed") {
 
 async function verifyRequiredFilesExist() {
   for (const filePath of requiredFiles) {
-    const info = await stat(filePath);
+    let info;
+    try {
+      info = await stat(filePath);
+    } catch (error) {
+      if (error?.code === "ENOENT") {
+        issues.push(issue("missing-required-file", `${filePath} is missing.`));
+        continue;
+      }
+      throw error;
+    }
     if (!info.isFile()) {
       issues.push(issue("missing-required-file", `${filePath} is missing.`));
+      continue;
     }
     const text = await readFile(filePath, "utf8");
     if (text.trim().length === 0) {

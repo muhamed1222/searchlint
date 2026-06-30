@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "evidenceId": "github-governance-main-YYYY-MM-DD",
+  "providedAt": "YYYY-MM-DDTHH:mm:ss.000Z",
+  "providedBy": {
+    "name": "REPLACE_WITH_COLLECTOR_NAME",
+    "role": "REPLACE_WITH_COLLECTOR_ROLE"
+  },
+  "repository": {
+    "slug": "OWNER/REPOSITORY",
+    "url": "https://github.com/OWNER/REPOSITORY",
+    "defaultBranch": "main"
+  },
+  "collection": {
+    "collectedAt": "YYYY-MM-DDTHH:mm:ss.000Z",
+    "commands": [
+      "gh api repos/OWNER/REPOSITORY/branches/main/protection",
+      "gh run list --repo OWNER/REPOSITORY --workflow ci.yml --branch main --status success --limit 1 --json databaseId,headSha,url,conclusion,updatedAt"
+    ]
+  },
+  "branchProtection": {
+    "branch": "main",
+    "requiredStatusChecks": {
+      "strict": true,
+      "contexts": [
+        "foundation",
+        "docker-image-build",
+        "next-fixtures-zero-impact (next15-app)",
+        "next-fixtures-zero-impact (next15-pages)",
+        "next-fixtures-zero-impact (next16-app)",
+        "next-fixtures-zero-impact (next16-pages)",
+        "postgres-migration-proof"
+      ]
+    },
+    "pullRequestReviews": {
+      "requiredApprovingReviewCount": 1,
+      "dismissStaleReviews": true
+    },
+    "requiredConversationResolution": true,
+    "requiredLinearHistory": true,
+    "allowForcePushes": false,
+    "allowDeletions": false
+  },
+  "ci": {
+    "workflowPath": ".github/workflows/ci.yml",
+    "requiredChecks": [
+      "foundation",
+      "docker-image-build",
+      "next-fixtures-zero-impact (next15-app)",
+      "next-fixtures-zero-impact (next15-pages)",
+      "next-fixtures-zero-impact (next16-app)",
+      "next-fixtures-zero-impact (next16-pages)",
+      "postgres-migration-proof"
+    ],
+    "latestSuccessfulRun": {
+      "runId": "REPLACE_WITH_RUN_ID",
+      "headSha": "REPLACE_WITH_HEAD_SHA",
+      "url": "https://github.com/OWNER/REPOSITORY/actions/runs/REPLACE_WITH_RUN_ID",
+      "completedAt": "YYYY-MM-DDTHH:mm:ss.000Z",
+      "conclusion": "success"
+    }
+  },
+  "sensitiveDataStatement": "This evidence contains no tokens, credentials, private keys, cookies, Authorization headers, database URLs, or secrets.",
+  "signedStatement": "REPLACE_WITH_SIGNED_STATEMENT"
+}
