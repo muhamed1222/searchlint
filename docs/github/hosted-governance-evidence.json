@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "evidenceId": "github-governance-main-2026-06-30",
+  "providedAt": "2026-06-30T11:29:08.000Z",
+  "providedBy": {
+    "name": "Codex orchestration run",
+    "role": "Release evidence collector"
+  },
+  "repository": {
+    "slug": "muhamed1222/searchlint",
+    "url": "https://github.com/muhamed1222/searchlint",
+    "defaultBranch": "main"
+  },
+  "collection": {
+    "collectedAt": "2026-06-30T11:29:08.000Z",
+    "commands": [
+      "gh api repos/muhamed1222/searchlint/branches/main/protection",
+      "gh run list --repo muhamed1222/searchlint --workflow ci.yml --branch main --status success --limit 1 --json databaseId,headSha,url,conclusion,updatedAt,createdAt,status,event"
+    ]
+  },
+  "branchProtection": {
+    "branch": "main",
+    "requiredStatusChecks": {
+      "strict": true,
+      "contexts": [
+        "foundation",
+        "docker-image-build",
+        "next-fixtures-zero-impact (next15-app)",
+        "next-fixtures-zero-impact (next15-pages)",
+        "next-fixtures-zero-impact (next16-app)",
+        "next-fixtures-zero-impact (next16-pages)",
+        "postgres-migration-proof"
+      ]
+    },
+    "pullRequestReviews": {
+      "requiredApprovingReviewCount": 1,
+      "dismissStaleReviews": true
+    },
+    "requiredConversationResolution": true,
+    "requiredLinearHistory": true,
+    "allowForcePushes": false,
+    "allowDeletions": false
+  },
+  "ci": {
+    "workflowPath": ".github/workflows/ci.yml",
+    "requiredChecks": [
+      "foundation",
+      "docker-image-build",
+      "next-fixtures-zero-impact (next15-app)",
+      "next-fixtures-zero-impact (next15-pages)",
+      "next-fixtures-zero-impact (next16-app)",
+      "next-fixtures-zero-impact (next16-pages)",
+      "postgres-migration-proof"
+    ],
+    "latestSuccessfulRun": {
+      "runId": "28440572771",
+      "headSha": "252c8157239b704dbd4d06c0544a8d2b78dff1bc",
+      "url": "https://github.com/muhamed1222/searchlint/actions/runs/28440572771",
+      "completedAt": "2026-06-30T11:24:59.000Z",
+      "conclusion": "success"
+    }
+  },
+  "sensitiveDataStatement": "This evidence contains no tokens, credentials, private keys, cookies, Authorization headers, database URLs, or secrets.",
+  "signedStatement": "I confirm this evidence was collected from the real hosted GitHub repository and records main branch protection plus required CI checks before merge."
+}
