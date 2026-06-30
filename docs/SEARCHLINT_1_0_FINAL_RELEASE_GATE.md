@@ -8,6 +8,10 @@ This document is the final gate before creating Git tag `v1.0.0`, publishing npm
 packages, publishing the VS Code extension, deploying the public website, and
 announcing SearchLint 1.0.
 
+Use `docs/RELEASE_EVIDENCE_CONTROL_BOARD.md` to route the remaining external
+evidence packages before this final gate is retried. The control board is not
+release evidence and does not approve the final release.
+
 ## Gate Semantics
 
 `pnpm final-release:gate` verifies that the repository has explicit final
