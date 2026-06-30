@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "generatedBy": "searchlint-hosted-github-governance-evidence-verifier",
+  "generatedAt": "2026-06-23T00:00:00.000Z",
+  "evidencePath": "docs/github/hosted-governance-evidence.json",
+  "templatePath": "docs/github/hosted-governance-evidence.example.json",
+  "requiredChecks": [
+    "foundation",
+    "docker-image-build",
+    "next-fixtures-zero-impact (next15-app)",
+    "next-fixtures-zero-impact (next15-pages)",
+    "next-fixtures-zero-impact (next16-app)",
+    "next-fixtures-zero-impact (next16-pages)",
+    "postgres-migration-proof"
+  ],
+  "releaseGates": {
+    "protectedBranchConfigured": true,
+    "requiredCiChecksConfigured": true
+  },
+  "status": "passed",
+  "repository": {
+    "slug": "muhamed1222/searchlint",
+    "url": "https://github.com/muhamed1222/searchlint",
+    "defaultBranch": "main"
+  },
+  "providedAt": "2026-06-30T11:29:08.000Z",
+  "providedBy": {
+    "name": "Codex orchestration run",
+    "role": "Release evidence collector"
+  },
+  "checkSummary": {
+    "branch": "main",
+    "strictStatusChecks": true,
+    "requiredCheckCount": 7,
+    "ciRequiredCheckCount": 7,
+    "latestCiConclusion": "success"
+  },
+  "failures": []
+}
