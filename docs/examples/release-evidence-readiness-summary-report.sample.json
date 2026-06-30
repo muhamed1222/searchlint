@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "generatedBy": "searchlint-release-evidence-readiness-aggregate-verifier",
+  "generatedAt": "2026-06-23T00:00:00.000Z",
+  "status": "blocked_external_evidence",
+  "pipeline": [
+    {
+      "name": "owner-evidence-self-test",
+      "command": "pnpm release:owner-evidence:self-test",
+      "reportPath": "reports/release-owner-evidence-self-test-report.json",
+      "status": "passed"
+    },
+    {
+      "name": "owner-evidence",
+      "command": "pnpm release:owner-evidence",
+      "reportPath": "reports/release-owner-evidence-report.json",
+      "status": "passed"
+    },
+    {
+      "name": "owner-evidence-template-coverage",
+      "command": "pnpm release:owner-evidence:template-coverage",
+      "reportPath": "reports/release-owner-evidence-template-coverage-report.json",
+      "status": "passed"
+    },
+    {
+      "name": "missing-evidence-templates",
+      "command": "pnpm release:missing-evidence-templates",
+      "reportPath": "reports/release-missing-evidence-template-index-report.json",
+      "status": "template_index_ready"
+    },
+    {
+      "name": "owner-evidence-readiness",
+      "command": "pnpm release:owner-evidence:readiness",
+      "reportPath": "reports/release-owner-evidence-readiness-report.json",
+      "status": "blocked_waiting_for_owner_evidence"
+    },
+    {
+      "name": "evidence-intake",
+      "command": "pnpm release:evidence-intake",
+      "reportPath": "reports/release-evidence-intake-status-report.json",
+      "status": "blocked_external_evidence"
+    }
+  ],
+  "summary": {
+    "checkedItemCount": 522,
+    "openGateCount": 77,
+    "totalItemCount": 599,
+    "ownerEvidenceSelfTestCases": 6,
+    "ownerEvidenceSelfTestPassedCases": 6,
+    "expectedOwnerEvidenceCount": 51,
+    "realOwnerEvidenceCount": 0,
+    "missingOwnerEvidenceCount": 51,
+    "ownerEvidenceFailureCount": 0,
+    "templateCoverageStatus": "passed",
+    "templateCoveredOwnerInputCount": 51,
+    "missingOwnerInputCount": 60,
+    "missingOwnerInputWithTemplatesCount": 60,
+    "missingOwnerInputWithoutTemplatesCount": 0,
+    "missingEvidencePathCount": 105,
+    "blockedOrFailingReportCount": 4,
+    "externalOwnerProofRequiredGateCount": 74,
+    "gatesMissingExternalOwnerProofCount": 74,
+    "intakeStatus": "blocked_external_evidence",
+    "ownerEvidenceReadinessStatus": "blocked_waiting_for_owner_evidence",
+    "releaseGateClaim": "not_claimed"
+  },
+  "nonClaims": [
+    "This aggregate report does not close release gates.",
+    "This aggregate report does not replace real owner, reviewer, legal, security, provider, deployment, publication, backup, or final release evidence.",
+    "SearchLint 1.0 remains blocked while external evidence is missing or supporting reports are blocked."
+  ]
+}

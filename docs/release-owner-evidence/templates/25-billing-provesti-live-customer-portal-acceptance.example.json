@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "evidenceId": "25-billing-provesti-live-customer-portal-acceptance-evidence",
+  "gate": {
+    "section": "25. Billing",
+    "item": "Провести live customer portal acceptance",
+    "gateType": "live_provider_acceptance_gate",
+    "relatedCommand": "pnpm billing:live-stripe-final-acceptance-packet"
+  },
+  "providedBy": {
+    "name": "REPLACE_WITH_OWNER_OR_REVIEWER_NAME",
+    "role": "REPLACE_WITH_OWNER_LEGAL_SECURITY_OPERATOR_OR_REVIEWER_ROLE"
+  },
+  "providedAt": "REPLACE_WITH_ISO_TIMESTAMP",
+  "evidenceSummary": "REPLACE_WITH_SHORT_SANITIZED_DESCRIPTION_OF_WHAT_WAS_ACTUALLY_VERIFIED",
+  "artifacts": [
+    {
+      "type": "REPLACE_WITH_SANITIZED_REPORT_URL_OR_SCREENSHOT_REFERENCE",
+      "description": "Live provider account/configuration evidence, sanitized API response or delivery proof, quota/freshness handling, and passing live acceptance command.",
+      "reference": "REPLACE_WITH_SANITIZED_CI_ARTIFACT_URL_INTERNAL_REFERENCE_OR_REPORT_PATH"
+    }
+  ],
+  "commandsRun": [
+    {
+      "command": "pnpm billing:live-stripe-final-acceptance-packet",
+      "result": "passed",
+      "summary": "REPLACE_WITH_SANITIZED_COMMAND_RESULT_SUMMARY_AFTER_RUNNING_THE_COMMAND"
+    }
+  ],
+  "externalSystems": [
+    {
+      "system": "REPLACE_WITH_EXTERNAL_SYSTEM_NAME",
+      "resource": "REPLACE_WITH_SANITIZED_RESOURCE_IDENTIFIER",
+      "verifiedAt": "REPLACE_WITH_ISO_TIMESTAMP"
+    }
+  ],
+  "sensitiveDataStatement": "This evidence is sanitized and contains no secrets, credentials, tokens, private keys, raw customer personal data, or confidential provider payloads.",
+  "signedStatement": "I confirm this evidence is accurate for the named SearchLint release gate and has been sanitized for repository storage.",
+  "ownerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence.",
+  "templateUse": "Copy this template to the matching expected docs/release-owner-evidence/*.json path, replace every placeholder with real sanitized evidence, then run pnpm release:owner-evidence."
+}

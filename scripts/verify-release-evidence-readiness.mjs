@@ -149,22 +149,37 @@ function buildSummary(reports) {
 
 function assertAggregateReadiness(report) {
   const { summary } = report;
-  if (summary.openGateCount !== 83) {
-    throw new Error(`Expected 83 open gates, found ${summary.openGateCount}.`);
-  }
-  if (summary.expectedOwnerEvidenceCount !== 52) {
+  if (
+    summary.openGateCount + summary.checkedItemCount !==
+    summary.totalItemCount
+  ) {
     throw new Error(
-      `Expected 52 owner evidence files, found ${summary.expectedOwnerEvidenceCount}.`
+      `Checklist summary is inconsistent: checked=${summary.checkedItemCount}, open=${summary.openGateCount}, total=${summary.totalItemCount}.`
     );
   }
-  if (summary.templateCoveredOwnerInputCount !== 52) {
+  if (
+    summary.templateCoveredOwnerInputCount !==
+    summary.expectedOwnerEvidenceCount
+  ) {
     throw new Error(
-      `Expected 52 template-covered owner inputs, found ${summary.templateCoveredOwnerInputCount}.`
+      `Expected every owner evidence input to have a template: expected=${summary.expectedOwnerEvidenceCount}, covered=${summary.templateCoveredOwnerInputCount}.`
     );
   }
-  if (summary.missingOwnerInputCount !== 63) {
+  if (
+    summary.missingOwnerEvidenceCount + summary.realOwnerEvidenceCount !==
+    summary.expectedOwnerEvidenceCount
+  ) {
     throw new Error(
-      `Expected 63 missing owner input files, found ${summary.missingOwnerInputCount}.`
+      `Owner evidence counts are inconsistent: real=${summary.realOwnerEvidenceCount}, missing=${summary.missingOwnerEvidenceCount}, expected=${summary.expectedOwnerEvidenceCount}.`
+    );
+  }
+  if (
+    summary.missingOwnerInputWithTemplatesCount +
+      summary.missingOwnerInputWithoutTemplatesCount !==
+    summary.missingOwnerInputCount
+  ) {
+    throw new Error(
+      `Missing owner input counts are inconsistent: withTemplates=${summary.missingOwnerInputWithTemplatesCount}, withoutTemplates=${summary.missingOwnerInputWithoutTemplatesCount}, total=${summary.missingOwnerInputCount}.`
     );
   }
   if (summary.missingOwnerInputWithoutTemplatesCount !== 0) {

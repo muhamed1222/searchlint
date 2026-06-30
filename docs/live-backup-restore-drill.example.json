@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "evidenceId": "example-live-backup-restore-drill",
+  "environment": "example-production-equivalent",
+  "reviewedAt": "2026-06-23T00:00:00.000Z",
+  "approvedBy": "Example Owner",
+  "rpoTargetHours": 24,
+  "rtoTargetHours": 4,
+  "drills": [
+    {
+      "id": "example-rds-backup-restore",
+      "type": "rds-backup-restore",
+      "startedAt": "2026-06-23T10:00:00.000Z",
+      "completedAt": "2026-06-23T11:00:00.000Z",
+      "validatedAt": "2026-06-23T12:00:00.000Z",
+      "rpoHours": 12,
+      "rtoHours": 2,
+      "evidenceSummary": "Example only: restored snapshot into isolated target and validated schema, migrations, tenant isolation, RBAC, and deletion-state checks.",
+      "validationChecks": [
+        "schema",
+        "migrations",
+        "tenant-isolation",
+        "rbac",
+        "deletion-state"
+      ]
+    },
+    {
+      "id": "example-rds-pitr",
+      "type": "rds-point-in-time-recovery",
+      "startedAt": "2026-06-23T13:00:00.000Z",
+      "completedAt": "2026-06-23T14:00:00.000Z",
+      "validatedAt": "2026-06-23T15:00:00.000Z",
+      "rpoHours": 1,
+      "rtoHours": 2,
+      "evidenceSummary": "Example only: recovered to target timestamp and validated schema, migrations, tenant isolation, RBAC, and deletion-state checks.",
+      "validationChecks": [
+        "schema",
+        "migrations",
+        "tenant-isolation",
+        "rbac",
+        "deletion-state"
+      ]
+    },
+    {
+      "id": "example-s3-object-restore",
+      "type": "s3-object-restore",
+      "startedAt": "2026-06-23T16:00:00.000Z",
+      "completedAt": "2026-06-23T16:30:00.000Z",
+      "validatedAt": "2026-06-23T17:00:00.000Z",
+      "rpoHours": 1,
+      "rtoHours": 1,
+      "evidenceSummary": "Example only: restored object version into isolated target and validated byte size, checksum, tenant scope, and deleted-object exclusion.",
+      "validationChecks": [
+        "byte-size",
+        "sha256",
+        "tenant-scope",
+        "deleted-object-exclusion"
+      ]
+    }
+  ],
+  "signedStatement": "Example only: I approve this live backup/restore drill evidence for the SearchLint 1.0 release gate."
+}

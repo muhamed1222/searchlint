@@ -1,0 +1,178 @@
+{
+  "generatedBy": "searchlint-reports-final-readiness-verifier",
+  "generatedAt": "2026-06-23T00:00:00.000Z",
+  "status": "passed",
+  "scope": {
+    "proofType": "deterministic local/static reports final readiness",
+    "closesMasterChecklistItem": "Reports готовы",
+    "doesNotClaim": [
+      "live hosted report API route deployment",
+      "live S3 signed URL behavior",
+      "live identity-provider access-control E2E",
+      "deployed dashboard report-history UI",
+      "cloud deployment readiness outside report contracts",
+      "SearchLint 1.0 final release approval"
+    ]
+  },
+  "commands": [
+    {
+      "name": "reportersAcceptance",
+      "command": "pnpm reporters:acceptance",
+      "status": "passed",
+      "durationMs": 4247
+    },
+    {
+      "name": "pdfRendering",
+      "command": "pnpm reporters:pdf-rendering",
+      "status": "passed",
+      "durationMs": 5602
+    },
+    {
+      "name": "hostedLinksStatic",
+      "command": "pnpm reports:hosted-links-static",
+      "status": "passed",
+      "durationMs": 8059
+    },
+    {
+      "name": "expirationStatic",
+      "command": "pnpm reports:expiration-static",
+      "status": "passed",
+      "durationMs": 12136
+    },
+    {
+      "name": "accessControlsStatic",
+      "command": "pnpm reports:access-controls-static",
+      "status": "passed",
+      "durationMs": 14718
+    },
+    {
+      "name": "historyStatic",
+      "command": "pnpm reports:history-static",
+      "status": "passed",
+      "durationMs": 19438
+    }
+  ],
+  "documents": [
+    "docs/REPORT_TEMPLATES.md",
+    "docs/PDF_REPORT_EXPORT.md",
+    "docs/PDF_RENDERING_STATIC_ACCEPTANCE.md",
+    "docs/HOSTED_REPORT_LINKS_STATIC_CONTRACT.md",
+    "docs/REPORT_EXPIRATION_STATIC_CONTRACT.md",
+    "docs/REPORT_ACCESS_CONTROLS_STATIC_CONTRACT.md",
+    "docs/REPORT_HISTORY_STATIC_CONTRACT.md"
+  ],
+  "samples": [
+    "docs/examples/reporters-release-docs-acceptance-report.sample.json",
+    "docs/examples/pdf-rendering-static-report.sample.json",
+    "docs/examples/hosted-report-links-static-report.sample.json",
+    "docs/examples/report-expiration-static-report.sample.json",
+    "docs/examples/report-access-controls-static-report.sample.json",
+    "docs/examples/report-history-static-report.sample.json"
+  ],
+  "capabilities": [
+    {
+      "id": "sarif",
+      "status": "verified",
+      "description": "SARIF reporter acceptance",
+      "evidenceFiles": [
+        "docs/examples/reporters-release-docs-acceptance-report.sample.json"
+      ]
+    },
+    {
+      "id": "junit",
+      "status": "verified",
+      "description": "JUnit reporter acceptance",
+      "evidenceFiles": [
+        "docs/examples/reporters-release-docs-acceptance-report.sample.json"
+      ]
+    },
+    {
+      "id": "html",
+      "status": "verified",
+      "description": "HTML local report templates",
+      "evidenceFiles": [
+        "docs/REPORT_TEMPLATES.md",
+        "docs/examples/reporters-release-docs-acceptance-report.sample.json"
+      ]
+    },
+    {
+      "id": "pdf",
+      "status": "verified",
+      "description": "Binary PDF export and static rendering",
+      "evidenceFiles": [
+        "docs/PDF_REPORT_EXPORT.md",
+        "docs/PDF_RENDERING_STATIC_ACCEPTANCE.md",
+        "docs/examples/pdf-rendering-static-report.sample.json"
+      ]
+    },
+    {
+      "id": "technical-client-executive-templates",
+      "status": "verified",
+      "description": "Report variants",
+      "evidenceFiles": ["docs/REPORT_TEMPLATES.md"]
+    },
+    {
+      "id": "before-after-deployment-google-yandex",
+      "status": "verified",
+      "description": "Contextual templates",
+      "evidenceFiles": ["docs/REPORT_TEMPLATES.md"]
+    },
+    {
+      "id": "white-label",
+      "status": "verified",
+      "description": "White-label local report template",
+      "evidenceFiles": ["docs/REPORT_TEMPLATES.md"]
+    },
+    {
+      "id": "hosted-links-static",
+      "status": "verified",
+      "description": "Hosted report links static contract",
+      "evidenceFiles": [
+        "docs/HOSTED_REPORT_LINKS_STATIC_CONTRACT.md",
+        "docs/examples/hosted-report-links-static-report.sample.json"
+      ]
+    },
+    {
+      "id": "expiration-static",
+      "status": "verified",
+      "description": "Report expiration static contract",
+      "evidenceFiles": [
+        "docs/REPORT_EXPIRATION_STATIC_CONTRACT.md",
+        "docs/examples/report-expiration-static-report.sample.json"
+      ]
+    },
+    {
+      "id": "access-controls-static",
+      "status": "verified",
+      "description": "Hosted report access-control static contract",
+      "evidenceFiles": [
+        "docs/REPORT_ACCESS_CONTROLS_STATIC_CONTRACT.md",
+        "docs/examples/report-access-controls-static-report.sample.json"
+      ]
+    },
+    {
+      "id": "history-static",
+      "status": "verified",
+      "description": "Report history static contract",
+      "evidenceFiles": [
+        "docs/REPORT_HISTORY_STATIC_CONTRACT.md",
+        "docs/examples/report-history-static-report.sample.json"
+      ]
+    }
+  ],
+  "summary": {
+    "commandCount": 6,
+    "documentCount": 7,
+    "sampleCount": 6,
+    "capabilityCount": 11,
+    "verifiedCapabilityCount": 11
+  },
+  "assertions": [
+    "Every prerequisite report verifier passed.",
+    "Every required report document exists and is non-empty.",
+    "Every required sanitized sample exists, is non-empty, and parses as JSON.",
+    "Report templates document SARIF/JUnit/HTML/PDF-adjacent local reports and technical/client/executive/before-after/deployment/Google/Yandex/white-label variants.",
+    "Hosted links, expiration, access controls, and history are covered by static contracts.",
+    "Overall SearchLint 1.0 release remains blocked by separate live, legal, publication, and reviewer gates."
+  ]
+}

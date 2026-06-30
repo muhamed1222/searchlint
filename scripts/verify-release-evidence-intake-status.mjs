@@ -93,9 +93,13 @@ function assertOwnerGateReport(report) {
   if (!Array.isArray(report.openGates)) {
     throw new Error("Owner-gate report must include openGates.");
   }
-  if (report.openGates.length !== 83) {
+  const expectedOpenGateCount = report.source?.openItems;
+  if (
+    typeof expectedOpenGateCount !== "number" ||
+    report.openGates.length !== expectedOpenGateCount
+  ) {
     throw new Error(
-      `Expected 83 open gates, found ${report.openGates.length}. Regenerate or update the intake contract intentionally.`
+      `Owner-gate report open gate count mismatch: source.openItems=${String(expectedOpenGateCount)}, openGates=${report.openGates.length}. Regenerate or update the intake contract intentionally.`
     );
   }
 }

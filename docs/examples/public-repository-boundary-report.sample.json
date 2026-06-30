@@ -1,0 +1,212 @@
+{
+  "generatedBy": "searchlint-public-repository-boundary-verifier",
+  "generatedAt": "2026-06-23T00:00:00.000Z",
+  "status": "PASS",
+  "scope": {
+    "proofType": "static public repository candidate boundary verification",
+    "manifest": "specs/PUBLIC_REPOSITORY_EXPORT_MANIFEST.json",
+    "decision": "OD-016",
+    "adr": "docs/adr/0028-open-source-commercial-licensing-boundary.md",
+    "doesNotClaim": [
+      "actual repository split completed",
+      "legal approval completed",
+      "public repository created",
+      "private code removed from monorepo",
+      "npm or VS Code publication"
+    ]
+  },
+  "summary": {
+    "publicIncludePathCount": 39,
+    "publicPackageCount": 16,
+    "privateExcludePathCount": 6,
+    "generatedExcludePathCount": 6,
+    "sensitiveExcludeGlobCount": 8,
+    "publicSourceFilesScanned": 70,
+    "issueCount": 0
+  },
+  "includePaths": {
+    "status": "pass",
+    "checked": 39,
+    "forbiddenOverlaps": []
+  },
+  "packages": [
+    {
+      "path": "packages/browser",
+      "name": "@searchlint/browser",
+      "private": false,
+      "dependencyCount": 1,
+      "privateDependencyCount": 0,
+      "privateFileTargetCount": 0,
+      "status": "pass"
+    },
+    {
+      "path": "packages/cli",
+      "name": "@searchlint/cli",
+      "private": false,
+      "dependencyCount": 10,
+      "privateDependencyCount": 0,
+      "privateFileTargetCount": 0,
+      "status": "pass"
+    },
+    {
+      "path": "packages/core",
+      "name": "@searchlint/core",
+      "private": false,
+      "dependencyCount": 0,
+      "privateDependencyCount": 0,
+      "privateFileTargetCount": 0,
+      "status": "pass"
+    },
+    {
+      "path": "packages/crawler",
+      "name": "@searchlint/crawler",
+      "private": false,
+      "dependencyCount": 0,
+      "privateDependencyCount": 0,
+      "privateFileTargetCount": 0,
+      "status": "pass"
+    },
+    {
+      "path": "packages/html",
+      "name": "@searchlint/html",
+      "private": false,
+      "dependencyCount": 1,
+      "privateDependencyCount": 0,
+      "privateFileTargetCount": 0,
+      "status": "pass"
+    },
+    {
+      "path": "packages/http",
+      "name": "@searchlint/http",
+      "private": false,
+      "dependencyCount": 1,
+      "privateDependencyCount": 0,
+      "privateFileTargetCount": 0,
+      "status": "pass"
+    },
+    {
+      "path": "packages/language",
+      "name": "@searchlint/language",
+      "private": false,
+      "dependencyCount": 1,
+      "privateDependencyCount": 0,
+      "privateFileTargetCount": 0,
+      "status": "pass"
+    },
+    {
+      "path": "packages/language-server",
+      "name": "searchlint-language-server",
+      "private": false,
+      "dependencyCount": 3,
+      "privateDependencyCount": 0,
+      "privateFileTargetCount": 0,
+      "status": "pass"
+    },
+    {
+      "path": "packages/lsp",
+      "name": "@searchlint/lsp",
+      "private": false,
+      "dependencyCount": 2,
+      "privateDependencyCount": 0,
+      "privateFileTargetCount": 0,
+      "status": "pass"
+    },
+    {
+      "path": "packages/next",
+      "name": "@searchlint/next",
+      "private": false,
+      "dependencyCount": 3,
+      "privateDependencyCount": 0,
+      "privateFileTargetCount": 0,
+      "status": "pass"
+    },
+    {
+      "path": "packages/overlay",
+      "name": "@searchlint/overlay",
+      "private": false,
+      "dependencyCount": 1,
+      "privateDependencyCount": 0,
+      "privateFileTargetCount": 0,
+      "status": "pass"
+    },
+    {
+      "path": "packages/reporter-html",
+      "name": "@searchlint/reporter-html",
+      "private": false,
+      "dependencyCount": 1,
+      "privateDependencyCount": 0,
+      "privateFileTargetCount": 0,
+      "status": "pass"
+    },
+    {
+      "path": "packages/reporter-junit",
+      "name": "@searchlint/reporter-junit",
+      "private": false,
+      "dependencyCount": 1,
+      "privateDependencyCount": 0,
+      "privateFileTargetCount": 0,
+      "status": "pass"
+    },
+    {
+      "path": "packages/reporter-sarif",
+      "name": "@searchlint/reporter-sarif",
+      "private": false,
+      "dependencyCount": 1,
+      "privateDependencyCount": 0,
+      "privateFileTargetCount": 0,
+      "status": "pass"
+    },
+    {
+      "path": "packages/source",
+      "name": "@searchlint/source",
+      "private": false,
+      "dependencyCount": 1,
+      "privateDependencyCount": 0,
+      "privateFileTargetCount": 0,
+      "status": "pass"
+    },
+    {
+      "path": "apps/vscode",
+      "name": "searchlint-vscode",
+      "private": true,
+      "dependencyCount": 3,
+      "privateDependencyCount": 0,
+      "privateFileTargetCount": 0,
+      "status": "pass"
+    }
+  ],
+  "imports": {
+    "status": "pass",
+    "sourceFilesScanned": 70,
+    "privateReferenceFiles": []
+  },
+  "sensitiveGenerated": {
+    "status": "pass",
+    "sensitiveMatches": [],
+    "generatedExcludePaths": [
+      ".next",
+      ".turbo",
+      "coverage",
+      "dist",
+      "node_modules",
+      "reports"
+    ],
+    "sensitiveExcludeGlobs": [
+      ".env",
+      ".env.*",
+      "*.pem",
+      "*.key",
+      "*.p12",
+      "*.pfx",
+      "credentials.json",
+      "token.json"
+    ]
+  },
+  "issues": [],
+  "remainingReleaseGates": [
+    "Create the actual public repository candidate tree.",
+    "Run public candidate install/build/lint/typecheck/test/release checks inside that tree.",
+    "Complete legal review of LICENSE, NOTICE, CONTRIBUTING, SECURITY, trademark policy, package metadata, and repository boundary.",
+    "Move closed dashboard/API/workers/infra operations into the private cloud repository."
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "approvedBy": "Example Legal Reviewer",
+  "reviewerRole": "Example only - qualified legal reviewer or owner counsel",
+  "reviewedAt": "2026-06-23T00:00:00.000Z",
+  "approvalId": "example-legal-release-approval",
+  "approvedScopes": [
+    "Apache-2.0 public local/core package scope",
+    "closed commercial cloud/SaaS boundary",
+    "SearchLint trademark reservation",
+    "DCO 1.1 contribution process",
+    "public/private repository boundary",
+    "public package metadata",
+    "VS Code Marketplace copy",
+    "public website and onboarding copy"
+  ],
+  "approvedFiles": [
+    "LICENSE",
+    "NOTICE",
+    "CONTRIBUTING.md",
+    "DCO.md",
+    "SECURITY.md",
+    "docs/TRADEMARK_POLICY_DRAFT.md",
+    "docs/RELEASE_GOVERNANCE.md",
+    "docs/PACKAGE_PUBLIC_PRIVATE_MATRIX.md",
+    "docs/PUBLIC_PRIVATE_REPOSITORY_BOUNDARY_PLAN.md",
+    "docs/PACKAGE_PUBLICATION_READINESS.md",
+    "docs/PACKAGE_DOCUMENTATION.md",
+    "docs/VSCODE_LSP_USAGE.md",
+    "docs/PUBLIC_WEBSITE_ONBOARDING.md",
+    "docs/ONBOARDING_GUIDE.md"
+  ],
+  "requiredAnswers": {
+    "apache2PublicScopeAccepted": "yes",
+    "noticeApproved": "yes",
+    "trademarkExclusionSufficient": "yes",
+    "trademarkPolicyApproved": "yes",
+    "dco11Accepted": "yes",
+    "contributionScopeExcludesCloud": "yes",
+    "repositorySplitExcludesPrivateCloud": "yes",
+    "publicCopyConsistentWithTrademarkAndLicense": "yes",
+    "securityPolicyApproved": "yes",
+    "privacyTelemetryBenchmarkFixturePoliciesApproved": "yes"
+  },
+  "requiredChanges": [],
+  "signedStatement": "Example only: I approve the listed SearchLint public release legal materials for the SearchLint 1.0 release gate."
+}

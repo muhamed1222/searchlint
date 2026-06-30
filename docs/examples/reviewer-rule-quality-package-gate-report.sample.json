@@ -1,0 +1,132 @@
+{
+  "schemaVersion": 1,
+  "generatedBy": "searchlint-reviewer-rule-quality-package-gate",
+  "generatedAt": "2026-06-23T00:00:00.000Z",
+  "status": "blocked_missing_reviewer_evidence",
+  "packageId": "01-reviewer-rule-quality",
+  "packageTitle": "Reviewer And Rule Quality",
+  "sourceReport": "reports/release-owner-evidence-package-status-report.json",
+  "requiredEvidencePaths": [
+    "docs/reviews/blocker-benchmark/DELIVERY_EVIDENCE.json",
+    "docs/reviews/blocker-benchmark/reviewer-1.review.json",
+    "docs/reviews/blocker-benchmark/reviewer-2.review.json"
+  ],
+  "exampleOnlyPaths": [
+    "docs/reviews/blocker-benchmark/DELIVERY_EVIDENCE.example.json",
+    "docs/reviews/blocker-benchmark/reviewer-1.review.example.json",
+    "docs/reviews/blocker-benchmark/reviewer-2.review.example.json"
+  ],
+  "presentRequiredEvidencePaths": [],
+  "missingEvidencePaths": [
+    "docs/reviews/blocker-benchmark/DELIVERY_EVIDENCE.json",
+    "docs/reviews/blocker-benchmark/reviewer-1.review.json",
+    "docs/reviews/blocker-benchmark/reviewer-2.review.json"
+  ],
+  "unexpectedEvidencePaths": [],
+  "commandResults": [
+    {
+      "command": "pnpm release:owner-evidence-package-status",
+      "exitCode": 0,
+      "status": "passed",
+      "outputSummary": [
+        "Status: blocked_external_evidence",
+        "Document: docs/RELEASE_EVIDENCE_READINESS_SUMMARY.md",
+        "Report: reports/release-evidence-readiness-summary-report.json",
+        "Sample: docs/examples/release-evidence-readiness-summary-report.sample.json",
+        "Release owner evidence runbook generated: 60 missing owner input(s), 7 package(s)",
+        "Document: docs/RELEASE_OWNER_EVIDENCE_RUNBOOK.md",
+        "Report: reports/release-owner-evidence-runbook-report.json",
+        "Sample: docs/examples/release-owner-evidence-runbook-report.sample.json",
+        "Release owner evidence package status: 0/7 complete, 60 missing owner input(s)",
+        "Document: docs/RELEASE_OWNER_EVIDENCE_PACKAGE_STATUS.md",
+        "Report: reports/release-owner-evidence-package-status-report.json",
+        "Sample: docs/examples/release-owner-evidence-package-status-report.sample.json"
+      ]
+    },
+    {
+      "command": "pnpm rule-qa",
+      "exitCode": 0,
+      "status": "passed",
+      "outputSummary": [
+        "services/workers build$ node ../../scripts/build-package.mjs",
+        "packages/lsp build: Done",
+        "packages/next build: Done",
+        "services/workers build: Done",
+        "packages/cli build$ node ../../scripts/build-package.mjs",
+        "packages/language-server build$ node ../../scripts/build-package.mjs",
+        "packages/cli build: Done",
+        "packages/language-server build: Done",
+        "packages/searchlint build$ node ../../scripts/build-package.mjs",
+        "apps/vscode build$ node ../../scripts/build-package.mjs",
+        "packages/searchlint build: Done",
+        "apps/vscode build: Done"
+      ]
+    },
+    {
+      "command": "pnpm rule-qa:review-delivery",
+      "exitCode": 1,
+      "status": "failed",
+      "outputSummary": [
+        "[ELIFECYCLE] Command failed with exit code 1.",
+        "$ node scripts/verify-blocker-benchmark-review-delivery.mjs",
+        "Blocker benchmark review delivery gate blocked.",
+        "- missing-delivery-evidence: Missing owner-provided delivery evidence file: docs/reviews/blocker-benchmark/DELIVERY_EVIDENCE.json",
+        "Report: reports/blocker-benchmark-review-delivery-report.json"
+      ]
+    },
+    {
+      "command": "pnpm rule-qa:review",
+      "exitCode": 1,
+      "status": "failed",
+      "outputSummary": [
+        "Rule QA evidence generated; OD-023 release gate remains blocked.",
+        "{",
+        "\"blockerReleaseGate\": \"fail\",",
+        "\"blockerFailedGates\": [",
+        "\"reviewerSignoffComplete\"",
+        "],",
+        "\"enforceWith\": \"pnpm rule-qa -- --enforce-release-gate\"",
+        "}",
+        "OD-023 blocker benchmark review gate failed.",
+        "- missing-reviewer-file: Missing required reviewer file: docs/reviews/blocker-benchmark/reviewer-1.review.json",
+        "- missing-reviewer-file: Missing required reviewer file: docs/reviews/blocker-benchmark/reviewer-2.review.json",
+        "Adjudication summary written to reports/blocker-benchmark-adjudication-summary.json"
+      ]
+    }
+  ],
+  "failedCommands": [
+    { "command": "pnpm rule-qa:review-delivery", "exitCode": 1 },
+    { "command": "pnpm rule-qa:review", "exitCode": 1 }
+  ],
+  "releaseGate": {
+    "passFail": "blocked",
+    "gates": {
+      "packageRecordPresent": true,
+      "packageIdMatches": true,
+      "exactRequiredEvidencePaths": true,
+      "deliveryEvidencePresent": false,
+      "reviewerOneEvidencePresent": false,
+      "reviewerTwoEvidencePresent": false,
+      "noExampleFilesCountAsEvidence": true,
+      "packageComplete": false,
+      "packageStatusCommandPassed": true,
+      "ruleQaPassed": true,
+      "reviewDeliveryCommandPassed": false,
+      "reviewAdjudicationCommandPassed": false
+    },
+    "failedGates": [
+      "deliveryEvidencePresent",
+      "reviewerOneEvidencePresent",
+      "reviewerTwoEvidencePresent",
+      "packageComplete",
+      "reviewDeliveryCommandPassed",
+      "reviewAdjudicationCommandPassed"
+    ]
+  },
+  "nonClaims": [
+    "This report does not create reviewer sign-off.",
+    "Example JSON files are templates only and are not accepted as release evidence.",
+    "Codex is not an independent reviewer for OD-023.",
+    "The package remains blocked until two real independent reviewer files and delivery evidence exist."
+  ]
+}

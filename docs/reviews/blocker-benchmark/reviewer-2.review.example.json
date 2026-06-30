@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "reviewerId": "reviewer-2",
+  "reviewerName": "Example Reviewer Two",
+  "reviewedAt": "2026-06-22T00:00:00.000Z",
+  "benchmarkVersion": "0.1.0-synthetic",
+  "reviewedCaseCount": 1960,
+  "approvedCaseIds": ["SL-HTTP-001:positive:positive-http-index:001"],
+  "rejectedCaseIds": [],
+  "disputedCaseIds": [],
+  "comments": [
+    {
+      "caseId": "SL-HTTP-001:positive:positive-http-index:001",
+      "comment": "Example only. This file is not a real sign-off."
+    }
+  ],
+  "signedStatement": "Example only. Replace with a real independent reviewer statement before release."
+}

@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "generatedBy": "searchlint-blocker-benchmark-review-delivery-verifier",
+  "generatedAt": "2026-06-23T00:00:00.000Z",
+  "status": "blocked",
+  "deliveryEvidencePath": "docs/reviews/blocker-benchmark/DELIVERY_EVIDENCE.json",
+  "deliveryEvidenceExamplePath": "docs/reviews/blocker-benchmark/DELIVERY_EVIDENCE.example.json",
+  "handoffManifestPath": "docs/reviews/blocker-benchmark/HANDOFF_MANIFEST.json",
+  "benchmark": {
+    "benchmarkVersion": "0.1.0-synthetic",
+    "caseIndexPath": "docs/reviews/blocker-benchmark/BENCHMARK_CASE_INDEX.json",
+    "caseIndexSha256": "7fbf01dcd80aaa2517a2ad25d8d8388935ff64c83a30c596692055305ede8357",
+    "expectedCaseCount": 1960,
+    "blockerRuleCount": 14
+  },
+  "requiredPacketFiles": [
+    "docs/reviews/blocker-benchmark/HANDOFF_MANIFEST.json",
+    "docs/reviews/blocker-benchmark/BENCHMARK_CASE_INDEX.json",
+    "docs/reviews/blocker-benchmark/README.md",
+    "docs/reviews/blocker-benchmark/REVIEW_INSTRUCTIONS.md",
+    "docs/reviews/blocker-benchmark/REVIEW_FORM_TEMPLATE.md",
+    "docs/reviews/blocker-benchmark/ADJUDICATION_LOG.md",
+    "docs/reviews/blocker-benchmark/REVIEW_STATUS.md",
+    "docs/reviews/blocker-benchmark/reviewer-1.review.example.json",
+    "docs/reviews/blocker-benchmark/reviewer-2.review.example.json"
+  ],
+  "reviewerOutputPaths": [
+    "docs/reviews/blocker-benchmark/reviewer-1.review.json",
+    "docs/reviews/blocker-benchmark/reviewer-2.review.json"
+  ],
+  "issues": [
+    {
+      "severity": "blocker",
+      "code": "missing-delivery-evidence",
+      "message": "Missing owner-provided delivery evidence file: docs/reviews/blocker-benchmark/DELIVERY_EVIDENCE.json"
+    }
+  ],
+  "releaseGate": {
+    "passFail": "blocked",
+    "gates": {
+      "deliveryEvidenceFilePresent": false,
+      "benchmarkVersionMatches": false,
+      "caseIndexSha256Matches": false,
+      "twoDistinctIntendedReviewers": false,
+      "deliveryTimestampPresent": false,
+      "deliveryChannelPresent": false,
+      "requiredPacketFilesDelivered": false,
+      "ownerAttestationPresent": false
+    },
+    "failedGates": [
+      "deliveryEvidenceFilePresent",
+      "benchmarkVersionMatches",
+      "caseIndexSha256Matches",
+      "twoDistinctIntendedReviewers",
+      "deliveryTimestampPresent",
+      "deliveryChannelPresent",
+      "requiredPacketFilesDelivered",
+      "ownerAttestationPresent"
+    ]
+  },
+  "nonClaims": [
+    "independent reviewer sign-off exists",
+    "OD-023 release gate passed",
+    "reviewer files created by Codex",
+    "delivery evidence fabricated by Codex"
+  ]
+}

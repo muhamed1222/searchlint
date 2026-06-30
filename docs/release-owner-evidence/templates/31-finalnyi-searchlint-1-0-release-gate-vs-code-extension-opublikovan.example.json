@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "evidenceId": "31-finalnyi-searchlint-1-0-release-gate-vs-code-extension-opublikovan-evidence",
+  "gate": {
+    "section": "31. Финальный SearchLint 1.0 Release Gate",
+    "item": "VS Code extension опубликован",
+    "gateType": "vscode_marketplace_gate",
+    "relatedCommand": "pnpm vscode:update-e2e"
+  },
+  "providedBy": {
+    "name": "REPLACE_WITH_OWNER_OR_REVIEWER_NAME",
+    "role": "REPLACE_WITH_OWNER_LEGAL_SECURITY_OPERATOR_OR_REVIEWER_ROLE"
+  },
+  "providedAt": "REPLACE_WITH_ISO_TIMESTAMP",
+  "evidenceSummary": "REPLACE_WITH_SHORT_SANITIZED_DESCRIPTION_OF_WHAT_WAS_ACTUALLY_VERIFIED",
+  "artifacts": [
+    {
+      "type": "REPLACE_WITH_SANITIZED_REPORT_URL_OR_SCREENSHOT_REFERENCE",
+      "description": "Signed and published VS Code extension on Marketplace, publisher metadata, and clean install/update evidence after publication.",
+      "reference": "REPLACE_WITH_SANITIZED_CI_ARTIFACT_URL_INTERNAL_REFERENCE_OR_REPORT_PATH"
+    }
+  ],
+  "commandsRun": [
+    {
+      "command": "pnpm vscode:update-e2e",
+      "result": "passed",
+      "summary": "REPLACE_WITH_SANITIZED_COMMAND_RESULT_SUMMARY_AFTER_RUNNING_THE_COMMAND"
+    }
+  ],
+  "externalSystems": [
+    {
+      "system": "REPLACE_WITH_EXTERNAL_SYSTEM_NAME",
+      "resource": "REPLACE_WITH_SANITIZED_RESOURCE_IDENTIFIER",
+      "verifiedAt": "REPLACE_WITH_ISO_TIMESTAMP"
+    }
+  ],
+  "sensitiveDataStatement": "This evidence is sanitized and contains no secrets, credentials, tokens, private keys, raw customer personal data, or confidential provider payloads.",
+  "signedStatement": "I confirm this evidence is accurate for the named SearchLint release gate and has been sanitized for repository storage.",
+  "ownerAction": "After publisher setup and legal approval, publish the VSIX through the Marketplace flow and preserve publication/install evidence.",
+  "templateUse": "Copy this template to the matching expected docs/release-owner-evidence/*.json path, replace every placeholder with real sanitized evidence, then run pnpm release:owner-evidence."
+}

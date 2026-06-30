@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "generatedBy": "searchlint-reviewer-rule-quality-owner-guide-generator",
+  "generatedAt": "2026-06-23T00:00:00.000Z",
+  "status": "owner_input_required",
+  "packageId": "01-reviewer-rule-quality",
+  "packageTitle": "Reviewer And Rule Quality",
+  "sourceReports": {
+    "handoffManifestPath": "docs/reviews/blocker-benchmark/HANDOFF_MANIFEST.json",
+    "packageGateReportPath": "reports/reviewer-rule-quality-package-gate-report.json"
+  },
+  "benchmark": {
+    "benchmarkVersion": "0.1.0-synthetic",
+    "expectedCaseCount": 1960,
+    "positiveCaseCount": 560,
+    "negativeCaseCount": 1400,
+    "caseIndexPath": "docs/reviews/blocker-benchmark/BENCHMARK_CASE_INDEX.json",
+    "caseIndexSha256": "7fbf01dcd80aaa2517a2ad25d8d8388935ff64c83a30c596692055305ede8357",
+    "blockerRuleIds": [
+      "SL-CANON-002",
+      "SL-CANON-008",
+      "SL-HTTP-001",
+      "SL-HTTP-003",
+      "SL-HTTP-005",
+      "SL-HTTP-006",
+      "SL-INDEX-001",
+      "SL-INDEX-002",
+      "SL-INDEX-003",
+      "SL-INDEX-004",
+      "SL-INDEX-007",
+      "SL-INDEX-008",
+      "SL-META-001",
+      "SL-META-002"
+    ]
+  },
+  "requiredPacketFiles": [
+    "docs/reviews/blocker-benchmark/HANDOFF_MANIFEST.json",
+    "docs/reviews/blocker-benchmark/BENCHMARK_CASE_INDEX.json",
+    "docs/reviews/blocker-benchmark/README.md",
+    "docs/reviews/blocker-benchmark/REVIEW_INSTRUCTIONS.md",
+    "docs/reviews/blocker-benchmark/REVIEW_FORM_TEMPLATE.md",
+    "docs/reviews/blocker-benchmark/ADJUDICATION_LOG.md",
+    "docs/reviews/blocker-benchmark/REVIEW_STATUS.md",
+    "docs/reviews/blocker-benchmark/reviewer-1.review.example.json",
+    "docs/reviews/blocker-benchmark/reviewer-2.review.example.json"
+  ],
+  "requiredInputs": [
+    {
+      "path": "docs/reviews/blocker-benchmark/DELIVERY_EVIDENCE.json",
+      "templatePath": "docs/reviews/blocker-benchmark/DELIVERY_EVIDENCE.example.json",
+      "owner": "project owner",
+      "purpose": "Records that the benchmark packet was delivered to two independent reviewers without claiming reviewer approval.",
+      "validationCommand": "pnpm rule-qa:review-delivery"
+    },
+    {
+      "path": "docs/reviews/blocker-benchmark/reviewer-1.review.json",
+      "templatePath": "docs/reviews/blocker-benchmark/reviewer-1.review.example.json",
+      "owner": "independent reviewer 1",
+      "purpose": "Records independent reviewer 1 expected-result confirmation for every benchmark case.",
+      "validationCommand": "pnpm rule-qa:review"
+    },
+    {
+      "path": "docs/reviews/blocker-benchmark/reviewer-2.review.json",
+      "templatePath": "docs/reviews/blocker-benchmark/reviewer-2.review.example.json",
+      "owner": "independent reviewer 2",
+      "purpose": "Records independent reviewer 2 expected-result confirmation for every benchmark case.",
+      "validationCommand": "pnpm rule-qa:review"
+    }
+  ],
+  "missingRequiredInputPaths": [
+    "docs/reviews/blocker-benchmark/DELIVERY_EVIDENCE.json",
+    "docs/reviews/blocker-benchmark/reviewer-1.review.json",
+    "docs/reviews/blocker-benchmark/reviewer-2.review.json"
+  ],
+  "validationCommands": [
+    "pnpm rule-qa:review-delivery",
+    "pnpm rule-qa:review",
+    "pnpm release:reviewer-rule-quality-package",
+    "pnpm release:evidence-readiness"
+  ],
+  "ownerProcedure": [
+    "Run pnpm release:reviewer-rule-quality-owner-guide to refresh this guide.",
+    "Send every required packet file to two independent reviewers.",
+    "Create DELIVERY_EVIDENCE.json from its example template using real delivery details.",
+    "Replace default deliveryChannel, reviewerDisplayName, independenceStatement, and ownerAttestation.signedStatement values.",
+    "Collect reviewer-1.review.json and reviewer-2.review.json from the independent reviewers.",
+    "Do not copy example signedStatement values into real evidence.",
+    "Run pnpm rule-qa:review-delivery and pnpm rule-qa:review.",
+    "Resolve rejected, disputed, or conflicting cases before claiming OD-023 complete.",
+    "Run pnpm release:reviewer-rule-quality-package and pnpm release:evidence-readiness."
+  ],
+  "reviewerProcedure": [
+    "Use BENCHMARK_CASE_INDEX.json as the review case list.",
+    "Do not use training fixtures as the basis for approval.",
+    "Put every reviewed case ID in exactly one of approvedCaseIds, rejectedCaseIds, or disputedCaseIds.",
+    "Set reviewedCaseCount to the full expected case count.",
+    "Use the current benchmarkVersion from the handoff manifest.",
+    "Write a real signedStatement that does not contain example-only language."
+  ],
+  "nonClaims": [
+    "This guide does not create delivery evidence.",
+    "This guide does not create reviewer sign-off.",
+    "Example JSON files are templates only.",
+    "Codex is not an independent reviewer for OD-023.",
+    "SearchLint 1.0 remains blocked while owner/reviewer inputs are missing."
+  ]
+}

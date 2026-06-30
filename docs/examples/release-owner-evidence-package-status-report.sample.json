@@ -1,0 +1,577 @@
+{
+  "schemaVersion": 1,
+  "generatedBy": "searchlint-release-owner-evidence-package-status-verifier",
+  "generatedAt": "2026-06-23T00:00:00.000Z",
+  "status": "blocked_waiting_for_owner_evidence",
+  "sourceReports": {
+    "runbookReportPath": "reports/release-owner-evidence-runbook-report.json",
+    "intakeReportPath": "reports/release-evidence-intake-status-report.json"
+  },
+  "checklist": {
+    "checkedItemCount": 522,
+    "openGateCount": 77,
+    "totalItemCount": 599
+  },
+  "summary": {
+    "packageCount": 7,
+    "completePackageCount": 0,
+    "blockedPackageCount": 7,
+    "missingOwnerInputCount": 60,
+    "presentOwnerInputCount": 0,
+    "blockedOrFailingEvidenceCount": 60,
+    "releaseGateClaim": "not_claimed"
+  },
+  "packageRecords": [
+    {
+      "id": "01-reviewer-rule-quality",
+      "title": "Reviewer And Rule Quality",
+      "status": "blocked_missing_owner_evidence",
+      "missingInputCount": 3,
+      "presentInputCount": 0,
+      "blockedOrFailingEvidenceCount": 3,
+      "templateCoveredInputCount": 3,
+      "relatedCommands": [
+        "pnpm rule-qa:review-delivery",
+        "pnpm rule-qa:review"
+      ],
+      "evidence": [
+        {
+          "path": "docs/reviews/blocker-benchmark/DELIVERY_EVIDENCE.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 4,
+          "relatedCommands": ["pnpm rule-qa:review-delivery"]
+        },
+        {
+          "path": "docs/reviews/blocker-benchmark/reviewer-1.review.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 4,
+          "relatedCommands": ["pnpm rule-qa:review"]
+        },
+        {
+          "path": "docs/reviews/blocker-benchmark/reviewer-2.review.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 4,
+          "relatedCommands": ["pnpm rule-qa:review"]
+        }
+      ]
+    },
+    {
+      "id": "02-governance-legal",
+      "title": "Governance And Legal",
+      "status": "blocked_missing_owner_evidence",
+      "missingInputCount": 1,
+      "presentInputCount": 0,
+      "blockedOrFailingEvidenceCount": 1,
+      "templateCoveredInputCount": 1,
+      "relatedCommands": ["pnpm legal:release-gate"],
+      "evidence": [
+        {
+          "path": "docs/legal-release-approval.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm legal:release-gate"]
+        }
+      ]
+    },
+    {
+      "id": "03-publication",
+      "title": "npm And VS Code Publication",
+      "status": "blocked_missing_owner_evidence",
+      "missingInputCount": 7,
+      "presentInputCount": 0,
+      "blockedOrFailingEvidenceCount": 7,
+      "templateCoveredInputCount": 7,
+      "relatedCommands": [
+        "pnpm final-release:gate",
+        "pnpm vscode:update-e2e",
+        "pnpm package:beta-publication-gate"
+      ],
+      "evidence": [
+        {
+          "path": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-npm-pakety-opublikovany.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm final-release:gate"]
+        },
+        {
+          "path": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-vs-code-extension-opublikovan.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm vscode:update-e2e"]
+        },
+        {
+          "path": "docs/release-owner-evidence/7-vs-code-i-lsp-nastroit-publisher-account.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm vscode:update-e2e"]
+        },
+        {
+          "path": "docs/release-owner-evidence/7-vs-code-i-lsp-podpisat-i-opublikovat-extension.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm vscode:update-e2e"]
+        },
+        {
+          "path": "docs/release-owner-evidence/8-npm-pakety-opublikovat-beta-packages.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm package:beta-publication-gate"]
+        },
+        {
+          "path": "docs/release-owner-evidence/8-npm-pakety-podgotovit-finalnuyu-publikaciyu-1-0-0.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm final-release:gate"]
+        },
+        {
+          "path": "docs/release-owner-evidence/8-npm-pakety-zamenit-0-0-0-beta-versions-na-final-release-versions.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm final-release:gate"]
+        }
+      ]
+    },
+    {
+      "id": "04-production-platform",
+      "title": "Production Platform",
+      "status": "blocked_missing_owner_evidence",
+      "missingInputCount": 21,
+      "presentInputCount": 0,
+      "blockedOrFailingEvidenceCount": 21,
+      "templateCoveredInputCount": 21,
+      "relatedCommands": [
+        "pnpm backup:restore-live-gate",
+        "pnpm crawler:acceptance",
+        "pnpm verify:postgres",
+        "pnpm object-storage:acceptance",
+        "pnpm api:acceptance",
+        "pnpm dashboard:production-e2e",
+        "pnpm agency:client-access-browser-e2e",
+        "pnpm observability:acceptance",
+        "pnpm agency:acceptance",
+        "pnpm auth:acceptance",
+        "pnpm oauth-vault:acceptance",
+        "pnpm workers:acceptance"
+      ],
+      "evidence": [
+        {
+          "path": "docs/live-backup-restore-drill.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm backup:restore-live-gate"]
+        },
+        {
+          "path": "docs/release-owner-evidence/10-crawler-proverit-100-000-url-v-cloud.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm crawler:acceptance"]
+        },
+        {
+          "path": "docs/release-owner-evidence/11-postgresql-i-hranenie-dannyh-razvernut-nastoyashii-postgresql-rds.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm verify:postgres"]
+        },
+        {
+          "path": "docs/release-owner-evidence/12-s3-object-storage-razvernut-realnoe-object-storage.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm object-storage:acceptance"]
+        },
+        {
+          "path": "docs/release-owner-evidence/13-backend-api-razvernut-production-api.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm api:acceptance"]
+        },
+        {
+          "path": "docs/release-owner-evidence/22-istoriya-i-korrelyaciya-provesti-deployed-dashboard-timeline-acceptance.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm dashboard:production-e2e"]
+        },
+        {
+          "path": "docs/release-owner-evidence/25-billing-proverit-deployed-stripe-webhook-persistence-on-rds.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm verify:postgres"]
+        },
+        {
+          "path": "docs/release-owner-evidence/26-agency-mode-razvernut-client-portal.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm agency:client-access-browser-e2e"]
+        },
+        {
+          "path": "docs/release-owner-evidence/27-observability-podklyuchit-cloudwatch-otlp.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm observability:acceptance"]
+        },
+        {
+          "path": "docs/release-owner-evidence/27-observability-razvernut-logging.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm observability:acceptance"]
+        },
+        {
+          "path": "docs/release-owner-evidence/27-observability-razvernut-metrics.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm observability:acceptance"]
+        },
+        {
+          "path": "docs/release-owner-evidence/27-observability-razvernut-tracing.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm observability:acceptance"]
+        },
+        {
+          "path": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-agency-mode-gotov.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm agency:acceptance"]
+        },
+        {
+          "path": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-api-deployment-proof-proiden.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm api:acceptance"]
+        },
+        {
+          "path": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-cognito-rbac-proof-proiden.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm auth:acceptance"]
+        },
+        {
+          "path": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-dashboard-production-e2e-proiden.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm dashboard:production-e2e"]
+        },
+        {
+          "path": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-oauth-vault-proof-proiden.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm oauth-vault:acceptance"]
+        },
+        {
+          "path": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-observability-gotova.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm observability:acceptance"]
+        },
+        {
+          "path": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-postgresql-rds-proof-proiden.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm verify:postgres"]
+        },
+        {
+          "path": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-s3-proof-proiden.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm object-storage:acceptance"]
+        },
+        {
+          "path": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-workers-sqs-proof-proiden.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm workers:acceptance"]
+        }
+      ]
+    },
+    {
+      "id": "05-live-providers",
+      "title": "Live Provider Acceptance",
+      "status": "blocked_missing_owner_evidence",
+      "missingInputCount": 17,
+      "presentInputCount": 0,
+      "blockedOrFailingEvidenceCount": 17,
+      "templateCoveredInputCount": 17,
+      "relatedCommands": [
+        "pnpm google:gsc:acceptance",
+        "pnpm google:performance:acceptance",
+        "pnpm yandex:acceptance",
+        "pnpm notifications:acceptance",
+        "pnpm billing:live-stripe-final-acceptance-packet"
+      ],
+      "evidence": [
+        {
+          "path": "docs/release-owner-evidence/18-google-search-console-provesti-live-acceptance-na-realnom-saite.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm google:gsc:acceptance"]
+        },
+        {
+          "path": "docs/release-owner-evidence/19-pagespeed-i-crux-provesti-live-acceptance.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm google:performance:acceptance"]
+        },
+        {
+          "path": "docs/release-owner-evidence/20-yandeks-vebmaster-provesti-live-acceptance.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm yandex:acceptance"]
+        },
+        {
+          "path": "docs/release-owner-evidence/21-yandeks-metrika-provesti-live-acceptance.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm yandex:acceptance"]
+        },
+        {
+          "path": "docs/release-owner-evidence/24-notifications-provesti-live-email-delivery-acceptance.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm notifications:acceptance"]
+        },
+        {
+          "path": "docs/release-owner-evidence/24-notifications-provesti-live-slack-delivery-acceptance.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm notifications:acceptance"]
+        },
+        {
+          "path": "docs/release-owner-evidence/24-notifications-provesti-live-telegram-delivery-acceptance-esli-nuzhen.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm notifications:acceptance"]
+        },
+        {
+          "path": "docs/release-owner-evidence/24-notifications-provesti-live-webhook-delivery-acceptance.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm notifications:acceptance"]
+        },
+        {
+          "path": "docs/release-owner-evidence/25-billing-provesti-live-customer-portal-acceptance.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": [
+            "pnpm billing:live-stripe-final-acceptance-packet"
+          ]
+        },
+        {
+          "path": "docs/release-owner-evidence/25-billing-provesti-live-stripe-acceptance.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": [
+            "pnpm billing:live-stripe-final-acceptance-packet"
+          ]
+        },
+        {
+          "path": "docs/release-owner-evidence/25-billing-provesti-live-subscription-trial-upgrade-downgrade-cancellation-acceptance.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": [
+            "pnpm billing:live-stripe-final-acceptance-packet"
+          ]
+        },
+        {
+          "path": "docs/release-owner-evidence/26-agency-mode-proverit-client-invite-email-delivery.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm notifications:acceptance"]
+        },
+        {
+          "path": "docs/release-owner-evidence/26-agency-mode-realizovat-live-agency-billing.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": [
+            "pnpm billing:live-stripe-final-acceptance-packet"
+          ]
+        },
+        {
+          "path": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-billing-live-acceptance-proiden.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": [
+            "pnpm billing:live-stripe-final-acceptance-packet"
+          ]
+        },
+        {
+          "path": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-google-live-acceptance-proiden.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm google:gsc:acceptance"]
+        },
+        {
+          "path": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-notifications-gotovy.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm notifications:acceptance"]
+        },
+        {
+          "path": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-yandex-live-acceptance-proiden.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm yandex:acceptance"]
+        }
+      ]
+    },
+    {
+      "id": "06-security-accessibility-website",
+      "title": "Security Accessibility And Website",
+      "status": "blocked_missing_owner_evidence",
+      "missingInputCount": 8,
+      "presentInputCount": 0,
+      "blockedOrFailingEvidenceCount": 8,
+      "templateCoveredInputCount": 8,
+      "relatedCommands": [
+        "pnpm security:dast",
+        "pnpm website:acceptance",
+        "pnpm oauth-vault:security-review",
+        "pnpm overlay:manual-a11y-review",
+        "pnpm security:pentest"
+      ],
+      "evidence": [
+        {
+          "path": "docs/release-owner-evidence/28-security-i-privacy-provesti-dast.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm security:dast"]
+        },
+        {
+          "path": "docs/release-owner-evidence/28-security-i-privacy-zavershit-security-release-gate.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm security:dast"]
+        },
+        {
+          "path": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-public-website-gotov.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm website:acceptance"]
+        },
+        {
+          "path": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-security-audit-proiden.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm security:dast"]
+        },
+        {
+          "path": "docs/reviews/oauth-vault-security/reviewer-1.review.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm oauth-vault:security-review"]
+        },
+        {
+          "path": "docs/reviews/oauth-vault-security/reviewer-2.review.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm oauth-vault:security-review"]
+        },
+        {
+          "path": "docs/reviews/overlay-accessibility/reviewer.review.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm overlay:manual-a11y-review"]
+        },
+        {
+          "path": "docs/reviews/penetration-test/report-summary.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm security:pentest"]
+        }
+      ]
+    },
+    {
+      "id": "07-final-release",
+      "title": "Final Release",
+      "status": "blocked_missing_owner_evidence",
+      "missingInputCount": 3,
+      "presentInputCount": 0,
+      "blockedOrFailingEvidenceCount": 3,
+      "templateCoveredInputCount": 3,
+      "relatedCommands": ["pnpm final-release:gate"],
+      "evidence": [
+        {
+          "path": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-opublikovan-searchlint-1-0.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm final-release:gate"]
+        },
+        {
+          "path": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-release-candidate-proshel-polnuyu-matricu.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm final-release:gate"]
+        },
+        {
+          "path": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-sozdan-git-tag-v1-0-0.json",
+          "exists": false,
+          "intakeStatus": "missing",
+          "templateCount": 1,
+          "relatedCommands": ["pnpm final-release:gate"]
+        }
+      ]
+    }
+  ],
+  "nonClaims": [
+    "This verifier does not create owner evidence.",
+    "This verifier does not close release gates.",
+    "Package status is informational until real evidence exists and dedicated verifiers pass."
+  ]
+}

@@ -699,7 +699,7 @@ function evidencePathsForLiveGate(text) {
 function evidencePathsForSecurityGate(text) {
   if (text.includes("penetration")) {
     return [
-      "docs/reviews/penetration-test/REPORT_SUMMARY.json",
+      "docs/reviews/penetration-test/report-summary.json",
       "reports/penetration-test-release-gate-report.json"
     ];
   }

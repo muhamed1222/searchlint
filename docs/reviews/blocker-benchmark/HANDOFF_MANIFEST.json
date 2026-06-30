@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "generatedBy": "searchlint-blocker-benchmark-review-handoff-verifier",
+  "generatedAt": "2026-06-23T00:00:00.000Z",
+  "status": "handoff-ready-reviewer-signoff-missing",
+  "benchmark": {
+    "path": "reports/blocker-precision-report.json",
+    "benchmarkVersion": "0.1.0-synthetic",
+    "productVersion": "0.0.0",
+    "ruleCatalogVersion": "1",
+    "expectedCaseCount": 1960,
+    "positiveCaseCount": 560,
+    "negativeCaseCount": 1400,
+    "caseIndexPath": "docs/reviews/blocker-benchmark/BENCHMARK_CASE_INDEX.json",
+    "caseIndexSha256": "7fbf01dcd80aaa2517a2ad25d8d8388935ff64c83a30c596692055305ede8357"
+  },
+  "blockerRuleIds": [
+    "SL-CANON-002",
+    "SL-CANON-008",
+    "SL-HTTP-001",
+    "SL-HTTP-003",
+    "SL-HTTP-005",
+    "SL-HTTP-006",
+    "SL-INDEX-001",
+    "SL-INDEX-002",
+    "SL-INDEX-003",
+    "SL-INDEX-004",
+    "SL-INDEX-007",
+    "SL-INDEX-008",
+    "SL-META-001",
+    "SL-META-002"
+  ],
+  "requiredPacketFiles": [
+    "docs/reviews/blocker-benchmark/README.md",
+    "docs/reviews/blocker-benchmark/REVIEW_INSTRUCTIONS.md",
+    "docs/reviews/blocker-benchmark/REVIEW_FORM_TEMPLATE.md",
+    "docs/reviews/blocker-benchmark/ADJUDICATION_LOG.md",
+    "docs/reviews/blocker-benchmark/REVIEW_STATUS.md",
+    "docs/reviews/blocker-benchmark/reviewer-1.review.example.json",
+    "docs/reviews/blocker-benchmark/reviewer-2.review.example.json"
+  ],
+  "reviewerOutputPaths": [
+    "docs/reviews/blocker-benchmark/reviewer-1.review.json",
+    "docs/reviews/blocker-benchmark/reviewer-2.review.json"
+  ],
+  "requiredReviewerCount": 2,
+  "ownerNextActions": [
+    "Send the review packet and benchmark case index to two independent reviewers.",
+    "Collect reviewer-1.review.json and reviewer-2.review.json from real reviewers.",
+    "Place the real reviewer files at the documented output paths.",
+    "Run pnpm rule-qa:review.",
+    "Adjudicate rejected, disputed, or conflicting cases before claiming OD-023 pass."
+  ],
+  "nonClaims": [
+    "review packet delivered to reviewers",
+    "independent reviewer sign-off exists",
+    "OD-023 release gate passed",
+    "reviewer files created by Codex"
+  ]
+}

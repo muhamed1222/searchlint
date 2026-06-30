@@ -1,0 +1,1540 @@
+{
+  "schemaVersion": 1,
+  "generatedBy": "searchlint-release-owner-evidence-runbook-generator",
+  "generatedAt": "2026-06-23T00:00:00.000Z",
+  "status": "blocked_waiting_for_owner_evidence",
+  "sourceReports": {
+    "missingTemplateReportPath": "reports/release-missing-evidence-template-index-report.json",
+    "readinessReportPath": "reports/release-evidence-readiness-summary-report.json"
+  },
+  "checklist": {
+    "checkedItemCount": 522,
+    "openGateCount": 77,
+    "totalItemCount": 599
+  },
+  "summary": {
+    "missingOwnerInputCount": 60,
+    "packageCount": 7,
+    "entriesWithTemplateCount": 60,
+    "entriesWithCommandCount": 60,
+    "realOwnerEvidenceCount": 0,
+    "releaseGateClaim": "not_claimed"
+  },
+  "packages": [
+    {
+      "id": "01-reviewer-rule-quality",
+      "title": "Reviewer And Rule Quality",
+      "description": "Independent OD-023 reviewer delivery, review files, adjudication, and final rule quality evidence.",
+      "missingInputCount": 3,
+      "relatedCommands": ["pnpm rule-qa:review-delivery", "pnpm rule-qa:review"]
+    },
+    {
+      "id": "02-governance-legal",
+      "title": "Governance And Legal",
+      "description": "Hosted GitHub governance and qualified legal approval evidence.",
+      "missingInputCount": 1,
+      "relatedCommands": ["pnpm legal:release-gate"]
+    },
+    {
+      "id": "03-publication",
+      "title": "npm And VS Code Publication",
+      "description": "npm package publication, final version, clean install, VS Code publisher, and Marketplace evidence.",
+      "missingInputCount": 7,
+      "relatedCommands": [
+        "pnpm final-release:gate",
+        "pnpm vscode:update-e2e",
+        "pnpm package:beta-publication-gate"
+      ]
+    },
+    {
+      "id": "04-production-platform",
+      "title": "Production Platform",
+      "description": "Cloud runtime, database, object storage, API, workers, dashboard, backup, observability, and agency evidence.",
+      "missingInputCount": 21,
+      "relatedCommands": [
+        "pnpm backup:restore-live-gate",
+        "pnpm crawler:acceptance",
+        "pnpm verify:postgres",
+        "pnpm object-storage:acceptance",
+        "pnpm api:acceptance",
+        "pnpm dashboard:production-e2e",
+        "pnpm agency:client-access-browser-e2e",
+        "pnpm observability:acceptance",
+        "pnpm agency:acceptance",
+        "pnpm auth:acceptance",
+        "pnpm oauth-vault:acceptance",
+        "pnpm workers:acceptance"
+      ]
+    },
+    {
+      "id": "05-live-providers",
+      "title": "Live Provider Acceptance",
+      "description": "Live Google, Yandex, Stripe, notifications, and other provider acceptance evidence.",
+      "missingInputCount": 17,
+      "relatedCommands": [
+        "pnpm google:gsc:acceptance",
+        "pnpm google:performance:acceptance",
+        "pnpm yandex:acceptance",
+        "pnpm notifications:acceptance",
+        "pnpm billing:live-stripe-final-acceptance-packet"
+      ]
+    },
+    {
+      "id": "06-security-accessibility-website",
+      "title": "Security Accessibility And Website",
+      "description": "Manual accessibility, external security review, DAST, pentest, security gate, and public website evidence.",
+      "missingInputCount": 8,
+      "relatedCommands": [
+        "pnpm security:dast",
+        "pnpm website:acceptance",
+        "pnpm oauth-vault:security-review",
+        "pnpm overlay:manual-a11y-review",
+        "pnpm security:pentest"
+      ]
+    },
+    {
+      "id": "07-final-release",
+      "title": "Final Release",
+      "description": "Final RC, git tag, and SearchLint 1.0 publication evidence.",
+      "missingInputCount": 3,
+      "relatedCommands": ["pnpm final-release:gate"]
+    }
+  ],
+  "entries": [
+    {
+      "missingEvidencePath": "docs/legal-release-approval.json",
+      "templatePaths": ["docs/legal-release-approval.example.json"],
+      "relatedGateCount": 2,
+      "relatedCommands": ["pnpm legal:release-gate"],
+      "gateTypes": ["legal_owner_gate"],
+      "ownerAction": "Create docs/legal-release-approval.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm legal:release-gate.",
+      "relatedGates": [
+        {
+          "section": "1. Управление проектом",
+          "item": "Провести юридическую проверку публичной и закрытой частей проекта",
+          "gateType": "legal_owner_gate",
+          "relatedCommand": "pnpm legal:release-gate",
+          "requiredEvidence": "Qualified legal/owner approval JSON plus reviewed public/private repository boundary evidence.",
+          "nextOwnerAction": "Complete legal review and provide the approved release-gate evidence file."
+        },
+        {
+          "section": "31. Финальный SearchLint 1.0 Release Gate",
+          "item": "Legal review завершён",
+          "gateType": "legal_owner_gate",
+          "relatedCommand": "pnpm legal:release-gate",
+          "requiredEvidence": "Qualified legal/owner approval JSON plus reviewed public/private repository boundary evidence.",
+          "nextOwnerAction": "Complete legal review and provide the approved release-gate evidence file."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/live-backup-restore-drill.json",
+      "templatePaths": ["docs/live-backup-restore-drill.example.json"],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm backup:restore-live-gate"],
+      "gateTypes": ["production_deployment_gate"],
+      "ownerAction": "Create docs/live-backup-restore-drill.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm backup:restore-live-gate.",
+      "relatedGates": [
+        {
+          "section": "31. Финальный SearchLint 1.0 Release Gate",
+          "item": "Backup/restore проверены",
+          "gateType": "production_deployment_gate",
+          "relatedCommand": "pnpm backup:restore-live-gate",
+          "requiredEvidence": "Live RDS backup restore, RDS PITR, and S3 object restore drill evidence.",
+          "nextOwnerAction": "Provide live backup/restore drill evidence and run the backup restore live gate."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/10-crawler-proverit-100-000-url-v-cloud.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/10-crawler-proverit-100-000-url-v-cloud.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm crawler:acceptance"],
+      "gateTypes": ["production_deployment_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/10-crawler-proverit-100-000-url-v-cloud.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm crawler:acceptance.",
+      "relatedGates": [
+        {
+          "section": "10. Crawler",
+          "item": "Проверить 100 000 URL в cloud",
+          "gateType": "production_deployment_gate",
+          "relatedCommand": "pnpm crawler:acceptance",
+          "requiredEvidence": "Cloud crawler execution evidence for 100,000 URLs, including deployed worker/resource identifiers, crawl summary, failure/retry/cost controls, and sanitized artifacts.",
+          "nextOwnerAction": "Run the cloud crawler scale acceptance in the deployed environment and preserve sanitized evidence."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/11-postgresql-i-hranenie-dannyh-razvernut-nastoyashii-postgresql-rds.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/11-postgresql-i-hranenie-dannyh-razvernut-nastoyashii-postgresql-rds.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm verify:postgres"],
+      "gateTypes": ["production_deployment_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/11-postgresql-i-hranenie-dannyh-razvernut-nastoyashii-postgresql-rds.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm verify:postgres.",
+      "relatedGates": [
+        {
+          "section": "11. PostgreSQL и хранение данных",
+          "item": "Развернуть настоящий PostgreSQL/RDS",
+          "gateType": "production_deployment_gate",
+          "relatedCommand": "pnpm verify:postgres",
+          "requiredEvidence": "Production-equivalent deployed target evidence, sanitized URLs/resource identifiers, and passing focused deployed acceptance command.",
+          "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/12-s3-object-storage-razvernut-realnoe-object-storage.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/12-s3-object-storage-razvernut-realnoe-object-storage.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm object-storage:acceptance"],
+      "gateTypes": ["production_deployment_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/12-s3-object-storage-razvernut-realnoe-object-storage.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm object-storage:acceptance.",
+      "relatedGates": [
+        {
+          "section": "12. S3/Object Storage",
+          "item": "Развернуть реальное object storage",
+          "gateType": "production_deployment_gate",
+          "relatedCommand": "pnpm object-storage:acceptance",
+          "requiredEvidence": "Production-equivalent deployed target evidence, sanitized URLs/resource identifiers, and passing focused deployed acceptance command.",
+          "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/13-backend-api-razvernut-production-api.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/13-backend-api-razvernut-production-api.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm api:acceptance"],
+      "gateTypes": ["production_deployment_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/13-backend-api-razvernut-production-api.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm api:acceptance.",
+      "relatedGates": [
+        {
+          "section": "13. Backend API",
+          "item": "Развернуть production API",
+          "gateType": "production_deployment_gate",
+          "relatedCommand": "pnpm api:acceptance",
+          "requiredEvidence": "Production-equivalent deployed target evidence, sanitized URLs/resource identifiers, and passing focused deployed acceptance command.",
+          "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/18-google-search-console-provesti-live-acceptance-na-realnom-saite.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/18-google-search-console-provesti-live-acceptance-na-realnom-saite.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm google:gsc:acceptance"],
+      "gateTypes": ["live_provider_acceptance_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/18-google-search-console-provesti-live-acceptance-na-realnom-saite.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm google:gsc:acceptance.",
+      "relatedGates": [
+        {
+          "section": "18. Google Search Console",
+          "item": "Провести live acceptance на реальном сайте",
+          "gateType": "live_provider_acceptance_gate",
+          "relatedCommand": "pnpm google:gsc:acceptance",
+          "requiredEvidence": "Live provider account/configuration evidence, sanitized API response or delivery proof, quota/freshness handling, and passing live acceptance command.",
+          "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/19-pagespeed-i-crux-provesti-live-acceptance.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/19-pagespeed-i-crux-provesti-live-acceptance.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm google:performance:acceptance"],
+      "gateTypes": ["live_provider_acceptance_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/19-pagespeed-i-crux-provesti-live-acceptance.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm google:performance:acceptance.",
+      "relatedGates": [
+        {
+          "section": "19. PageSpeed и CrUX",
+          "item": "Провести live acceptance",
+          "gateType": "live_provider_acceptance_gate",
+          "relatedCommand": "pnpm google:performance:acceptance",
+          "requiredEvidence": "Live provider account/configuration evidence, sanitized API response or delivery proof, quota/freshness handling, and passing live acceptance command.",
+          "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/20-yandeks-vebmaster-provesti-live-acceptance.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/20-yandeks-vebmaster-provesti-live-acceptance.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm yandex:acceptance"],
+      "gateTypes": ["live_provider_acceptance_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/20-yandeks-vebmaster-provesti-live-acceptance.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm yandex:acceptance.",
+      "relatedGates": [
+        {
+          "section": "20. Яндекс.Вебмастер",
+          "item": "Провести live acceptance",
+          "gateType": "live_provider_acceptance_gate",
+          "relatedCommand": "pnpm yandex:acceptance",
+          "requiredEvidence": "Live provider account/configuration evidence, sanitized API response or delivery proof, quota/freshness handling, and passing live acceptance command.",
+          "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/21-yandeks-metrika-provesti-live-acceptance.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/21-yandeks-metrika-provesti-live-acceptance.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm yandex:acceptance"],
+      "gateTypes": ["live_provider_acceptance_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/21-yandeks-metrika-provesti-live-acceptance.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm yandex:acceptance.",
+      "relatedGates": [
+        {
+          "section": "21. Яндекс.Метрика",
+          "item": "Провести live acceptance",
+          "gateType": "live_provider_acceptance_gate",
+          "relatedCommand": "pnpm yandex:acceptance",
+          "requiredEvidence": "Live provider account/configuration evidence, sanitized API response or delivery proof, quota/freshness handling, and passing live acceptance command.",
+          "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/22-istoriya-i-korrelyaciya-provesti-deployed-dashboard-timeline-acceptance.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/22-istoriya-i-korrelyaciya-provesti-deployed-dashboard-timeline-acceptance.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm dashboard:production-e2e"],
+      "gateTypes": ["production_deployment_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/22-istoriya-i-korrelyaciya-provesti-deployed-dashboard-timeline-acceptance.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm dashboard:production-e2e.",
+      "relatedGates": [
+        {
+          "section": "22. История и корреляция",
+          "item": "Провести deployed dashboard timeline acceptance",
+          "gateType": "production_deployment_gate",
+          "relatedCommand": "pnpm dashboard:production-e2e",
+          "requiredEvidence": "Production-equivalent deployed target evidence, sanitized URLs/resource identifiers, and passing focused deployed acceptance command.",
+          "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/24-notifications-provesti-live-email-delivery-acceptance.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/24-notifications-provesti-live-email-delivery-acceptance.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm notifications:acceptance"],
+      "gateTypes": ["live_provider_acceptance_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/24-notifications-provesti-live-email-delivery-acceptance.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm notifications:acceptance.",
+      "relatedGates": [
+        {
+          "section": "24. Notifications",
+          "item": "Провести live email delivery acceptance",
+          "gateType": "live_provider_acceptance_gate",
+          "relatedCommand": "pnpm notifications:acceptance",
+          "requiredEvidence": "Live provider account/configuration evidence, sanitized API response or delivery proof, quota/freshness handling, and passing live acceptance command.",
+          "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/24-notifications-provesti-live-slack-delivery-acceptance.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/24-notifications-provesti-live-slack-delivery-acceptance.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm notifications:acceptance"],
+      "gateTypes": ["live_provider_acceptance_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/24-notifications-provesti-live-slack-delivery-acceptance.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm notifications:acceptance.",
+      "relatedGates": [
+        {
+          "section": "24. Notifications",
+          "item": "Провести live Slack delivery acceptance",
+          "gateType": "live_provider_acceptance_gate",
+          "relatedCommand": "pnpm notifications:acceptance",
+          "requiredEvidence": "Live provider account/configuration evidence, sanitized API response or delivery proof, quota/freshness handling, and passing live acceptance command.",
+          "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/24-notifications-provesti-live-telegram-delivery-acceptance-esli-nuzhen.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/24-notifications-provesti-live-telegram-delivery-acceptance-esli-nuzhen.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm notifications:acceptance"],
+      "gateTypes": ["live_provider_acceptance_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/24-notifications-provesti-live-telegram-delivery-acceptance-esli-nuzhen.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm notifications:acceptance.",
+      "relatedGates": [
+        {
+          "section": "24. Notifications",
+          "item": "Провести live Telegram delivery acceptance, если нужен",
+          "gateType": "live_provider_acceptance_gate",
+          "relatedCommand": "pnpm notifications:acceptance",
+          "requiredEvidence": "Live provider account/configuration evidence, sanitized API response or delivery proof, quota/freshness handling, and passing live acceptance command.",
+          "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/24-notifications-provesti-live-webhook-delivery-acceptance.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/24-notifications-provesti-live-webhook-delivery-acceptance.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm notifications:acceptance"],
+      "gateTypes": ["live_provider_acceptance_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/24-notifications-provesti-live-webhook-delivery-acceptance.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm notifications:acceptance.",
+      "relatedGates": [
+        {
+          "section": "24. Notifications",
+          "item": "Провести live webhook delivery acceptance",
+          "gateType": "live_provider_acceptance_gate",
+          "relatedCommand": "pnpm notifications:acceptance",
+          "requiredEvidence": "Live provider account/configuration evidence, sanitized API response or delivery proof, quota/freshness handling, and passing live acceptance command.",
+          "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/25-billing-proverit-deployed-stripe-webhook-persistence-on-rds.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/25-billing-proverit-deployed-stripe-webhook-persistence-on-rds.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm verify:postgres"],
+      "gateTypes": ["production_deployment_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/25-billing-proverit-deployed-stripe-webhook-persistence-on-rds.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm verify:postgres.",
+      "relatedGates": [
+        {
+          "section": "25. Billing",
+          "item": "Проверить deployed Stripe webhook persistence on RDS",
+          "gateType": "production_deployment_gate",
+          "relatedCommand": "pnpm verify:postgres",
+          "requiredEvidence": "Production-equivalent deployed target evidence, sanitized URLs/resource identifiers, and passing focused deployed acceptance command.",
+          "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/25-billing-provesti-live-customer-portal-acceptance.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/25-billing-provesti-live-customer-portal-acceptance.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm billing:live-stripe-final-acceptance-packet"],
+      "gateTypes": ["live_provider_acceptance_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/25-billing-provesti-live-customer-portal-acceptance.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm billing:live-stripe-final-acceptance-packet.",
+      "relatedGates": [
+        {
+          "section": "25. Billing",
+          "item": "Провести live customer portal acceptance",
+          "gateType": "live_provider_acceptance_gate",
+          "relatedCommand": "pnpm billing:live-stripe-final-acceptance-packet",
+          "requiredEvidence": "Live provider account/configuration evidence, sanitized API response or delivery proof, quota/freshness handling, and passing live acceptance command.",
+          "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/25-billing-provesti-live-stripe-acceptance.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/25-billing-provesti-live-stripe-acceptance.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm billing:live-stripe-final-acceptance-packet"],
+      "gateTypes": ["live_provider_acceptance_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/25-billing-provesti-live-stripe-acceptance.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm billing:live-stripe-final-acceptance-packet.",
+      "relatedGates": [
+        {
+          "section": "25. Billing",
+          "item": "Провести live Stripe acceptance",
+          "gateType": "live_provider_acceptance_gate",
+          "relatedCommand": "pnpm billing:live-stripe-final-acceptance-packet",
+          "requiredEvidence": "Live provider account/configuration evidence, sanitized API response or delivery proof, quota/freshness handling, and passing live acceptance command.",
+          "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/25-billing-provesti-live-subscription-trial-upgrade-downgrade-cancellation-acceptance.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/25-billing-provesti-live-subscription-trial-upgrade-downgrade-cancellation-acceptance.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm billing:live-stripe-final-acceptance-packet"],
+      "gateTypes": ["live_provider_acceptance_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/25-billing-provesti-live-subscription-trial-upgrade-downgrade-cancellation-acceptance.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm billing:live-stripe-final-acceptance-packet.",
+      "relatedGates": [
+        {
+          "section": "25. Billing",
+          "item": "Провести live subscription/trial/upgrade/downgrade/cancellation acceptance",
+          "gateType": "live_provider_acceptance_gate",
+          "relatedCommand": "pnpm billing:live-stripe-final-acceptance-packet",
+          "requiredEvidence": "Live provider account/configuration evidence, sanitized API response or delivery proof, quota/freshness handling, and passing live acceptance command.",
+          "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/26-agency-mode-proverit-client-invite-email-delivery.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/26-agency-mode-proverit-client-invite-email-delivery.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm notifications:acceptance"],
+      "gateTypes": ["live_provider_acceptance_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/26-agency-mode-proverit-client-invite-email-delivery.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm notifications:acceptance.",
+      "relatedGates": [
+        {
+          "section": "26. Agency mode",
+          "item": "Проверить client invite email delivery",
+          "gateType": "live_provider_acceptance_gate",
+          "relatedCommand": "pnpm notifications:acceptance",
+          "requiredEvidence": "Live provider account/configuration evidence, sanitized API response or delivery proof, quota/freshness handling, and passing live acceptance command.",
+          "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/26-agency-mode-razvernut-client-portal.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/26-agency-mode-razvernut-client-portal.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm agency:client-access-browser-e2e"],
+      "gateTypes": ["production_deployment_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/26-agency-mode-razvernut-client-portal.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm agency:client-access-browser-e2e.",
+      "relatedGates": [
+        {
+          "section": "26. Agency mode",
+          "item": "Развернуть client portal",
+          "gateType": "production_deployment_gate",
+          "relatedCommand": "pnpm agency:client-access-browser-e2e",
+          "requiredEvidence": "Production-equivalent deployed target evidence, sanitized URLs/resource identifiers, and passing focused deployed acceptance command.",
+          "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/26-agency-mode-realizovat-live-agency-billing.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/26-agency-mode-realizovat-live-agency-billing.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm billing:live-stripe-final-acceptance-packet"],
+      "gateTypes": ["live_provider_acceptance_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/26-agency-mode-realizovat-live-agency-billing.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm billing:live-stripe-final-acceptance-packet.",
+      "relatedGates": [
+        {
+          "section": "26. Agency mode",
+          "item": "Реализовать live agency billing",
+          "gateType": "live_provider_acceptance_gate",
+          "relatedCommand": "pnpm billing:live-stripe-final-acceptance-packet",
+          "requiredEvidence": "Live provider account/configuration evidence, sanitized API response or delivery proof, quota/freshness handling, and passing live acceptance command.",
+          "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/27-observability-podklyuchit-cloudwatch-otlp.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/27-observability-podklyuchit-cloudwatch-otlp.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm observability:acceptance"],
+      "gateTypes": ["production_deployment_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/27-observability-podklyuchit-cloudwatch-otlp.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm observability:acceptance.",
+      "relatedGates": [
+        {
+          "section": "27. Observability",
+          "item": "Подключить CloudWatch/OTLP",
+          "gateType": "production_deployment_gate",
+          "relatedCommand": "pnpm observability:acceptance",
+          "requiredEvidence": "Production-equivalent deployed target evidence, sanitized URLs/resource identifiers, and passing focused deployed acceptance command.",
+          "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/27-observability-razvernut-logging.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/27-observability-razvernut-logging.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm observability:acceptance"],
+      "gateTypes": ["production_deployment_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/27-observability-razvernut-logging.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm observability:acceptance.",
+      "relatedGates": [
+        {
+          "section": "27. Observability",
+          "item": "Развернуть logging",
+          "gateType": "production_deployment_gate",
+          "relatedCommand": "pnpm observability:acceptance",
+          "requiredEvidence": "Production-equivalent deployed target evidence, sanitized URLs/resource identifiers, and passing focused deployed acceptance command.",
+          "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/27-observability-razvernut-metrics.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/27-observability-razvernut-metrics.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm observability:acceptance"],
+      "gateTypes": ["production_deployment_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/27-observability-razvernut-metrics.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm observability:acceptance.",
+      "relatedGates": [
+        {
+          "section": "27. Observability",
+          "item": "Развернуть metrics",
+          "gateType": "production_deployment_gate",
+          "relatedCommand": "pnpm observability:acceptance",
+          "requiredEvidence": "Production-equivalent deployed target evidence, sanitized URLs/resource identifiers, and passing focused deployed acceptance command.",
+          "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/27-observability-razvernut-tracing.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/27-observability-razvernut-tracing.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm observability:acceptance"],
+      "gateTypes": ["production_deployment_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/27-observability-razvernut-tracing.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm observability:acceptance.",
+      "relatedGates": [
+        {
+          "section": "27. Observability",
+          "item": "Развернуть tracing",
+          "gateType": "production_deployment_gate",
+          "relatedCommand": "pnpm observability:acceptance",
+          "requiredEvidence": "Production-equivalent deployed target evidence, sanitized URLs/resource identifiers, and passing focused deployed acceptance command.",
+          "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/28-security-i-privacy-provesti-dast.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/28-security-i-privacy-provesti-dast.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm security:dast"],
+      "gateTypes": ["external_security_review_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/28-security-i-privacy-provesti-dast.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm security:dast.",
+      "relatedGates": [
+        {
+          "section": "28. Security и Privacy",
+          "item": "Провести DAST",
+          "gateType": "external_security_review_gate",
+          "relatedCommand": "pnpm security:dast",
+          "requiredEvidence": "Passed deployed-target DAST, independent penetration-test report, remediation sign-off, and security/legal approval.",
+          "nextOwnerAction": "Run DAST against deployed production-equivalent targets, commission independent penetration testing, remediate findings, and approve the final gate."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/28-security-i-privacy-zavershit-security-release-gate.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/28-security-i-privacy-zavershit-security-release-gate.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm security:dast"],
+      "gateTypes": ["external_security_review_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/28-security-i-privacy-zavershit-security-release-gate.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm security:dast.",
+      "relatedGates": [
+        {
+          "section": "28. Security и Privacy",
+          "item": "Завершить security release gate",
+          "gateType": "external_security_review_gate",
+          "relatedCommand": "pnpm security:dast",
+          "requiredEvidence": "Passed deployed-target DAST, independent penetration-test report, remediation sign-off, and security/legal approval.",
+          "nextOwnerAction": "Run DAST against deployed production-equivalent targets, commission independent penetration testing, remediate findings, and approve the final gate."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-agency-mode-gotov.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-agency-mode-gotov.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm agency:acceptance"],
+      "gateTypes": ["production_deployment_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-agency-mode-gotov.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm agency:acceptance.",
+      "relatedGates": [
+        {
+          "section": "31. Финальный SearchLint 1.0 Release Gate",
+          "item": "Agency mode готов",
+          "gateType": "production_deployment_gate",
+          "relatedCommand": "pnpm agency:acceptance",
+          "requiredEvidence": "Agency mode deterministic evidence plus deployed persistence, client access, hosted white-label links, and billing evidence.",
+          "nextOwnerAction": "Run agency acceptance and deployed agency evidence gates, then preserve live billing/client access evidence."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-api-deployment-proof-proiden.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-api-deployment-proof-proiden.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm api:acceptance"],
+      "gateTypes": ["production_deployment_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-api-deployment-proof-proiden.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm api:acceptance.",
+      "relatedGates": [
+        {
+          "section": "31. Финальный SearchLint 1.0 Release Gate",
+          "item": "API deployment proof пройден",
+          "gateType": "production_deployment_gate",
+          "relatedCommand": "pnpm api:acceptance",
+          "requiredEvidence": "Production-equivalent deployed target evidence, sanitized URLs/resource identifiers, and passing focused deployed acceptance command.",
+          "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-billing-live-acceptance-proiden.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-billing-live-acceptance-proiden.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm billing:live-stripe-final-acceptance-packet"],
+      "gateTypes": ["live_provider_acceptance_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-billing-live-acceptance-proiden.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm billing:live-stripe-final-acceptance-packet.",
+      "relatedGates": [
+        {
+          "section": "31. Финальный SearchLint 1.0 Release Gate",
+          "item": "Billing live acceptance пройден",
+          "gateType": "live_provider_acceptance_gate",
+          "relatedCommand": "pnpm billing:live-stripe-final-acceptance-packet",
+          "requiredEvidence": "Live provider account/configuration evidence, sanitized API response or delivery proof, quota/freshness handling, and passing live acceptance command.",
+          "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-cognito-rbac-proof-proiden.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-cognito-rbac-proof-proiden.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm auth:acceptance"],
+      "gateTypes": ["production_deployment_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-cognito-rbac-proof-proiden.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm auth:acceptance.",
+      "relatedGates": [
+        {
+          "section": "31. Финальный SearchLint 1.0 Release Gate",
+          "item": "Cognito/RBAC proof пройден",
+          "gateType": "production_deployment_gate",
+          "relatedCommand": "pnpm auth:acceptance",
+          "requiredEvidence": "Production-equivalent deployed target evidence, sanitized URLs/resource identifiers, and passing focused deployed acceptance command.",
+          "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-dashboard-production-e2e-proiden.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-dashboard-production-e2e-proiden.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm dashboard:production-e2e"],
+      "gateTypes": ["production_deployment_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-dashboard-production-e2e-proiden.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm dashboard:production-e2e.",
+      "relatedGates": [
+        {
+          "section": "31. Финальный SearchLint 1.0 Release Gate",
+          "item": "Dashboard production E2E пройден",
+          "gateType": "production_deployment_gate",
+          "relatedCommand": "pnpm dashboard:production-e2e",
+          "requiredEvidence": "Production-equivalent deployed target evidence, sanitized URLs/resource identifiers, and passing focused deployed acceptance command.",
+          "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-google-live-acceptance-proiden.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-google-live-acceptance-proiden.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm google:gsc:acceptance"],
+      "gateTypes": ["live_provider_acceptance_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-google-live-acceptance-proiden.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm google:gsc:acceptance.",
+      "relatedGates": [
+        {
+          "section": "31. Финальный SearchLint 1.0 Release Gate",
+          "item": "Google live acceptance пройден",
+          "gateType": "live_provider_acceptance_gate",
+          "relatedCommand": "pnpm google:gsc:acceptance",
+          "requiredEvidence": "Live provider account/configuration evidence, sanitized API response or delivery proof, quota/freshness handling, and passing live acceptance command.",
+          "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-notifications-gotovy.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-notifications-gotovy.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm notifications:acceptance"],
+      "gateTypes": ["live_provider_acceptance_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-notifications-gotovy.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm notifications:acceptance.",
+      "relatedGates": [
+        {
+          "section": "31. Финальный SearchLint 1.0 Release Gate",
+          "item": "Notifications готовы",
+          "gateType": "live_provider_acceptance_gate",
+          "relatedCommand": "pnpm notifications:acceptance",
+          "requiredEvidence": "Notification contracts, persistence/redaction evidence, and live provider delivery evidence for the enabled channels.",
+          "nextOwnerAction": "Run notification acceptance plus live provider delivery checks and preserve sanitized delivery evidence."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-npm-pakety-opublikovany.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-npm-pakety-opublikovany.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm final-release:gate"],
+      "gateTypes": ["npm_publication_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-npm-pakety-opublikovany.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm final-release:gate.",
+      "relatedGates": [
+        {
+          "section": "31. Финальный SearchLint 1.0 Release Gate",
+          "item": "npm-пакеты опубликованы",
+          "gateType": "npm_publication_gate",
+          "relatedCommand": "pnpm final-release:gate",
+          "requiredEvidence": "Final 1.0.0 version approval, passing RC matrix, hosted npm publication proof, provenance, and clean public registry install.",
+          "nextOwnerAction": "Run final publication only after all release gates pass, then preserve npm publication and install evidence."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-oauth-vault-proof-proiden.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-oauth-vault-proof-proiden.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm oauth-vault:acceptance"],
+      "gateTypes": ["production_deployment_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-oauth-vault-proof-proiden.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm oauth-vault:acceptance.",
+      "relatedGates": [
+        {
+          "section": "31. Финальный SearchLint 1.0 Release Gate",
+          "item": "OAuth vault proof пройден",
+          "gateType": "production_deployment_gate",
+          "relatedCommand": "pnpm oauth-vault:acceptance",
+          "requiredEvidence": "Deployed KMS/Secrets Manager OAuth vault acceptance evidence plus external security review sign-off.",
+          "nextOwnerAction": "Run deployed OAuth vault acceptance and complete the independent vault security review."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-observability-gotova.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-observability-gotova.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm observability:acceptance"],
+      "gateTypes": ["production_deployment_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-observability-gotova.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm observability:acceptance.",
+      "relatedGates": [
+        {
+          "section": "31. Финальный SearchLint 1.0 Release Gate",
+          "item": "Observability готова",
+          "gateType": "production_deployment_gate",
+          "relatedCommand": "pnpm observability:acceptance",
+          "requiredEvidence": "Production-equivalent deployed target evidence, sanitized URLs/resource identifiers, and passing focused deployed acceptance command.",
+          "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-opublikovan-searchlint-1-0.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-opublikovan-searchlint-1-0.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm final-release:gate"],
+      "gateTypes": ["final_release_action_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-opublikovan-searchlint-1-0.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm final-release:gate.",
+      "relatedGates": [
+        {
+          "section": "31. Финальный SearchLint 1.0 Release Gate",
+          "item": "Опубликован SearchLint 1.0",
+          "gateType": "final_release_action_gate",
+          "relatedCommand": "pnpm final-release:gate",
+          "requiredEvidence": "Passing full release-candidate matrix, signed tag, publication proof, and final release approval.",
+          "nextOwnerAction": "Run the final release gates only after all prerequisite gates pass."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-postgresql-rds-proof-proiden.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-postgresql-rds-proof-proiden.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm verify:postgres"],
+      "gateTypes": ["production_deployment_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-postgresql-rds-proof-proiden.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm verify:postgres.",
+      "relatedGates": [
+        {
+          "section": "31. Финальный SearchLint 1.0 Release Gate",
+          "item": "PostgreSQL/RDS proof пройден",
+          "gateType": "production_deployment_gate",
+          "relatedCommand": "pnpm verify:postgres",
+          "requiredEvidence": "Production-equivalent deployed target evidence, sanitized URLs/resource identifiers, and passing focused deployed acceptance command.",
+          "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-public-website-gotov.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-public-website-gotov.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm website:acceptance"],
+      "gateTypes": ["deployed_public_website_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-public-website-gotov.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm website:acceptance.",
+      "relatedGates": [
+        {
+          "section": "31. Финальный SearchLint 1.0 Release Gate",
+          "item": "Public website готов",
+          "gateType": "deployed_public_website_gate",
+          "relatedCommand": "pnpm website:acceptance",
+          "requiredEvidence": "Deployed website domain/CDN evidence, approved marketing/legal copy, live link validation, and screenshots if required.",
+          "nextOwnerAction": "Deploy the public website and capture sanitized deployed website acceptance evidence."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-release-candidate-proshel-polnuyu-matricu.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-release-candidate-proshel-polnuyu-matricu.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm final-release:gate"],
+      "gateTypes": ["final_release_action_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-release-candidate-proshel-polnuyu-matricu.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm final-release:gate.",
+      "relatedGates": [
+        {
+          "section": "31. Финальный SearchLint 1.0 Release Gate",
+          "item": "Release candidate прошёл полную матрицу",
+          "gateType": "final_release_action_gate",
+          "relatedCommand": "pnpm final-release:gate",
+          "requiredEvidence": "Passing full release-candidate matrix, signed tag, publication proof, and final release approval.",
+          "nextOwnerAction": "Run the final release gates only after all prerequisite gates pass."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-s3-proof-proiden.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-s3-proof-proiden.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm object-storage:acceptance"],
+      "gateTypes": ["production_deployment_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-s3-proof-proiden.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm object-storage:acceptance.",
+      "relatedGates": [
+        {
+          "section": "31. Финальный SearchLint 1.0 Release Gate",
+          "item": "S3 proof пройден",
+          "gateType": "production_deployment_gate",
+          "relatedCommand": "pnpm object-storage:acceptance",
+          "requiredEvidence": "Production-equivalent deployed target evidence, sanitized URLs/resource identifiers, and passing focused deployed acceptance command.",
+          "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-security-audit-proiden.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-security-audit-proiden.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm security:dast"],
+      "gateTypes": ["external_security_review_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-security-audit-proiden.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm security:dast.",
+      "relatedGates": [
+        {
+          "section": "31. Финальный SearchLint 1.0 Release Gate",
+          "item": "Security audit пройден",
+          "gateType": "external_security_review_gate",
+          "relatedCommand": "pnpm security:dast",
+          "requiredEvidence": "Passed deployed-target DAST, independent penetration-test report, remediation sign-off, and security/legal approval.",
+          "nextOwnerAction": "Run DAST against deployed production-equivalent targets, commission independent penetration testing, remediate findings, and approve the final gate."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-sozdan-git-tag-v1-0-0.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-sozdan-git-tag-v1-0-0.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm final-release:gate"],
+      "gateTypes": ["final_release_action_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-sozdan-git-tag-v1-0-0.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm final-release:gate.",
+      "relatedGates": [
+        {
+          "section": "31. Финальный SearchLint 1.0 Release Gate",
+          "item": "Создан Git tag v1.0.0",
+          "gateType": "final_release_action_gate",
+          "relatedCommand": "pnpm final-release:gate",
+          "requiredEvidence": "Passing full release-candidate matrix, signed tag, publication proof, and final release approval.",
+          "nextOwnerAction": "Run the final release gates only after all prerequisite gates pass."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-vs-code-extension-opublikovan.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-vs-code-extension-opublikovan.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm vscode:update-e2e"],
+      "gateTypes": ["vscode_marketplace_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-vs-code-extension-opublikovan.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm vscode:update-e2e.",
+      "relatedGates": [
+        {
+          "section": "31. Финальный SearchLint 1.0 Release Gate",
+          "item": "VS Code extension опубликован",
+          "gateType": "vscode_marketplace_gate",
+          "relatedCommand": "pnpm vscode:update-e2e",
+          "requiredEvidence": "Signed and published VS Code extension on Marketplace, publisher metadata, and clean install/update evidence after publication.",
+          "nextOwnerAction": "After publisher setup and legal approval, publish the VSIX through the Marketplace flow and preserve publication/install evidence."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-workers-sqs-proof-proiden.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-workers-sqs-proof-proiden.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm workers:acceptance"],
+      "gateTypes": ["production_deployment_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-workers-sqs-proof-proiden.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm workers:acceptance.",
+      "relatedGates": [
+        {
+          "section": "31. Финальный SearchLint 1.0 Release Gate",
+          "item": "Workers/SQS proof пройден",
+          "gateType": "production_deployment_gate",
+          "relatedCommand": "pnpm workers:acceptance",
+          "requiredEvidence": "Production-equivalent deployed target evidence, sanitized URLs/resource identifiers, and passing focused deployed acceptance command.",
+          "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-yandex-live-acceptance-proiden.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-yandex-live-acceptance-proiden.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm yandex:acceptance"],
+      "gateTypes": ["live_provider_acceptance_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-yandex-live-acceptance-proiden.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm yandex:acceptance.",
+      "relatedGates": [
+        {
+          "section": "31. Финальный SearchLint 1.0 Release Gate",
+          "item": "Yandex live acceptance пройден",
+          "gateType": "live_provider_acceptance_gate",
+          "relatedCommand": "pnpm yandex:acceptance",
+          "requiredEvidence": "Live provider account/configuration evidence, sanitized API response or delivery proof, quota/freshness handling, and passing live acceptance command.",
+          "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/7-vs-code-i-lsp-nastroit-publisher-account.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/7-vs-code-i-lsp-nastroit-publisher-account.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm vscode:update-e2e"],
+      "gateTypes": ["vscode_marketplace_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/7-vs-code-i-lsp-nastroit-publisher-account.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm vscode:update-e2e.",
+      "relatedGates": [
+        {
+          "section": "7. VS Code и LSP",
+          "item": "Настроить publisher account",
+          "gateType": "vscode_marketplace_gate",
+          "relatedCommand": "pnpm vscode:update-e2e",
+          "requiredEvidence": "VS Code Marketplace publisher account configured for SearchLint plus local VSIX readiness/update evidence.",
+          "nextOwnerAction": "Configure the Marketplace publisher account, keep the local VSIX/update evidence current, and preserve publisher setup evidence outside secrets."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/7-vs-code-i-lsp-podpisat-i-opublikovat-extension.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/7-vs-code-i-lsp-podpisat-i-opublikovat-extension.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm vscode:update-e2e"],
+      "gateTypes": ["vscode_marketplace_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/7-vs-code-i-lsp-podpisat-i-opublikovat-extension.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm vscode:update-e2e.",
+      "relatedGates": [
+        {
+          "section": "7. VS Code и LSP",
+          "item": "Подписать и опубликовать extension",
+          "gateType": "vscode_marketplace_gate",
+          "relatedCommand": "pnpm vscode:update-e2e",
+          "requiredEvidence": "Signed and published VS Code extension on Marketplace, publisher metadata, and clean install/update evidence after publication.",
+          "nextOwnerAction": "After publisher setup and legal approval, publish the VSIX through the Marketplace flow and preserve publication/install evidence."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/8-npm-pakety-opublikovat-beta-packages.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/8-npm-pakety-opublikovat-beta-packages.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm package:beta-publication-gate"],
+      "gateTypes": ["npm_publication_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/8-npm-pakety-opublikovat-beta-packages.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm package:beta-publication-gate.",
+      "relatedGates": [
+        {
+          "section": "8. npm-пакеты",
+          "item": "Опубликовать beta packages",
+          "gateType": "npm_publication_gate",
+          "relatedCommand": "pnpm package:beta-publication-gate",
+          "requiredEvidence": "Hosted npm workflow publication proof for 1.0.0-beta.0, npm provenance, beta dist-tag, and no private package publication.",
+          "nextOwnerAction": "Complete legal/package metadata gates, configure npm trusted publishing, run the hosted workflow with publish=true and tag=beta, then preserve publication evidence."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/8-npm-pakety-podgotovit-finalnuyu-publikaciyu-1-0-0.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/8-npm-pakety-podgotovit-finalnuyu-publikaciyu-1-0-0.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm final-release:gate"],
+      "gateTypes": ["npm_publication_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/8-npm-pakety-podgotovit-finalnuyu-publikaciyu-1-0-0.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm final-release:gate.",
+      "relatedGates": [
+        {
+          "section": "8. npm-пакеты",
+          "item": "Подготовить финальную публикацию 1.0.0",
+          "gateType": "npm_publication_gate",
+          "relatedCommand": "pnpm final-release:gate",
+          "requiredEvidence": "Final 1.0.0 version approval, passing RC matrix, hosted npm publication proof, provenance, and clean public registry install.",
+          "nextOwnerAction": "Run final publication only after all release gates pass, then preserve npm publication and install evidence."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/release-owner-evidence/8-npm-pakety-zamenit-0-0-0-beta-versions-na-final-release-versions.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/8-npm-pakety-zamenit-0-0-0-beta-versions-na-final-release-versions.example.json"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm final-release:gate"],
+      "gateTypes": ["npm_publication_gate"],
+      "ownerAction": "Create docs/release-owner-evidence/8-npm-pakety-zamenit-0-0-0-beta-versions-na-final-release-versions.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm final-release:gate.",
+      "relatedGates": [
+        {
+          "section": "8. npm-пакеты",
+          "item": "Заменить `0.0.0`/beta versions на final release versions",
+          "gateType": "npm_publication_gate",
+          "relatedCommand": "pnpm final-release:gate",
+          "requiredEvidence": "Final 1.0.0 version approval, passing RC matrix, hosted npm publication proof, provenance, and clean public registry install.",
+          "nextOwnerAction": "Run final publication only after all release gates pass, then preserve npm publication and install evidence."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/reviews/blocker-benchmark/DELIVERY_EVIDENCE.json",
+      "templatePaths": [
+        "docs/reviews/blocker-benchmark/DELIVERY_EVIDENCE.example.json",
+        "docs/reviews/blocker-benchmark/README.md",
+        "docs/reviews/blocker-benchmark/REVIEW_INSTRUCTIONS.md",
+        "docs/reviews/blocker-benchmark/REVIEW_FORM_TEMPLATE.md"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm rule-qa:review-delivery"],
+      "gateTypes": ["independent_reviewer_delivery_gate"],
+      "ownerAction": "Create docs/reviews/blocker-benchmark/DELIVERY_EVIDENCE.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm rule-qa:review-delivery.",
+      "relatedGates": [
+        {
+          "section": "2. Независимая проверка blocker-правил",
+          "item": "Передать им review packet",
+          "gateType": "independent_reviewer_delivery_gate",
+          "relatedCommand": "pnpm rule-qa:review-delivery",
+          "requiredEvidence": "Owner-provided DELIVERY_EVIDENCE.json proving the blocker benchmark review packet was sent to two intended independent reviewers, with matching benchmarkVersion and case-index SHA-256.",
+          "nextOwnerAction": "Send the handoff packet to two intended independent reviewers, provide DELIVERY_EVIDENCE.json, then run the delivery gate."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/reviews/blocker-benchmark/reviewer-1.review.json",
+      "templatePaths": [
+        "docs/reviews/blocker-benchmark/reviewer-1.review.example.json",
+        "docs/reviews/blocker-benchmark/README.md",
+        "docs/reviews/blocker-benchmark/REVIEW_INSTRUCTIONS.md",
+        "docs/reviews/blocker-benchmark/REVIEW_FORM_TEMPLATE.md"
+      ],
+      "relatedGateCount": 13,
+      "relatedCommands": ["pnpm rule-qa:review"],
+      "gateTypes": ["independent_reviewer_gate"],
+      "ownerAction": "Create docs/reviews/blocker-benchmark/reviewer-1.review.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm rule-qa:review.",
+      "relatedGates": [
+        {
+          "section": "2. Независимая проверка blocker-правил",
+          "item": "Найти двух независимых reviewers",
+          "gateType": "independent_reviewer_gate",
+          "relatedCommand": "pnpm rule-qa:review",
+          "requiredEvidence": "Two real independent reviewer JSON files, full benchmark coverage, matching benchmarkVersion, adjudicated disagreements, and passing pnpm rule-qa:review.",
+          "nextOwnerAction": "Select two independent reviewers, collect reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then rerun the review gate."
+        },
+        {
+          "section": "2. Независимая проверка blocker-правил",
+          "item": "Проверить все 1960 benchmark cases",
+          "gateType": "independent_reviewer_gate",
+          "relatedCommand": "pnpm rule-qa:review",
+          "requiredEvidence": "Two real independent reviewer JSON files, full benchmark coverage, matching benchmarkVersion, adjudicated disagreements, and passing pnpm rule-qa:review.",
+          "nextOwnerAction": "Select two independent reviewers, collect reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then rerun the review gate."
+        },
+        {
+          "section": "2. Независимая проверка blocker-правил",
+          "item": "Получить reviewer-1.review.json",
+          "gateType": "independent_reviewer_gate",
+          "relatedCommand": "pnpm rule-qa:review",
+          "requiredEvidence": "Two real independent reviewer JSON files, full benchmark coverage, matching benchmarkVersion, adjudicated disagreements, and passing pnpm rule-qa:review.",
+          "nextOwnerAction": "Select two independent reviewers, collect reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then rerun the review gate."
+        },
+        {
+          "section": "2. Независимая проверка blocker-правил",
+          "item": "Получить reviewer-2.review.json",
+          "gateType": "independent_reviewer_gate",
+          "relatedCommand": "pnpm rule-qa:review",
+          "requiredEvidence": "Two real independent reviewer JSON files, full benchmark coverage, matching benchmarkVersion, adjudicated disagreements, and passing pnpm rule-qa:review.",
+          "nextOwnerAction": "Select two independent reviewers, collect reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then rerun the review gate."
+        },
+        {
+          "section": "2. Независимая проверка blocker-правил",
+          "item": "Проверить полный coverage обоих review-файлов",
+          "gateType": "independent_reviewer_gate",
+          "relatedCommand": "pnpm rule-qa:review",
+          "requiredEvidence": "Two real independent reviewer JSON files, full benchmark coverage, matching benchmarkVersion, adjudicated disagreements, and passing pnpm rule-qa:review.",
+          "nextOwnerAction": "Select two independent reviewers, collect reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then rerun the review gate."
+        },
+        {
+          "section": "2. Независимая проверка blocker-правил",
+          "item": "Проверить совпадение benchmarkVersion",
+          "gateType": "independent_reviewer_gate",
+          "relatedCommand": "pnpm rule-qa:review",
+          "requiredEvidence": "Two real independent reviewer JSON files, full benchmark coverage, matching benchmarkVersion, adjudicated disagreements, and passing pnpm rule-qa:review.",
+          "nextOwnerAction": "Select two independent reviewers, collect reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then rerun the review gate."
+        },
+        {
+          "section": "2. Независимая проверка blocker-правил",
+          "item": "Разобрать disagreements",
+          "gateType": "independent_reviewer_gate",
+          "relatedCommand": "pnpm rule-qa:review",
+          "requiredEvidence": "Two real independent reviewer JSON files, full benchmark coverage, matching benchmarkVersion, adjudicated disagreements, and passing pnpm rule-qa:review.",
+          "nextOwnerAction": "Select two independent reviewers, collect reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then rerun the review gate."
+        },
+        {
+          "section": "2. Независимая проверка blocker-правил",
+          "item": "Провести adjudication disputed cases",
+          "gateType": "independent_reviewer_gate",
+          "relatedCommand": "pnpm rule-qa:review",
+          "requiredEvidence": "Two real independent reviewer JSON files, full benchmark coverage, matching benchmarkVersion, adjudicated disagreements, and passing pnpm rule-qa:review.",
+          "nextOwnerAction": "Select two independent reviewers, collect reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then rerun the review gate."
+        },
+        {
+          "section": "2. Независимая проверка blocker-правил",
+          "item": "Повторно запустить pnpm rule-qa:review",
+          "gateType": "independent_reviewer_gate",
+          "relatedCommand": "pnpm rule-qa:review",
+          "requiredEvidence": "Two real independent reviewer JSON files, full benchmark coverage, matching benchmarkVersion, adjudicated disagreements, and passing pnpm rule-qa:review.",
+          "nextOwnerAction": "Select two independent reviewers, collect reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then rerun the review gate."
+        },
+        {
+          "section": "2. Независимая проверка blocker-правил",
+          "item": "Получить успешный OD-023 release gate",
+          "gateType": "independent_reviewer_gate",
+          "relatedCommand": "pnpm rule-qa:review",
+          "requiredEvidence": "Two real independent reviewer JSON files, full benchmark coverage, matching benchmarkVersion, adjudicated disagreements, and passing pnpm rule-qa:review.",
+          "nextOwnerAction": "Select two independent reviewers, collect reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then rerun the review gate."
+        },
+        {
+          "section": "2. Независимая проверка blocker-правил",
+          "item": "Сохранить reviewer evidence и итоговый отчёт",
+          "gateType": "independent_reviewer_gate",
+          "relatedCommand": "pnpm rule-qa:review",
+          "requiredEvidence": "Two real independent reviewer JSON files, full benchmark coverage, matching benchmarkVersion, adjudicated disagreements, and passing pnpm rule-qa:review.",
+          "nextOwnerAction": "Select two independent reviewers, collect reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then rerun the review gate."
+        },
+        {
+          "section": "3. Core и все 120 правил",
+          "item": "Подтвердить release-quality всех 120 правил после reviewer gate",
+          "gateType": "independent_reviewer_gate",
+          "relatedCommand": "pnpm rule-qa:review",
+          "requiredEvidence": "Two real independent reviewer JSON files, full benchmark coverage, matching benchmarkVersion, adjudicated disagreements, and passing pnpm rule-qa:review.",
+          "nextOwnerAction": "Select two independent reviewers, collect reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then rerun the review gate."
+        },
+        {
+          "section": "31. Финальный SearchLint 1.0 Release Gate",
+          "item": "Все два reviewer sign-off получены",
+          "gateType": "independent_reviewer_gate",
+          "relatedCommand": "pnpm rule-qa:review",
+          "requiredEvidence": "Two real independent reviewer JSON files, full benchmark coverage, matching benchmarkVersion, adjudicated disagreements, and passing pnpm rule-qa:review.",
+          "nextOwnerAction": "Select two independent reviewers, collect reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then rerun the review gate."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/reviews/blocker-benchmark/reviewer-2.review.json",
+      "templatePaths": [
+        "docs/reviews/blocker-benchmark/reviewer-2.review.example.json",
+        "docs/reviews/blocker-benchmark/README.md",
+        "docs/reviews/blocker-benchmark/REVIEW_INSTRUCTIONS.md",
+        "docs/reviews/blocker-benchmark/REVIEW_FORM_TEMPLATE.md"
+      ],
+      "relatedGateCount": 13,
+      "relatedCommands": ["pnpm rule-qa:review"],
+      "gateTypes": ["independent_reviewer_gate"],
+      "ownerAction": "Create docs/reviews/blocker-benchmark/reviewer-2.review.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm rule-qa:review.",
+      "relatedGates": [
+        {
+          "section": "2. Независимая проверка blocker-правил",
+          "item": "Найти двух независимых reviewers",
+          "gateType": "independent_reviewer_gate",
+          "relatedCommand": "pnpm rule-qa:review",
+          "requiredEvidence": "Two real independent reviewer JSON files, full benchmark coverage, matching benchmarkVersion, adjudicated disagreements, and passing pnpm rule-qa:review.",
+          "nextOwnerAction": "Select two independent reviewers, collect reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then rerun the review gate."
+        },
+        {
+          "section": "2. Независимая проверка blocker-правил",
+          "item": "Проверить все 1960 benchmark cases",
+          "gateType": "independent_reviewer_gate",
+          "relatedCommand": "pnpm rule-qa:review",
+          "requiredEvidence": "Two real independent reviewer JSON files, full benchmark coverage, matching benchmarkVersion, adjudicated disagreements, and passing pnpm rule-qa:review.",
+          "nextOwnerAction": "Select two independent reviewers, collect reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then rerun the review gate."
+        },
+        {
+          "section": "2. Независимая проверка blocker-правил",
+          "item": "Получить reviewer-1.review.json",
+          "gateType": "independent_reviewer_gate",
+          "relatedCommand": "pnpm rule-qa:review",
+          "requiredEvidence": "Two real independent reviewer JSON files, full benchmark coverage, matching benchmarkVersion, adjudicated disagreements, and passing pnpm rule-qa:review.",
+          "nextOwnerAction": "Select two independent reviewers, collect reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then rerun the review gate."
+        },
+        {
+          "section": "2. Независимая проверка blocker-правил",
+          "item": "Получить reviewer-2.review.json",
+          "gateType": "independent_reviewer_gate",
+          "relatedCommand": "pnpm rule-qa:review",
+          "requiredEvidence": "Two real independent reviewer JSON files, full benchmark coverage, matching benchmarkVersion, adjudicated disagreements, and passing pnpm rule-qa:review.",
+          "nextOwnerAction": "Select two independent reviewers, collect reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then rerun the review gate."
+        },
+        {
+          "section": "2. Независимая проверка blocker-правил",
+          "item": "Проверить полный coverage обоих review-файлов",
+          "gateType": "independent_reviewer_gate",
+          "relatedCommand": "pnpm rule-qa:review",
+          "requiredEvidence": "Two real independent reviewer JSON files, full benchmark coverage, matching benchmarkVersion, adjudicated disagreements, and passing pnpm rule-qa:review.",
+          "nextOwnerAction": "Select two independent reviewers, collect reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then rerun the review gate."
+        },
+        {
+          "section": "2. Независимая проверка blocker-правил",
+          "item": "Проверить совпадение benchmarkVersion",
+          "gateType": "independent_reviewer_gate",
+          "relatedCommand": "pnpm rule-qa:review",
+          "requiredEvidence": "Two real independent reviewer JSON files, full benchmark coverage, matching benchmarkVersion, adjudicated disagreements, and passing pnpm rule-qa:review.",
+          "nextOwnerAction": "Select two independent reviewers, collect reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then rerun the review gate."
+        },
+        {
+          "section": "2. Независимая проверка blocker-правил",
+          "item": "Разобрать disagreements",
+          "gateType": "independent_reviewer_gate",
+          "relatedCommand": "pnpm rule-qa:review",
+          "requiredEvidence": "Two real independent reviewer JSON files, full benchmark coverage, matching benchmarkVersion, adjudicated disagreements, and passing pnpm rule-qa:review.",
+          "nextOwnerAction": "Select two independent reviewers, collect reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then rerun the review gate."
+        },
+        {
+          "section": "2. Независимая проверка blocker-правил",
+          "item": "Провести adjudication disputed cases",
+          "gateType": "independent_reviewer_gate",
+          "relatedCommand": "pnpm rule-qa:review",
+          "requiredEvidence": "Two real independent reviewer JSON files, full benchmark coverage, matching benchmarkVersion, adjudicated disagreements, and passing pnpm rule-qa:review.",
+          "nextOwnerAction": "Select two independent reviewers, collect reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then rerun the review gate."
+        },
+        {
+          "section": "2. Независимая проверка blocker-правил",
+          "item": "Повторно запустить pnpm rule-qa:review",
+          "gateType": "independent_reviewer_gate",
+          "relatedCommand": "pnpm rule-qa:review",
+          "requiredEvidence": "Two real independent reviewer JSON files, full benchmark coverage, matching benchmarkVersion, adjudicated disagreements, and passing pnpm rule-qa:review.",
+          "nextOwnerAction": "Select two independent reviewers, collect reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then rerun the review gate."
+        },
+        {
+          "section": "2. Независимая проверка blocker-правил",
+          "item": "Получить успешный OD-023 release gate",
+          "gateType": "independent_reviewer_gate",
+          "relatedCommand": "pnpm rule-qa:review",
+          "requiredEvidence": "Two real independent reviewer JSON files, full benchmark coverage, matching benchmarkVersion, adjudicated disagreements, and passing pnpm rule-qa:review.",
+          "nextOwnerAction": "Select two independent reviewers, collect reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then rerun the review gate."
+        },
+        {
+          "section": "2. Независимая проверка blocker-правил",
+          "item": "Сохранить reviewer evidence и итоговый отчёт",
+          "gateType": "independent_reviewer_gate",
+          "relatedCommand": "pnpm rule-qa:review",
+          "requiredEvidence": "Two real independent reviewer JSON files, full benchmark coverage, matching benchmarkVersion, adjudicated disagreements, and passing pnpm rule-qa:review.",
+          "nextOwnerAction": "Select two independent reviewers, collect reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then rerun the review gate."
+        },
+        {
+          "section": "3. Core и все 120 правил",
+          "item": "Подтвердить release-quality всех 120 правил после reviewer gate",
+          "gateType": "independent_reviewer_gate",
+          "relatedCommand": "pnpm rule-qa:review",
+          "requiredEvidence": "Two real independent reviewer JSON files, full benchmark coverage, matching benchmarkVersion, adjudicated disagreements, and passing pnpm rule-qa:review.",
+          "nextOwnerAction": "Select two independent reviewers, collect reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then rerun the review gate."
+        },
+        {
+          "section": "31. Финальный SearchLint 1.0 Release Gate",
+          "item": "Все два reviewer sign-off получены",
+          "gateType": "independent_reviewer_gate",
+          "relatedCommand": "pnpm rule-qa:review",
+          "requiredEvidence": "Two real independent reviewer JSON files, full benchmark coverage, matching benchmarkVersion, adjudicated disagreements, and passing pnpm rule-qa:review.",
+          "nextOwnerAction": "Select two independent reviewers, collect reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then rerun the review gate."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/reviews/oauth-vault-security/reviewer-1.review.json",
+      "templatePaths": [
+        "docs/reviews/oauth-vault-security/REVIEW_FORM_TEMPLATE.md"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm oauth-vault:security-review"],
+      "gateTypes": ["external_security_review_gate"],
+      "ownerAction": "Create docs/reviews/oauth-vault-security/reviewer-1.review.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm oauth-vault:security-review.",
+      "relatedGates": [
+        {
+          "section": "16. OAuth vault",
+          "item": "Провести external security review vault",
+          "gateType": "external_security_review_gate",
+          "relatedCommand": "pnpm oauth-vault:security-review",
+          "requiredEvidence": "Two real independent OAuth vault security reviewer files plus passing vault security review report.",
+          "nextOwnerAction": "Provide real OAuth vault security reviewer evidence and rerun the vault security review gate."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/reviews/oauth-vault-security/reviewer-2.review.json",
+      "templatePaths": [
+        "docs/reviews/oauth-vault-security/REVIEW_FORM_TEMPLATE.md"
+      ],
+      "relatedGateCount": 1,
+      "relatedCommands": ["pnpm oauth-vault:security-review"],
+      "gateTypes": ["external_security_review_gate"],
+      "ownerAction": "Create docs/reviews/oauth-vault-security/reviewer-2.review.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm oauth-vault:security-review.",
+      "relatedGates": [
+        {
+          "section": "16. OAuth vault",
+          "item": "Провести external security review vault",
+          "gateType": "external_security_review_gate",
+          "relatedCommand": "pnpm oauth-vault:security-review",
+          "requiredEvidence": "Two real independent OAuth vault security reviewer files plus passing vault security review report.",
+          "nextOwnerAction": "Provide real OAuth vault security reviewer evidence and rerun the vault security review gate."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/reviews/overlay-accessibility/reviewer.review.json",
+      "templatePaths": [
+        "docs/reviews/overlay-accessibility/REVIEW_FORM_TEMPLATE.md"
+      ],
+      "relatedGateCount": 3,
+      "relatedCommands": ["pnpm overlay:manual-a11y-review"],
+      "gateTypes": ["manual_accessibility_review_gate"],
+      "ownerAction": "Create docs/reviews/overlay-accessibility/reviewer.review.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm overlay:manual-a11y-review.",
+      "relatedGates": [
+        {
+          "section": "6. Badge и Overlay",
+          "item": "Провести ручной accessibility audit",
+          "gateType": "manual_accessibility_review_gate",
+          "relatedCommand": "pnpm overlay:manual-a11y-review",
+          "requiredEvidence": "Manual accessibility review evidence for the required assistive technology/browser matrix.",
+          "nextOwnerAction": "Run the manual accessibility review and record reviewer evidence."
+        },
+        {
+          "section": "6. Badge и Overlay",
+          "item": "Проверить screen readers",
+          "gateType": "manual_accessibility_review_gate",
+          "relatedCommand": "pnpm overlay:manual-a11y-review",
+          "requiredEvidence": "Manual accessibility review evidence for the required assistive technology/browser matrix.",
+          "nextOwnerAction": "Run the manual accessibility review and record reviewer evidence."
+        },
+        {
+          "section": "31. Финальный SearchLint 1.0 Release Gate",
+          "item": "Overlay release acceptance пройден",
+          "gateType": "manual_accessibility_review_gate",
+          "relatedCommand": "pnpm overlay:manual-a11y-review",
+          "requiredEvidence": "Overlay automated acceptance, visual regression, and manual accessibility/screen-reader reviewer evidence.",
+          "nextOwnerAction": "Run overlay acceptance/visual checks and provide real manual accessibility reviewer evidence."
+        }
+      ]
+    },
+    {
+      "missingEvidencePath": "docs/reviews/penetration-test/report-summary.json",
+      "templatePaths": [
+        "docs/reviews/penetration-test/REPORT_SUMMARY_TEMPLATE.md"
+      ],
+      "relatedGateCount": 2,
+      "relatedCommands": ["pnpm security:pentest"],
+      "gateTypes": ["external_security_review_gate"],
+      "ownerAction": "Create docs/reviews/penetration-test/report-summary.json from the listed template/instructions using real owner or reviewer evidence, then run pnpm security:pentest.",
+      "relatedGates": [
+        {
+          "section": "28. Security и Privacy",
+          "item": "Провести penetration test",
+          "gateType": "external_security_review_gate",
+          "relatedCommand": "pnpm security:pentest",
+          "requiredEvidence": "Passed deployed-target DAST, independent penetration-test report, remediation sign-off, and security/legal approval.",
+          "nextOwnerAction": "Run DAST against deployed production-equivalent targets, commission independent penetration testing, remediate findings, and approve the final gate."
+        },
+        {
+          "section": "31. Финальный SearchLint 1.0 Release Gate",
+          "item": "Penetration test пройден",
+          "gateType": "external_security_review_gate",
+          "relatedCommand": "pnpm security:pentest",
+          "requiredEvidence": "Passed deployed-target DAST, independent penetration-test report, remediation sign-off, and security/legal approval.",
+          "nextOwnerAction": "Run DAST against deployed production-equivalent targets, commission independent penetration testing, remediate findings, and approve the final gate."
+        }
+      ]
+    }
+  ],
+  "nonClaims": [
+    "This runbook does not create owner evidence.",
+    "This runbook does not close release gates.",
+    "Templates and instructions are not release evidence.",
+    "SearchLint 1.0 remains blocked until real owner, reviewer, legal, security, provider, deployment, publication, backup, and final release evidence exists and dedicated verifiers pass."
+  ]
+}
