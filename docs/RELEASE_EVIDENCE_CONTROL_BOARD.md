@@ -8,19 +8,20 @@ evidence, and does not close any release gate.
 
 ## Last Verified Baseline
 
-- Verified baseline commit: `6cc058272ee3438ccd211a4b087e3664fef9979a`
+- Verified baseline commit: `b6aa71be4751496856668de924aa341847403ac4`
 - Baseline CI: passed in GitHub Actions run
-  `https://github.com/muhamed1222/searchlint/actions/runs/28456960471`
+  `https://github.com/muhamed1222/searchlint/actions/runs/28460679452`
 - Final release gate: `blocked`
 - Release readiness: 522/599 done; 77 remaining
 - Real owner evidence inputs: 0/60 present
 - Missing evidence paths: 108
 - `v1.0.0`: absent and must not be created yet
 
-`main` may advance as orchestration-only documents are merged. Before using this
-board to close a release gate, rerun the affected verifier plus
-`pnpm release:evidence-readiness` and `pnpm final-release:gate` from a fresh
-checkout.
+This baseline includes the generated-release-doc reproducibility fixes through
+ExecPlan 458. `main` may advance as orchestration-only changes are merged.
+Before using this board to close a release gate, rerun the affected verifier
+plus `pnpm release:evidence-readiness` and `pnpm final-release:gate` from a
+fresh checkout.
 
 ## Source Of Truth
 
