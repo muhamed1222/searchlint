@@ -8,6 +8,12 @@ It groups the remaining SearchLint 1.0 gates by practical execution phase.
 It does not close any gate and does not provide owner, legal, reviewer,
 deployed, live provider, publication, or final release evidence.
 
+## Orchestration Board
+
+Use `docs/RELEASE_EVIDENCE_CONTROL_BOARD.md` for the current owner-routing board
+across release evidence issues `#19` through `#25`, including packet checksums,
+dispatch packet references, priority order, and forbidden release actions.
+
 ## Current Count
 
 - checked: 522

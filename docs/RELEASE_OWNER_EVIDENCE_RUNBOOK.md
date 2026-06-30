@@ -6,6 +6,13 @@ This runbook aggregates missing owner evidence inputs from
 `reports/release-missing-evidence-template-index-report.json`. It does not
 create evidence and it does not close release gates.
 
+## Orchestration Board
+
+Use `docs/RELEASE_EVIDENCE_CONTROL_BOARD.md` to route these missing owner inputs
+to the active GitHub release-evidence issues, handoff packets, and dispatch
+instructions. The board is an orchestration document only; it does not replace
+the real owner inputs listed below.
+
 ## Summary
 
 - status: `blocked_waiting_for_owner_evidence`

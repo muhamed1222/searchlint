@@ -5,6 +5,10 @@ Generated at: 2026-06-23T00:00:00.000Z
 This aggregate status runs the release evidence readiness pipeline. It is not
 release approval.
 
+Use `docs/RELEASE_EVIDENCE_CONTROL_BOARD.md` for owner routing across the
+remaining release evidence packages. The control board does not replace this
+machine-generated readiness summary.
+
 ## Summary
 
 - Status: `blocked_external_evidence`
