@@ -8,20 +8,20 @@ evidence, and does not close any release gate.
 
 ## Last Verified Baseline
 
-- Verified baseline commit: `b6aa71be4751496856668de924aa341847403ac4`
+- Verified baseline commit: `83994ab5924ac98a0930272d8652c21c87a273c8`
 - Baseline CI: passed in GitHub Actions run
-  `https://github.com/muhamed1222/searchlint/actions/runs/28460679452`
+  `https://github.com/muhamed1222/searchlint/actions/runs/28461255762`
 - Final release gate: `blocked`
 - Release readiness: 522/599 done; 77 remaining
 - Real owner evidence inputs: 0/60 present
 - Missing evidence paths: 108
 - `v1.0.0`: absent and must not be created yet
 
-This baseline includes the generated-release-doc reproducibility fixes through
-ExecPlan 458. `main` may advance as orchestration-only changes are merged.
-Before using this board to close a release gate, rerun the affected verifier
-plus `pnpm release:evidence-readiness` and `pnpm final-release:gate` from a
-fresh checkout.
+This baseline includes the release evidence control board baseline refresh
+through ExecPlan 459. `main` may advance as orchestration-only changes are
+merged. Before using this board to close a release gate, rerun the affected
+verifier plus `pnpm release:evidence-readiness` and `pnpm final-release:gate`
+from a fresh checkout.
 
 ## Source Of Truth
 
@@ -62,6 +62,8 @@ The consolidated local control packet is:
 
 Ready-to-send owner instructions were prepared as local orchestration artifacts:
 
+- GitHub-readable P0 dispatch runbook:
+  `docs/RELEASE_P0_OWNER_DISPATCH_RUNBOOK.md`
 - P0 dispatch packet:
   `/tmp/searchlint-p0-dispatch/searchlint-p0-dispatch-packet.zip`
 - P0 dispatch SHA-256:
