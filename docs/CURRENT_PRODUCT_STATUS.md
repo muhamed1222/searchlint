@@ -97,10 +97,10 @@ coverage. Major 1.0 product surfaces remain scaffold-only or not started.
 | `pnpm security:privacy-requests`                         | Passed under Node 24 for deterministic privacy request execution             |
 | `pnpm website:acceptance`                                | Passed under Node 24 for website/onboarding source proof                     |
 | `pnpm onboarding:final`                                  | Passed under Node 24 for source-level onboarding final evidence              |
-| `pnpm governance:required-ci-checks`                     | Expected fail until hosted GitHub required status checks are configured      |
-| `pnpm governance:hosted-github-evidence`                 | Expected fail until owner-provided hosted GitHub evidence exists             |
+| `pnpm governance:required-ci-checks`                     | Passed under Node 24 for hosted GitHub required status checks                |
+| `pnpm governance:hosted-github-evidence`                 | Passed under Node 24 for hosted GitHub governance evidence                   |
 | `pnpm governance:hosted-github-evidence:self-test`       | Passed under Node 24 for hosted GitHub evidence verifier hardening           |
-| `pnpm governance:hosted-github-evidence:runbook`         | Passed under Node 24; blocked until a real GitHub origin exists              |
+| `pnpm governance:hosted-github-evidence:runbook`         | Passed under Node 24; ready for hosted GitHub owner collection               |
 | `pnpm governance:hosted-github-evidence:owner-guide`     | Passed under Node 24 for exact hosted GitHub owner input guide               |
 | `pnpm release:owner-evidence-runbook`                    | Passed under Node 24 for aggregated 63-input owner evidence runbook          |
 | `pnpm release:owner-evidence-package-status`             | Passed under Node 24 for 7-package owner evidence status                     |
@@ -182,10 +182,7 @@ Completed 434 scope:
   `docs/examples/required-ci-checks-owner-gate-report.sample.json`;
 - verified `.github/workflows/ci.yml` and
   `docs/github/branch-protection-main.json` agree on the required status checks;
-- confirmed the current checkout has no GitHub `origin` remote, so the verifier
-  fails as expected with `blocked_until_remote`;
-- required hosted CI checks remain open until a real GitHub repository enforces
-  them on `main`.
+- confirmed hosted GitHub `main` enforces the seven required CI checks.
 
 ## Hosted GitHub Governance Evidence Verifier
 
@@ -199,10 +196,8 @@ Completed 435 scope:
   required-CI owner-gate evidence mapping;
 - generated deterministic sanitized sample evidence at
   `docs/examples/hosted-github-governance-evidence-report.sample.json`;
-- confirmed the current checkout has no real hosted GitHub evidence, so the
-  verifier fails as expected with `missing_hosted_github_evidence`;
-- protected branch and required hosted CI checks remain open until the owner
-  provides real hosted GitHub evidence and the dedicated verifiers pass.
+- confirmed `docs/github/hosted-governance-evidence.json` validates the hosted
+  GitHub repository, protected `main` branch, and seven required CI checks.
 
 Completed 436 scope:
 
@@ -212,8 +207,8 @@ Completed 436 scope:
   protection, and failed CI run evidence;
 - generated deterministic sanitized self-test evidence at
   `docs/examples/hosted-github-governance-evidence-self-test-report.sample.json`;
-- real hosted GitHub evidence remains missing and the release gate remains
-  blocked externally.
+- hosted GitHub evidence is present; the broader release gate remains blocked on
+  other external owner evidence.
 
 Completed 437 scope:
 
@@ -223,8 +218,8 @@ Completed 437 scope:
   `docs/examples/hosted-github-governance-evidence-runbook-report.sample.json`;
 - runbook lists exact non-mutating `git` and `gh` commands for collecting
   branch-protection and latest successful CI metadata;
-- current runbook status is `blocked_until_github_origin` because no GitHub
-  `origin` is configured.
+- current runbook status is `ready_for_owner_collection` for the hosted GitHub
+  repository.
 
 Completed 443 scope:
 
