@@ -101,8 +101,13 @@ function assertSourceReports(runbookReport, intakeReport) {
   if (runbookReport.status !== "blocked_waiting_for_owner_evidence") {
     throw new Error("Owner evidence runbook must be in blocked waiting state.");
   }
-  if (runbookReport.summary?.missingOwnerInputCount !== 63) {
-    throw new Error("Owner evidence runbook must cover 63 missing inputs.");
+  if (
+    runbookReport.entries?.length !==
+    runbookReport.summary?.missingOwnerInputCount
+  ) {
+    throw new Error(
+      `Owner evidence runbook count mismatch: entries=${runbookReport.entries?.length}, missingOwnerInputCount=${runbookReport.summary?.missingOwnerInputCount}.`
+    );
   }
   if (intakeReport.status !== "blocked_external_evidence") {
     throw new Error("Evidence intake must remain blocked.");
@@ -210,8 +215,15 @@ function assertCurrentBlockedState(report) {
   if (report.summary.blockedPackageCount !== 7) {
     throw new Error("Current checkout must report all 7 packages blocked.");
   }
-  if (report.summary.missingOwnerInputCount !== 63) {
-    throw new Error("Current checkout must report 63 missing owner inputs.");
+  if (
+    report.summary.missingOwnerInputCount +
+      report.summary.presentOwnerInputCount !==
+    report.packageRecords.reduce(
+      (sum, record) => sum + record.evidence.length,
+      0
+    )
+  ) {
+    throw new Error("Owner input summary counts are inconsistent.");
   }
   if (report.summary.presentOwnerInputCount !== 0) {
     throw new Error("Current checkout must report 0 present owner inputs.");

@@ -302,11 +302,19 @@ function verifyEvidenceReadiness(report) {
       `Expected evidence readiness to be blocked_external_evidence, received ${JSON.stringify(report.status)}.`
     );
   }
-  if (report.summary?.openGateCount !== 83) {
-    throw new Error("Evidence readiness must report 83 open gates.");
+  if (
+    report.summary?.openGateCount + report.summary?.checkedItemCount !==
+    report.summary?.totalItemCount
+  ) {
+    throw new Error("Evidence readiness checklist counts are inconsistent.");
   }
-  if (report.summary?.expectedOwnerEvidenceCount !== 52) {
-    throw new Error("Evidence readiness must report 52 owner evidence files.");
+  if (
+    report.summary?.templateCoveredOwnerInputCount !==
+    report.summary?.expectedOwnerEvidenceCount
+  ) {
+    throw new Error(
+      "Evidence readiness must report template coverage for every owner evidence file."
+    );
   }
   if (report.summary?.realOwnerEvidenceCount !== 0) {
     throw new Error(

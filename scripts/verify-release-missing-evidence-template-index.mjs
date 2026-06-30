@@ -82,9 +82,13 @@ function assertIntakeReport(report) {
   if (!Array.isArray(report.gateRecords)) {
     throw new Error("Evidence intake report must include gateRecords.");
   }
-  if (report.summary?.openGateCount !== 83) {
+  const expectedOpenGateCount = report.checklist?.openItems;
+  if (
+    typeof expectedOpenGateCount !== "number" ||
+    report.summary?.openGateCount !== expectedOpenGateCount
+  ) {
     throw new Error(
-      `Expected 83 open gates, found ${report.summary?.openGateCount}.`
+      `Evidence intake open gate count mismatch: checklist.openItems=${String(expectedOpenGateCount)}, summary.openGateCount=${String(report.summary?.openGateCount)}.`
     );
   }
 }

@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "evidenceType": "blocker-benchmark-review-delivery",
+  "benchmarkVersion": "0.1.0-synthetic",
+  "caseIndexPath": "docs/reviews/blocker-benchmark/BENCHMARK_CASE_INDEX.json",
+  "caseIndexSha256": "7fbf01dcd80aaa2517a2ad25d8d8388935ff64c83a30c596692055305ede8357",
+  "deliveredAt": "2026-06-23T00:00:00.000Z",
+  "deliveryChannel": "owner-managed-channel",
+  "deliveredPacketFiles": [
+    "docs/reviews/blocker-benchmark/HANDOFF_MANIFEST.json",
+    "docs/reviews/blocker-benchmark/BENCHMARK_CASE_INDEX.json",
+    "docs/reviews/blocker-benchmark/README.md",
+    "docs/reviews/blocker-benchmark/REVIEW_INSTRUCTIONS.md",
+    "docs/reviews/blocker-benchmark/REVIEW_FORM_TEMPLATE.md",
+    "docs/reviews/blocker-benchmark/ADJUDICATION_LOG.md",
+    "docs/reviews/blocker-benchmark/REVIEW_STATUS.md",
+    "docs/reviews/blocker-benchmark/reviewer-1.review.example.json",
+    "docs/reviews/blocker-benchmark/reviewer-2.review.example.json"
+  ],
+  "intendedReviewers": [
+    {
+      "reviewerId": "reviewer-1",
+      "reviewerDisplayName": "Independent reviewer 1",
+      "targetReviewFile": "docs/reviews/blocker-benchmark/reviewer-1.review.json",
+      "independenceStatement": "Reviewer is independent from benchmark fixture authoring and rule implementation."
+    },
+    {
+      "reviewerId": "reviewer-2",
+      "reviewerDisplayName": "Independent reviewer 2",
+      "targetReviewFile": "docs/reviews/blocker-benchmark/reviewer-2.review.json",
+      "independenceStatement": "Reviewer is independent from benchmark fixture authoring and rule implementation."
+    }
+  ],
+  "ownerAttestation": {
+    "packetSent": true,
+    "noReviewerSignoffClaimed": true,
+    "exampleFilesExcluded": true,
+    "signedStatement": "The owner delivered the listed packet files to the intended independent reviewers. This evidence records delivery only and does not claim reviewer approval."
+  }
+}

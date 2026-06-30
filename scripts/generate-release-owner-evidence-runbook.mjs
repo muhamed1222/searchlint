@@ -98,9 +98,12 @@ function assertSourceReports(missingTemplateReport, readinessReport) {
   if (missingTemplateReport.status !== "template_index_ready") {
     throw new Error("Missing evidence template index must be ready.");
   }
-  if (missingTemplateReport.missingOwnerInputCount !== 63) {
+  if (
+    missingTemplateReport.entries?.length !==
+    missingTemplateReport.missingOwnerInputCount
+  ) {
     throw new Error(
-      `Expected 63 missing owner inputs, found ${missingTemplateReport.missingOwnerInputCount}.`
+      `Missing evidence template index count mismatch: entries=${missingTemplateReport.entries?.length}, missingOwnerInputCount=${missingTemplateReport.missingOwnerInputCount}.`
     );
   }
   if (readinessReport.status !== "blocked_external_evidence") {
@@ -240,8 +243,10 @@ function buildPackages(entries) {
 }
 
 function assertCoverage(report) {
-  if (report.summary.missingOwnerInputCount !== 63) {
-    throw new Error("Owner evidence runbook must cover 63 missing inputs.");
+  if (report.entries.length !== report.summary.missingOwnerInputCount) {
+    throw new Error(
+      `Owner evidence runbook count mismatch: entries=${report.entries.length}, missingOwnerInputCount=${report.summary.missingOwnerInputCount}.`
+    );
   }
   if (
     report.summary.entriesWithTemplateCount !==

@@ -1,0 +1,151 @@
+{
+  "generatedBy": "searchlint-onboarding-source-final-verifier",
+  "generatedAt": "2026-06-23T00:00:00.000Z",
+  "status": "passed",
+  "scope": {
+    "proofType": "deterministic onboarding source final readiness",
+    "closesMasterChecklistItem": "Onboarding готов",
+    "doesNotClaim": [
+      "deployed public website",
+      "live signup/auth onboarding",
+      "live cloud project creation wizard",
+      "final marketing/legal/privacy/pricing approval",
+      "SearchLint 1.0 final release approval"
+    ]
+  },
+  "commands": [
+    {
+      "name": "websiteOnboardingSource",
+      "command": "pnpm website:acceptance",
+      "status": "passed",
+      "durationMs": 289
+    },
+    {
+      "name": "documentationFinalReadiness",
+      "command": "pnpm docs:final-readiness",
+      "status": "passed",
+      "durationMs": 9654
+    }
+  ],
+  "files": [
+    { "path": "docs/ONBOARDING_GUIDE.md", "bytes": 2433 },
+    { "path": "docs/PUBLIC_WEBSITE_ONBOARDING.md", "bytes": 4708 },
+    { "path": "docs/examples/demo-project/README.md", "bytes": 880 },
+    { "path": "docs/examples/demo-project/searchlint.seo", "bytes": 340 },
+    {
+      "path": "docs/examples/public-website-onboarding-report.sample.json",
+      "bytes": 5410
+    },
+    {
+      "path": "docs/examples/documentation-final-readiness-report.sample.json",
+      "bytes": 4695
+    }
+  ],
+  "guide": {
+    "path": "docs/ONBOARDING_GUIDE.md",
+    "sections": [
+      { "marker": "Installation", "status": "present" },
+      { "marker": "Quick Start", "status": "present" },
+      { "marker": "Next.js Guide", "status": "present" },
+      { "marker": "CLI Guide", "status": "present" },
+      { "marker": "VS Code Guide", "status": "present" },
+      { "marker": "Google and Yandex Guide", "status": "present" },
+      { "marker": "Onboarding Wizard Source", "status": "present" },
+      { "marker": "Demo Project", "status": "present" }
+    ],
+    "wizardInputs": [
+      { "marker": "Project name and site URL", "status": "present" },
+      {
+        "marker": "Framework: Next.js, generic website, or crawler-only",
+        "status": "present"
+      },
+      {
+        "marker": "Environment: local, staging, or production",
+        "status": "present"
+      },
+      {
+        "marker": "Preferred entry point: CLI, Next.js dev overlay, VS Code, or cloud",
+        "status": "present"
+      },
+      {
+        "marker": "Rule policy starter: strict, balanced, or advisory",
+        "status": "present"
+      },
+      {
+        "marker": "Optional Google/Yandex connection intent",
+        "status": "present"
+      },
+      {
+        "marker": "Report audience: developer, client, executive, or agency",
+        "status": "present"
+      }
+    ],
+    "wizardOutputs": [
+      { "marker": "a `searchlint.seo` starter config", "status": "present" },
+      { "marker": "the next CLI command", "status": "present" },
+      {
+        "marker": "documentation links for the selected workflow",
+        "status": "present"
+      },
+      {
+        "marker": "a reminder that live cloud/provider features require release-gated setup",
+        "status": "present"
+      }
+    ]
+  },
+  "demoProject": {
+    "readmePath": "docs/examples/demo-project/README.md",
+    "configPath": "docs/examples/demo-project/searchlint.seo",
+    "configMarkers": [
+      { "marker": "language 1", "status": "present" },
+      { "marker": "site \"https://example.com\"", "status": "present" },
+      { "marker": "policy productPage", "status": "present" },
+      { "marker": "route \"/\"", "status": "present" },
+      { "marker": "route \"/products/[slug]\"", "status": "present" },
+      { "marker": "route \"/admin/**\"", "status": "present" },
+      { "marker": "canonical self", "status": "present" },
+      { "marker": "indexable false", "status": "present" }
+    ],
+    "routes": ["/", "/products/[slug]", "/admin/**"],
+    "policy": "productPage"
+  },
+  "releaseHonesty": [
+    {
+      "filePath": "docs/ONBOARDING_GUIDE.md",
+      "marker": "Public package publication remains a release gate",
+      "status": "present"
+    },
+    {
+      "filePath": "docs/ONBOARDING_GUIDE.md",
+      "marker": "Live provider setup remains a release gate",
+      "status": "present"
+    },
+    {
+      "filePath": "docs/examples/demo-project/README.md",
+      "marker": "Live cloud onboarding, Google/Yandex connection, hosted reports, and billing are not claimed",
+      "status": "present"
+    },
+    {
+      "filePath": "docs/PUBLIC_WEBSITE_ONBOARDING.md",
+      "marker": "live cloud availability before deployed acceptance is complete",
+      "status": "present"
+    }
+  ],
+  "summary": {
+    "commandCount": 2,
+    "fileCount": 6,
+    "guideSectionCount": 8,
+    "wizardInputCount": 7,
+    "wizardOutputCount": 4,
+    "demoConfigMarkerCount": 8,
+    "honestyMarkerCount": 4
+  },
+  "assertions": [
+    "Public website/onboarding source acceptance passes.",
+    "Documentation final readiness passes.",
+    "Onboarding source contains installation, quick-start, local tool, provider, wizard, and demo sections.",
+    "Onboarding wizard source defines expected inputs and outputs.",
+    "Demo project includes a deterministic starter searchlint.seo config.",
+    "Onboarding docs explicitly avoid claiming live cloud/provider/signup readiness."
+  ]
+}

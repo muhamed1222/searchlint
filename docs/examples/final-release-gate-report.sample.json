@@ -1,0 +1,218 @@
+{
+  "generatedBy": "searchlint-1-0-final-release-gate-verifier",
+  "generatedAt": "2026-06-22T00:00:00.000Z",
+  "releaseVersion": "1.0.0",
+  "status": "blocked",
+  "verdict": "SearchLint 1.0 must not be tagged or published yet.",
+  "tag": { "name": "v1.0.0", "exists": false, "action": "not-created" },
+  "rcMatrix": {
+    "status": "blocked",
+    "gateCount": 31,
+    "evidencePresentCount": 11,
+    "blockedGateCount": 20
+  },
+  "evidenceReadiness": {
+    "status": "blocked_external_evidence",
+    "checkedItemCount": 522,
+    "totalItemCount": 599,
+    "openGateCount": 77,
+    "expectedOwnerEvidenceCount": 51,
+    "realOwnerEvidenceCount": 0,
+    "missingOwnerInputCount": 60,
+    "templateCoveredOwnerInputCount": 51,
+    "releaseGateClaim": "not_claimed"
+  },
+  "summary": {
+    "gateCount": 20,
+    "presentCount": 4,
+    "blockedOrMissingCount": 16,
+    "releaseBlockerCount": 16
+  },
+  "requiredEvidence": [
+    {
+      "id": "evidence-readiness",
+      "status": "blocked",
+      "evidenceFiles": [
+        "docs/RELEASE_EVIDENCE_READINESS_SUMMARY.md",
+        "docs/examples/release-evidence-readiness-summary-report.sample.json"
+      ],
+      "blockers": [
+        "aggregate release evidence readiness is blocked on external evidence"
+      ]
+    },
+    {
+      "id": "reviewer-signoff",
+      "status": "missing",
+      "evidenceFiles": [],
+      "blockers": [
+        "two real independent blocker-benchmark reviewer files are missing"
+      ]
+    },
+    {
+      "id": "rule-qa-final",
+      "status": "blocked",
+      "evidenceFiles": ["docs/reviews/blocker-benchmark/README.md"],
+      "blockers": [
+        "pnpm rule-qa:review cannot pass until reviewer sign-off exists"
+      ]
+    },
+    {
+      "id": "legal-review",
+      "status": "blocked",
+      "evidenceFiles": ["docs/LEGAL_RELEASE_GATE_CHECKLIST.md"],
+      "blockers": ["qualified legal approval is missing"]
+    },
+    {
+      "id": "repository-boundary",
+      "status": "blocked",
+      "evidenceFiles": [
+        "docs/PUBLIC_PRIVATE_REPOSITORY_BOUNDARY_PLAN.md",
+        "docs/examples/public-repository-boundary-report.sample.json"
+      ],
+      "blockers": [
+        "actual public/private repository split and owner/legal sign-off are missing"
+      ]
+    },
+    {
+      "id": "branch-protection-ci",
+      "status": "missing",
+      "evidenceFiles": [],
+      "blockers": [
+        "protected branch and required hosted CI checks are not configured evidence"
+      ]
+    },
+    {
+      "id": "npm-publication",
+      "status": "blocked",
+      "evidenceFiles": ["docs/PACKAGE_PUBLICATION_READINESS.md"],
+      "blockers": [
+        "trusted publishing, approved URLs, beta/final publication, and registry install are missing"
+      ]
+    },
+    {
+      "id": "vscode-marketplace",
+      "status": "blocked",
+      "evidenceFiles": ["docs/VSCODE_LSP_USAGE.md"],
+      "blockers": [
+        "Marketplace publication and clean install evidence are missing"
+      ]
+    },
+    {
+      "id": "public-website-docs",
+      "status": "blocked",
+      "evidenceFiles": ["docs/PUBLIC_WEBSITE_ONBOARDING.md"],
+      "blockers": [
+        "deployed public website/docs and final copy approval are missing"
+      ]
+    },
+    {
+      "id": "onboarding-source",
+      "status": "present",
+      "evidenceFiles": [
+        "docs/ONBOARDING_FINAL_READINESS.md",
+        "docs/examples/onboarding-source-final-report.sample.json"
+      ],
+      "blockers": []
+    },
+    {
+      "id": "zero-production-impact",
+      "status": "present",
+      "evidenceFiles": [
+        "docs/ZERO_PRODUCTION_IMPACT_FINAL_GATE.md",
+        "docs/examples/zero-production-impact-final-report.sample.json"
+      ],
+      "blockers": []
+    },
+    {
+      "id": "live-cloud",
+      "status": "blocked",
+      "evidenceFiles": ["docs/SEARCHLINT_1_0_RELEASE_CANDIDATE_MATRIX.md"],
+      "blockers": [
+        "live AWS/RDS/API/SQS/S3/Cognito/OAuth/dashboard evidence is missing"
+      ]
+    },
+    {
+      "id": "live-search-integrations",
+      "status": "blocked",
+      "evidenceFiles": [
+        "docs/GOOGLE_SEARCH_CONSOLE_ACCEPTANCE.md",
+        "docs/GOOGLE_PERFORMANCE_ACCEPTANCE.md",
+        "docs/YANDEX_ACCEPTANCE.md"
+      ],
+      "blockers": [
+        "live Google/Yandex/PageSpeed/CrUX provider acceptance is missing"
+      ]
+    },
+    {
+      "id": "live-billing",
+      "status": "blocked",
+      "evidenceFiles": ["docs/BILLING_ACCEPTANCE.md"],
+      "blockers": ["live Stripe acceptance is missing"]
+    },
+    {
+      "id": "reports",
+      "status": "present",
+      "evidenceFiles": [
+        "docs/REPORTS_FINAL_READINESS.md",
+        "docs/examples/reports-final-readiness-report.sample.json"
+      ],
+      "blockers": []
+    },
+    {
+      "id": "documentation",
+      "status": "present",
+      "evidenceFiles": [
+        "docs/DOCUMENTATION_FINAL_READINESS.md",
+        "docs/examples/documentation-final-readiness-report.sample.json"
+      ],
+      "blockers": []
+    },
+    {
+      "id": "security-audit",
+      "status": "blocked",
+      "evidenceFiles": ["docs/SECURITY_PRIVACY_RELEASE_GATE.md"],
+      "blockers": ["DAST, penetration test, and security approval are missing"]
+    },
+    {
+      "id": "final-rc",
+      "status": "blocked",
+      "evidenceFiles": [
+        "docs/SEARCHLINT_1_0_RELEASE_CANDIDATE_MATRIX.md",
+        "docs/examples/searchlint-1-0-rc-matrix-report.sample.json"
+      ],
+      "blockers": ["final RC matrix remains blocked"]
+    },
+    {
+      "id": "git-tag-v1.0.0",
+      "status": "missing",
+      "evidenceFiles": [],
+      "blockers": ["local Git tag v1.0.0 is absent"]
+    },
+    {
+      "id": "public-release",
+      "status": "missing",
+      "evidenceFiles": [],
+      "blockers": ["SearchLint 1.0 public release evidence is absent"]
+    }
+  ],
+  "forbiddenActions": [
+    "git tag v1.0.0",
+    "npm publish",
+    "vsce publish",
+    "public website release",
+    "SearchLint 1.0 announcement"
+  ],
+  "requiredFutureCommands": [
+    "pnpm rule-qa:review",
+    "pnpm package:dry-run",
+    "pnpm zero-impact:final",
+    "pnpm reports:final-readiness",
+    "pnpm docs:final-readiness",
+    "pnpm onboarding:final",
+    "pnpm release:evidence-readiness",
+    "pnpm legal:release-gate",
+    "pnpm backup:restore-live-gate",
+    "pnpm rc:matrix",
+    "pnpm final-release:gate"
+  ]
+}

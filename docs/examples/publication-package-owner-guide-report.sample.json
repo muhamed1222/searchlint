@@ -1,0 +1,135 @@
+{
+  "schemaVersion": 1,
+  "generatedBy": "searchlint-publication-package-owner-guide",
+  "generatedAt": "2026-06-23T00:00:00.000Z",
+  "status": "owner_input_required",
+  "package": {
+    "id": "03-publication",
+    "title": "npm And VS Code Publication",
+    "status": "blocked_missing_owner_evidence",
+    "missingInputCount": 7,
+    "presentInputCount": 0,
+    "blockedOrFailingEvidenceCount": 7,
+    "templateCoveredInputCount": 7
+  },
+  "requiredEvidence": [
+    {
+      "path": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-npm-pakety-opublikovany.json",
+      "exists": false,
+      "intakeStatus": "missing",
+      "templateCount": 1,
+      "relatedCommands": ["pnpm final-release:gate"],
+      "groupId": "npm-publication"
+    },
+    {
+      "path": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-vs-code-extension-opublikovan.json",
+      "exists": false,
+      "intakeStatus": "missing",
+      "templateCount": 1,
+      "relatedCommands": ["pnpm vscode:update-e2e"],
+      "groupId": "vscode-publication"
+    },
+    {
+      "path": "docs/release-owner-evidence/7-vs-code-i-lsp-nastroit-publisher-account.json",
+      "exists": false,
+      "intakeStatus": "missing",
+      "templateCount": 1,
+      "relatedCommands": ["pnpm vscode:update-e2e"],
+      "groupId": "vscode-publication"
+    },
+    {
+      "path": "docs/release-owner-evidence/7-vs-code-i-lsp-podpisat-i-opublikovat-extension.json",
+      "exists": false,
+      "intakeStatus": "missing",
+      "templateCount": 1,
+      "relatedCommands": ["pnpm vscode:update-e2e"],
+      "groupId": "vscode-publication"
+    },
+    {
+      "path": "docs/release-owner-evidence/8-npm-pakety-opublikovat-beta-packages.json",
+      "exists": false,
+      "intakeStatus": "missing",
+      "templateCount": 1,
+      "relatedCommands": ["pnpm package:beta-publication-gate"],
+      "groupId": "npm-publication"
+    },
+    {
+      "path": "docs/release-owner-evidence/8-npm-pakety-podgotovit-finalnuyu-publikaciyu-1-0-0.json",
+      "exists": false,
+      "intakeStatus": "missing",
+      "templateCount": 1,
+      "relatedCommands": ["pnpm final-release:gate"],
+      "groupId": "npm-publication"
+    },
+    {
+      "path": "docs/release-owner-evidence/8-npm-pakety-zamenit-0-0-0-beta-versions-na-final-release-versions.json",
+      "exists": false,
+      "intakeStatus": "missing",
+      "templateCount": 1,
+      "relatedCommands": ["pnpm final-release:gate"],
+      "groupId": "npm-publication"
+    }
+  ],
+  "evidenceGroups": [
+    {
+      "id": "package-metadata",
+      "title": "Public Package Metadata",
+      "ownerAction": "Provide owner-approved public repository, homepage, issue routing, and package-directory metadata before public manifests are changed.",
+      "evidencePaths": []
+    },
+    {
+      "id": "npm-publication",
+      "title": "npm Beta And Final Publication",
+      "ownerAction": "Provide sanitized npm beta/final publication evidence, version evidence, and clean-install evidence from an npm-like registry or the real npm registry.",
+      "evidencePaths": [
+        "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-npm-pakety-opublikovany.json",
+        "docs/release-owner-evidence/8-npm-pakety-opublikovat-beta-packages.json",
+        "docs/release-owner-evidence/8-npm-pakety-podgotovit-finalnuyu-publikaciyu-1-0-0.json",
+        "docs/release-owner-evidence/8-npm-pakety-zamenit-0-0-0-beta-versions-na-final-release-versions.json"
+      ]
+    },
+    {
+      "id": "vscode-publication",
+      "title": "VS Code Publisher And Marketplace Publication",
+      "ownerAction": "Provide sanitized publisher-account and Marketplace publication evidence for the SearchLint VS Code extension.",
+      "evidencePaths": [
+        "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-vs-code-extension-opublikovan.json",
+        "docs/release-owner-evidence/7-vs-code-i-lsp-nastroit-publisher-account.json",
+        "docs/release-owner-evidence/7-vs-code-i-lsp-podpisat-i-opublikovat-extension.json"
+      ]
+    }
+  ],
+  "validationCommands": [
+    "pnpm final-release:gate",
+    "pnpm vscode:update-e2e",
+    "pnpm package:beta-publication-gate",
+    "pnpm package:metadata-approval",
+    "pnpm package:registry-install",
+    "pnpm release:owner-evidence-package-status"
+  ],
+  "ownerProcedure": [
+    "Collect real owner-controlled publication evidence only after the package metadata, npm publishing, and VS Code Marketplace actions have actually happened.",
+    "Create each required JSON file from its matching template or gate instructions, replacing every example value with real sanitized evidence.",
+    "Keep npm tokens, VS Code PATs, private registry credentials, cookies, private keys, database URLs, and Authorization headers out of committed evidence.",
+    "Run the package metadata, npm, VS Code, final-release, and owner package status commands after the files are populated.",
+    "Do not reuse beta evidence as final 1.0 publication evidence unless the specific gate explicitly accepts that evidence class."
+  ],
+  "forbiddenEvidence": [
+    "copied templates or placeholder values",
+    "screenshots without machine-readable JSON",
+    "npm tokens, automation tokens, or registry credentials",
+    "VS Code Marketplace PATs or publisher secrets",
+    "private package registry URLs containing credentials",
+    "local dry-run output presented as real publication proof",
+    "beta publication evidence presented as final 1.0.0 publication proof",
+    "Marketplace draft or local VSIX evidence presented as published extension proof",
+    "Git tags or package versions claimed without matching release evidence"
+  ],
+  "nonClaims": [
+    "This guide does not publish npm packages.",
+    "This guide does not publish the VS Code extension.",
+    "This guide does not change package versions or package privacy flags.",
+    "This guide does not create a release tag.",
+    "This guide does not close publication or final release gates."
+  ]
+}

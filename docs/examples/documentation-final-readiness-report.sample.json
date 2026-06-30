@@ -1,0 +1,130 @@
+{
+  "generatedBy": "searchlint-documentation-final-readiness-verifier",
+  "generatedAt": "2026-06-23T00:00:00.000Z",
+  "status": "passed",
+  "scope": {
+    "proofType": "deterministic release documentation final readiness",
+    "closesMasterChecklistItem": "Documentation завершена",
+    "doesNotClaim": [
+      "deployed public website",
+      "final marketing/legal/privacy/pricing approval",
+      "live onboarding or signup",
+      "SearchLint 1.0 final release approval"
+    ]
+  },
+  "commands": [
+    {
+      "name": "releaseDocsAcceptance",
+      "command": "pnpm reporters:acceptance",
+      "status": "passed",
+      "durationMs": 4456
+    },
+    {
+      "name": "websiteOnboardingSource",
+      "command": "pnpm website:acceptance",
+      "status": "passed",
+      "durationMs": 288
+    },
+    {
+      "name": "ruleDocsCheck",
+      "command": "pnpm docs:rules:check",
+      "status": "passed",
+      "durationMs": 4617
+    }
+  ],
+  "documents": [
+    { "path": "README.md", "bytes": 7291 },
+    { "path": "CHANGELOG.md", "bytes": 2891 },
+    { "path": "LICENSE", "bytes": 9679 },
+    { "path": "NOTICE", "bytes": 512 },
+    { "path": "CONTRIBUTING.md", "bytes": 1539 },
+    { "path": "DCO.md", "bytes": 1525 },
+    { "path": "SECURITY.md", "bytes": 1403 },
+    { "path": "docs/INSTALLATION.md", "bytes": 6494 },
+    { "path": "docs/DSL_MIGRATION_GUIDE.md", "bytes": 1297 },
+    { "path": "docs/COMPATIBILITY_MATRIX.md", "bytes": 17608 },
+    { "path": "docs/SECURITY_MODEL.md", "bytes": 2507 },
+    { "path": "docs/SECURITY_PRIVACY_RELEASE_GATE.md", "bytes": 3267 },
+    { "path": "docs/PACKAGE_DOCUMENTATION.md", "bytes": 6737 },
+    { "path": "docs/API_DOCUMENTATION.md", "bytes": 1439 },
+    { "path": "docs/RELEASE_NOTES.md", "bytes": 5611 },
+    { "path": "docs/SUPPORT_POLICY.md", "bytes": 1156 },
+    { "path": "docs/DEPRECATION_POLICY.md", "bytes": 1186 },
+    { "path": "docs/VERSIONING_POLICY.md", "bytes": 1528 },
+    { "path": "docs/UPGRADE_GUIDE.md", "bytes": 863 },
+    { "path": "docs/INCIDENT_SUPPORT_PROCESS.md", "bytes": 1033 },
+    { "path": "docs/PUBLIC_WEBSITE_ONBOARDING.md", "bytes": 4708 },
+    { "path": "docs/ONBOARDING_GUIDE.md", "bytes": 2433 },
+    { "path": "docs/FAQ.md", "bytes": 1456 },
+    { "path": "docs/TROUBLESHOOTING.md", "bytes": 1413 },
+    { "path": "docs/rules/README.md", "bytes": 18824 },
+    { "path": "docs/examples/demo-project/README.md", "bytes": 880 },
+    { "path": "docs/examples/demo-project/searchlint.seo", "bytes": 340 },
+    { "path": "specs/SEARCHLINT_LANGUAGE_SPEC.md", "bytes": 6443 },
+    { "path": "docs/SEARCHLINT_1_0_MASTER_CHECKLIST.md", "bytes": 36163 },
+    {
+      "path": "docs/SEARCHLINT_1_0_RELEASE_CANDIDATE_MATRIX.md",
+      "bytes": 4705
+    },
+    { "path": "docs/SEARCHLINT_1_0_FINAL_RELEASE_GATE.md", "bytes": 8949 },
+    { "path": "docs/CURRENT_PRODUCT_STATUS.md", "bytes": 281362 },
+    { "path": "docs/RELEASE_GAP_MATRIX.md", "bytes": 300011 },
+    { "path": "docs/PROJECT_PROGRESS.md", "bytes": 104202 }
+  ],
+  "samples": [
+    {
+      "path": "docs/examples/public-website-onboarding-report.sample.json",
+      "status": "valid-json"
+    },
+    {
+      "path": "docs/examples/reporters-release-docs-acceptance-report.sample.json",
+      "status": "valid-json"
+    }
+  ],
+  "releaseHonesty": [
+    {
+      "filePath": "README.md",
+      "marker": "SearchLint 1.0 is not released",
+      "status": "present"
+    },
+    {
+      "filePath": "CHANGELOG.md",
+      "marker": "SearchLint 1.0 is not released",
+      "status": "present"
+    },
+    {
+      "filePath": "docs/RELEASE_NOTES.md",
+      "marker": "SearchLint 1.0 is not released",
+      "status": "present"
+    },
+    {
+      "filePath": "docs/INSTALLATION.md",
+      "marker": "SearchLint 1.0 is not released",
+      "status": "present"
+    },
+    {
+      "filePath": "docs/PUBLIC_WEBSITE_ONBOARDING.md",
+      "marker": "live cloud availability before deployed acceptance is complete",
+      "status": "present"
+    },
+    {
+      "filePath": "docs/SEARCHLINT_1_0_FINAL_RELEASE_GATE.md",
+      "marker": "Current final release verdict: `BLOCKED`",
+      "status": "present"
+    }
+  ],
+  "summary": {
+    "commandCount": 3,
+    "documentCount": 34,
+    "sampleCount": 2,
+    "honestyMarkerCount": 6
+  },
+  "assertions": [
+    "Release documentation acceptance passes.",
+    "Public website/onboarding source acceptance passes.",
+    "Generated rule documentation is current.",
+    "Required release documentation files exist and are non-empty.",
+    "Required documentation samples exist, are non-empty, and parse as JSON.",
+    "Release docs explicitly state that SearchLint 1.0 is not released while final gates remain blocked."
+  ]
+}

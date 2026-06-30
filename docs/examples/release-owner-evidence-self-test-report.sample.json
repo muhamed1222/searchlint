@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "generatedBy": "searchlint-release-owner-evidence-self-test",
+  "generatedAt": "2026-06-23T00:00:00.000Z",
+  "status": "passed",
+  "caseCount": 6,
+  "passedCaseCount": 6,
+  "results": [
+    {
+      "id": "valid-owner-evidence",
+      "status": "passed",
+      "expectedFailureCodes": [],
+      "actualFailureCodes": [],
+      "failureCount": 0
+    },
+    {
+      "id": "missing-required-fields",
+      "status": "passed",
+      "expectedFailureCodes": [
+        "missing_string",
+        "missing_provided_by",
+        "missing_artifacts",
+        "missing_commands_run",
+        "missing_external_systems"
+      ],
+      "actualFailureCodes": [
+        "missing_string",
+        "missing_provided_by",
+        "missing_artifacts",
+        "missing_commands_run",
+        "missing_external_systems"
+      ],
+      "failureCount": 8
+    },
+    {
+      "id": "gate-mismatch",
+      "status": "passed",
+      "expectedFailureCodes": ["field_mismatch"],
+      "actualFailureCodes": ["field_mismatch"],
+      "failureCount": 1
+    },
+    {
+      "id": "failed-command-result",
+      "status": "passed",
+      "expectedFailureCodes": ["command_not_passed"],
+      "actualFailureCodes": ["command_not_passed"],
+      "failureCount": 1
+    },
+    {
+      "id": "sensitive-value",
+      "status": "passed",
+      "expectedFailureCodes": ["sensitive_value"],
+      "actualFailureCodes": ["sensitive_value"],
+      "failureCount": 1
+    },
+    {
+      "id": "copied-template-placeholder",
+      "status": "passed",
+      "expectedFailureCodes": ["placeholder_value"],
+      "actualFailureCodes": ["placeholder_value"],
+      "failureCount": 2
+    }
+  ],
+  "nonClaims": [
+    "Self-test fixtures are in-memory only and are not owner release evidence.",
+    "This self-test does not close release gates."
+  ]
+}

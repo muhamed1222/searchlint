@@ -1,0 +1,340 @@
+{
+  "generatedBy": "searchlint-1-0-release-candidate-matrix-verifier",
+  "generatedAt": "2026-06-22T00:00:00.000Z",
+  "status": "blocked",
+  "summary": {
+    "gateCount": 31,
+    "evidencePresentCount": 11,
+    "blockedCount": 20,
+    "releaseBlockerCount": 20
+  },
+  "gates": [
+    {
+      "id": "project-governance",
+      "status": "evidence-present",
+      "evidenceFiles": [
+        "docs/PROJECT_PROGRESS.md",
+        "docs/SEARCHLINT_1_0_MASTER_CHECKLIST.md"
+      ],
+      "blockers": [
+        "baseline commit, branch protection, and required GitHub checks still need live configuration evidence"
+      ],
+      "releaseBlocker": false
+    },
+    {
+      "id": "rule-qa",
+      "status": "evidence-present",
+      "evidenceFiles": [
+        "docs/examples/rule-qa-summary.sample.json",
+        "docs/RULE_QA.md"
+      ],
+      "blockers": [],
+      "releaseBlocker": false
+    },
+    {
+      "id": "blocker-precision-review",
+      "status": "blocked",
+      "evidenceFiles": ["docs/reviews/blocker-benchmark/README.md"],
+      "blockers": ["two real independent reviewer JSON files are missing"],
+      "releaseBlocker": true
+    },
+    {
+      "id": "core-local-product",
+      "status": "evidence-present",
+      "evidenceFiles": [
+        "docs/examples/cli-acceptance-report.sample.json",
+        "docs/examples/crawler-acceptance-report.sample.json"
+      ],
+      "blockers": [],
+      "releaseBlocker": false
+    },
+    {
+      "id": "dsl-config",
+      "status": "evidence-present",
+      "evidenceFiles": [
+        "docs/DSL_CONFIG_COMPATIBILITY.md",
+        "docs/DSL_MIGRATION_GUIDE.md"
+      ],
+      "blockers": [],
+      "releaseBlocker": false
+    },
+    {
+      "id": "next-zero-impact",
+      "status": "evidence-present",
+      "evidenceFiles": [
+        "docs/NEXT_ANALYZER_ACCEPTANCE.md",
+        "docs/ZERO_PRODUCTION_IMPACT_FINAL_GATE.md",
+        "docs/examples/zero-production-impact-final-report.sample.json"
+      ],
+      "blockers": [],
+      "releaseBlocker": false
+    },
+    {
+      "id": "overlay",
+      "status": "evidence-present",
+      "evidenceFiles": ["docs/OVERLAY_ACCESSIBILITY_VISUAL_ACCEPTANCE.md"],
+      "blockers": [
+        "manual/external WCAG and production visual review remain open"
+      ],
+      "releaseBlocker": false
+    },
+    {
+      "id": "lsp-vscode",
+      "status": "blocked",
+      "evidenceFiles": ["docs/VSCODE_LSP_USAGE.md", "apps/vscode/README.md"],
+      "blockers": [
+        "VS Code Marketplace publication and clean Marketplace install are missing"
+      ],
+      "releaseBlocker": true
+    },
+    {
+      "id": "npm-packages",
+      "status": "blocked",
+      "evidenceFiles": [
+        "docs/PACKAGE_PUBLICATION_READINESS.md",
+        "docs/examples/package-publication-dry-run-report.sample.json"
+      ],
+      "blockers": [
+        "trusted publishing, approved public URLs, beta publication, and registry install are missing"
+      ],
+      "releaseBlocker": true
+    },
+    {
+      "id": "cli-crawler",
+      "status": "evidence-present",
+      "evidenceFiles": ["docs/CLI_ACCEPTANCE.md", "docs/CLI_CI_USAGE.md"],
+      "blockers": [
+        "Windows/Linux/npm/Yarn and real registry install remain release gates"
+      ],
+      "releaseBlocker": false
+    },
+    {
+      "id": "reporters",
+      "status": "evidence-present",
+      "evidenceFiles": [
+        "docs/REPORT_TEMPLATES.md",
+        "docs/REPORTS_FINAL_READINESS.md",
+        "docs/examples/reports-final-readiness-report.sample.json"
+      ],
+      "blockers": [],
+      "releaseBlocker": false
+    },
+    {
+      "id": "database-storage",
+      "status": "blocked",
+      "evidenceFiles": ["docs/DATABASE_STORAGE_BACKUP_RESTORE.md"],
+      "blockers": [
+        "real RDS deployment, backup, restore, and load proof are missing"
+      ],
+      "releaseBlocker": true
+    },
+    {
+      "id": "object-storage",
+      "status": "blocked",
+      "evidenceFiles": ["docs/OBJECT_STORAGE_ARTIFACT_SECURITY.md"],
+      "blockers": [
+        "real S3 upload/download/delete/signed URL/restore proof is missing"
+      ],
+      "releaseBlocker": true
+    },
+    {
+      "id": "backend-api",
+      "status": "blocked",
+      "evidenceFiles": [
+        "docs/BACKEND_API_DEPLOYMENT_SECURITY_ACCEPTANCE.md",
+        "specs/openapi/searchlint-cloud-api-v1.openapi.json"
+      ],
+      "blockers": [
+        "live API Gateway/ECS/RDS deployment and load/security testing are missing"
+      ],
+      "releaseBlocker": true
+    },
+    {
+      "id": "queues-workers",
+      "status": "blocked",
+      "evidenceFiles": ["docs/WORKERS_QUEUES_SCHEDULER_PROOF.md"],
+      "blockers": [
+        "live SQS/DLQ/ECS/EventBridge deployment and autoscaling/alerts are missing"
+      ],
+      "releaseBlocker": true
+    },
+    {
+      "id": "auth-rbac",
+      "status": "blocked",
+      "evidenceFiles": ["docs/AUTH_RBAC_ACCEPTANCE.md"],
+      "blockers": [
+        "live Cognito signup/login/logout/MFA/invite flows are missing"
+      ],
+      "releaseBlocker": true
+    },
+    {
+      "id": "oauth-vault",
+      "status": "blocked",
+      "evidenceFiles": ["docs/OAUTH_VAULT_SECURITY.md"],
+      "blockers": [
+        "live KMS/Secrets Manager/provider credentials and external vault review are missing"
+      ],
+      "releaseBlocker": true
+    },
+    {
+      "id": "dashboard",
+      "status": "blocked",
+      "evidenceFiles": ["docs/DASHBOARD_PRODUCTION_E2E_ACCESSIBILITY.md"],
+      "blockers": [
+        "live dashboard URL, auth/API integration, and external WCAG review are missing"
+      ],
+      "releaseBlocker": true
+    },
+    {
+      "id": "google-integrations",
+      "status": "blocked",
+      "evidenceFiles": [
+        "docs/GOOGLE_SEARCH_CONSOLE_ACCEPTANCE.md",
+        "docs/GOOGLE_PERFORMANCE_ACCEPTANCE.md"
+      ],
+      "blockers": [
+        "live Google OAuth, Search Console, PageSpeed, and CrUX acceptance are missing"
+      ],
+      "releaseBlocker": true
+    },
+    {
+      "id": "yandex-integrations",
+      "status": "blocked",
+      "evidenceFiles": ["docs/YANDEX_ACCEPTANCE.md"],
+      "blockers": [
+        "live Yandex OAuth, Webmaster, and Metrica acceptance are missing"
+      ],
+      "releaseBlocker": true
+    },
+    {
+      "id": "history-correlation",
+      "status": "evidence-present",
+      "evidenceFiles": ["docs/HISTORY_CORRELATION_ACCEPTANCE.md"],
+      "blockers": [
+        "production persistence and deployed timeline acceptance remain open"
+      ],
+      "releaseBlocker": false
+    },
+    {
+      "id": "notifications",
+      "status": "blocked",
+      "evidenceFiles": ["docs/NOTIFICATIONS_ACCEPTANCE.md"],
+      "blockers": [
+        "live email/Slack/webhook/Telegram delivery and deployed scheduler are missing"
+      ],
+      "releaseBlocker": true
+    },
+    {
+      "id": "billing",
+      "status": "blocked",
+      "evidenceFiles": ["docs/BILLING_ACCEPTANCE.md"],
+      "blockers": [
+        "live Stripe products/prices/checkout/portal/webhook and pricing/legal approval are missing"
+      ],
+      "releaseBlocker": true
+    },
+    {
+      "id": "agency",
+      "status": "blocked",
+      "evidenceFiles": ["docs/AGENCY_MODE_ACCEPTANCE.md"],
+      "blockers": [
+        "deployed client portal, live agency billing, and hosted white-label links are missing"
+      ],
+      "releaseBlocker": true
+    },
+    {
+      "id": "observability",
+      "status": "blocked",
+      "evidenceFiles": ["docs/OBSERVABILITY_INCIDENTS_TELEMETRY.md"],
+      "blockers": [
+        "live CloudWatch dashboards, OTLP export, and incident delivery are missing"
+      ],
+      "releaseBlocker": true
+    },
+    {
+      "id": "security-privacy",
+      "status": "blocked",
+      "evidenceFiles": ["docs/SECURITY_PRIVACY_RELEASE_GATE.md"],
+      "blockers": [
+        "DAST, pentest, legal approval, and production security review are missing"
+      ],
+      "releaseBlocker": true
+    },
+    {
+      "id": "release-docs",
+      "status": "evidence-present",
+      "evidenceFiles": [
+        "README.md",
+        "docs/DOCUMENTATION_FINAL_READINESS.md",
+        "docs/examples/documentation-final-readiness-report.sample.json"
+      ],
+      "blockers": [],
+      "releaseBlocker": false
+    },
+    {
+      "id": "onboarding-source",
+      "status": "evidence-present",
+      "evidenceFiles": [
+        "docs/ONBOARDING_FINAL_READINESS.md",
+        "docs/examples/onboarding-source-final-report.sample.json"
+      ],
+      "blockers": [],
+      "releaseBlocker": false
+    },
+    {
+      "id": "public-website",
+      "status": "blocked",
+      "evidenceFiles": [
+        "docs/PUBLIC_WEBSITE_ONBOARDING.md",
+        "docs/examples/public-website-onboarding-report.sample.json"
+      ],
+      "blockers": [
+        "deployed public website/domain/CDN and final copy approval are missing"
+      ],
+      "releaseBlocker": true
+    },
+    {
+      "id": "legal-repository-boundary",
+      "status": "blocked",
+      "evidenceFiles": [
+        "docs/LEGAL_RELEASE_GATE_CHECKLIST.md",
+        "docs/PUBLIC_PRIVATE_REPOSITORY_BOUNDARY_PLAN.md",
+        "docs/examples/public-repository-boundary-report.sample.json"
+      ],
+      "blockers": [
+        "legal approval and actual repository split are missing; static public boundary verification is present"
+      ],
+      "releaseBlocker": true
+    },
+    {
+      "id": "final-tag-publication",
+      "status": "blocked",
+      "evidenceFiles": ["docs/SEARCHLINT_1_0_RELEASE_CANDIDATE_MATRIX.md"],
+      "blockers": [
+        "v1.0.0 tag, npm/VS Code publication, public website publication, and final release evidence are missing"
+      ],
+      "releaseBlocker": true
+    }
+  ],
+  "requiredFinalCommands": [
+    "pnpm install --frozen-lockfile",
+    "pnpm format",
+    "pnpm lint",
+    "pnpm typecheck",
+    "pnpm test",
+    "pnpm verify:release",
+    "pnpm verify:next-fixtures",
+    "pnpm rule-qa:review",
+    "pnpm package:dry-run",
+    "pnpm cli:acceptance",
+    "pnpm dsl:acceptance",
+    "pnpm zero-impact:final",
+    "pnpm reports:final-readiness",
+    "pnpm dashboard:acceptance",
+    "pnpm security:acceptance",
+    "pnpm website:acceptance",
+    "pnpm onboarding:final",
+    "pnpm docs:final-readiness",
+    "pnpm rc:matrix"
+  ]
+}

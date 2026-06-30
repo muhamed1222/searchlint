@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "generatedBy": "searchlint-release-owner-action-runbook-generator",
+  "generatedAt": "2026-06-23T00:00:00.000Z",
+  "sourceReportPath": "reports/release-owner-gate-actions-report.json",
+  "status": "generated",
+  "checklist": {
+    "checklistPath": "docs/SEARCHLINT_1_0_MASTER_CHECKLIST.md",
+    "sections": 31,
+    "checkedItems": 522,
+    "openItems": 77,
+    "totalItems": 599
+  },
+  "releaseReadiness": {
+    "canReleaseSearchLint1": false,
+    "remainingChecklistItems": 77,
+    "statement": "SearchLint 1.0 is not complete while owner/live/reviewer/publication gates remain open."
+  },
+  "actionability": {
+    "status": "passed",
+    "checkedOpenGateCount": 77,
+    "genericOwnerGateCount": 0,
+    "missingRelatedCommandCount": 0,
+    "missingEvidencePathsCount": 0,
+    "missingRequiredEvidenceCount": 0,
+    "missingNextOwnerActionCount": 0,
+    "failures": []
+  },
+  "phaseCount": 7,
+  "openGateCount": 77,
+  "phases": [
+    {
+      "id": "01-reviewer-rule-quality",
+      "title": "Reviewer And Rule Quality Gates",
+      "description": "Complete OD-023 delivery, independent reviewer files, adjudication, and final rule-quality confirmation.",
+      "gateCount": 17,
+      "gateTypes": [
+        "independent_reviewer_gate",
+        "independent_reviewer_delivery_gate",
+        "rule_quality_final_gate"
+      ]
+    },
+    {
+      "id": "02-governance-legal-repository",
+      "title": "Governance Legal And Repository Gates",
+      "description": "Finish legal approval and hosted GitHub/repository governance before publication or public launch.",
+      "gateCount": 2,
+      "gateTypes": ["legal_owner_gate"]
+    },
+    {
+      "id": "03-local-publication-surfaces",
+      "title": "npm And VS Code Publication Gates",
+      "description": "Complete public package metadata, npm publication, Marketplace publisher, and extension publication evidence.",
+      "gateCount": 7,
+      "gateTypes": ["vscode_marketplace_gate", "npm_publication_gate"]
+    },
+    {
+      "id": "04-production-platform",
+      "title": "Production Platform Gates",
+      "description": "Deploy and verify cloud runtime, storage, database, API, workers, auth, dashboard, observability, backup, and agency surfaces.",
+      "gateCount": 21,
+      "gateTypes": ["production_deployment_gate"]
+    },
+    {
+      "id": "05-live-provider-acceptance",
+      "title": "Live Provider Acceptance Gates",
+      "description": "Run live Google, Yandex, PageSpeed/CrUX, Stripe, notification, and related provider acceptance.",
+      "gateCount": 17,
+      "gateTypes": ["live_provider_acceptance_gate"]
+    },
+    {
+      "id": "06-accessibility-security-website",
+      "title": "Accessibility Security And Website Gates",
+      "description": "Complete manual accessibility, DAST, penetration testing, security gates, and deployed public website evidence.",
+      "gateCount": 10,
+      "gateTypes": [
+        "manual_accessibility_review_gate",
+        "external_security_review_gate",
+        "deployed_public_website_gate"
+      ]
+    },
+    {
+      "id": "07-final-release",
+      "title": "Final Release Gates",
+      "description": "Run final RC, tag, and publication only after every prerequisite gate has evidence.",
+      "gateCount": 3,
+      "gateTypes": ["final_release_action_gate"]
+    }
+  ],
+  "nonClaims": [
+    "This runbook does not close release gates.",
+    "This runbook does not provide owner, legal, reviewer, deployed, live provider, publication, or final release evidence.",
+    "Checklist items remain open until their required evidence exists and the relevant verifier passes."
+  ]
+}

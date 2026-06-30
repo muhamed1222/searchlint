@@ -1,0 +1,631 @@
+{
+  "schemaVersion": 1,
+  "generatedBy": "searchlint-release-owner-evidence-template-generator",
+  "generatedAt": "2026-06-23T00:00:00.000Z",
+  "sourceReportPath": "reports/release-owner-evidence-report.json",
+  "templateDirectory": "docs/release-owner-evidence/templates",
+  "expectedEvidenceCount": 51,
+  "templateCount": 51,
+  "realEvidenceFileCount": 0,
+  "status": "passed",
+  "templates": [
+    {
+      "templatePath": "docs/release-owner-evidence/templates/10-crawler-proverit-100-000-url-v-cloud.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/10-crawler-proverit-100-000-url-v-cloud.json",
+      "gate": {
+        "section": "10. Crawler",
+        "item": "Проверить 100 000 URL в cloud",
+        "gateType": "production_deployment_gate",
+        "relatedCommand": "pnpm crawler:acceptance"
+      },
+      "requiredEvidence": "Cloud crawler execution evidence for 100,000 URLs, including deployed worker/resource identifiers, crawl summary, failure/retry/cost controls, and sanitized artifacts.",
+      "nextOwnerAction": "Run the cloud crawler scale acceptance in the deployed environment and preserve sanitized evidence."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/11-postgresql-i-hranenie-dannyh-razvernut-nastoyashii-postgresql-rds.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/11-postgresql-i-hranenie-dannyh-razvernut-nastoyashii-postgresql-rds.json",
+      "gate": {
+        "section": "11. PostgreSQL и хранение данных",
+        "item": "Развернуть настоящий PostgreSQL/RDS",
+        "gateType": "production_deployment_gate",
+        "relatedCommand": "pnpm verify:postgres"
+      },
+      "requiredEvidence": "Production-equivalent deployed target evidence, sanitized URLs/resource identifiers, and passing focused deployed acceptance command.",
+      "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/12-s3-object-storage-razvernut-realnoe-object-storage.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/12-s3-object-storage-razvernut-realnoe-object-storage.json",
+      "gate": {
+        "section": "12. S3/Object Storage",
+        "item": "Развернуть реальное object storage",
+        "gateType": "production_deployment_gate",
+        "relatedCommand": "pnpm object-storage:acceptance"
+      },
+      "requiredEvidence": "Production-equivalent deployed target evidence, sanitized URLs/resource identifiers, and passing focused deployed acceptance command.",
+      "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/13-backend-api-razvernut-production-api.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/13-backend-api-razvernut-production-api.json",
+      "gate": {
+        "section": "13. Backend API",
+        "item": "Развернуть production API",
+        "gateType": "production_deployment_gate",
+        "relatedCommand": "pnpm api:acceptance"
+      },
+      "requiredEvidence": "Production-equivalent deployed target evidence, sanitized URLs/resource identifiers, and passing focused deployed acceptance command.",
+      "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/18-google-search-console-provesti-live-acceptance-na-realnom-saite.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/18-google-search-console-provesti-live-acceptance-na-realnom-saite.json",
+      "gate": {
+        "section": "18. Google Search Console",
+        "item": "Провести live acceptance на реальном сайте",
+        "gateType": "live_provider_acceptance_gate",
+        "relatedCommand": "pnpm google:gsc:acceptance"
+      },
+      "requiredEvidence": "Live provider account/configuration evidence, sanitized API response or delivery proof, quota/freshness handling, and passing live acceptance command.",
+      "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/19-pagespeed-i-crux-provesti-live-acceptance.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/19-pagespeed-i-crux-provesti-live-acceptance.json",
+      "gate": {
+        "section": "19. PageSpeed и CrUX",
+        "item": "Провести live acceptance",
+        "gateType": "live_provider_acceptance_gate",
+        "relatedCommand": "pnpm google:performance:acceptance"
+      },
+      "requiredEvidence": "Live provider account/configuration evidence, sanitized API response or delivery proof, quota/freshness handling, and passing live acceptance command.",
+      "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/20-yandeks-vebmaster-provesti-live-acceptance.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/20-yandeks-vebmaster-provesti-live-acceptance.json",
+      "gate": {
+        "section": "20. Яндекс.Вебмастер",
+        "item": "Провести live acceptance",
+        "gateType": "live_provider_acceptance_gate",
+        "relatedCommand": "pnpm yandex:acceptance"
+      },
+      "requiredEvidence": "Live provider account/configuration evidence, sanitized API response or delivery proof, quota/freshness handling, and passing live acceptance command.",
+      "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/21-yandeks-metrika-provesti-live-acceptance.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/21-yandeks-metrika-provesti-live-acceptance.json",
+      "gate": {
+        "section": "21. Яндекс.Метрика",
+        "item": "Провести live acceptance",
+        "gateType": "live_provider_acceptance_gate",
+        "relatedCommand": "pnpm yandex:acceptance"
+      },
+      "requiredEvidence": "Live provider account/configuration evidence, sanitized API response or delivery proof, quota/freshness handling, and passing live acceptance command.",
+      "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/22-istoriya-i-korrelyaciya-provesti-deployed-dashboard-timeline-acceptance.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/22-istoriya-i-korrelyaciya-provesti-deployed-dashboard-timeline-acceptance.json",
+      "gate": {
+        "section": "22. История и корреляция",
+        "item": "Провести deployed dashboard timeline acceptance",
+        "gateType": "production_deployment_gate",
+        "relatedCommand": "pnpm dashboard:production-e2e"
+      },
+      "requiredEvidence": "Production-equivalent deployed target evidence, sanitized URLs/resource identifiers, and passing focused deployed acceptance command.",
+      "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/24-notifications-provesti-live-email-delivery-acceptance.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/24-notifications-provesti-live-email-delivery-acceptance.json",
+      "gate": {
+        "section": "24. Notifications",
+        "item": "Провести live email delivery acceptance",
+        "gateType": "live_provider_acceptance_gate",
+        "relatedCommand": "pnpm notifications:acceptance"
+      },
+      "requiredEvidence": "Live provider account/configuration evidence, sanitized API response or delivery proof, quota/freshness handling, and passing live acceptance command.",
+      "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/24-notifications-provesti-live-slack-delivery-acceptance.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/24-notifications-provesti-live-slack-delivery-acceptance.json",
+      "gate": {
+        "section": "24. Notifications",
+        "item": "Провести live Slack delivery acceptance",
+        "gateType": "live_provider_acceptance_gate",
+        "relatedCommand": "pnpm notifications:acceptance"
+      },
+      "requiredEvidence": "Live provider account/configuration evidence, sanitized API response or delivery proof, quota/freshness handling, and passing live acceptance command.",
+      "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/24-notifications-provesti-live-telegram-delivery-acceptance-esli-nuzhen.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/24-notifications-provesti-live-telegram-delivery-acceptance-esli-nuzhen.json",
+      "gate": {
+        "section": "24. Notifications",
+        "item": "Провести live Telegram delivery acceptance, если нужен",
+        "gateType": "live_provider_acceptance_gate",
+        "relatedCommand": "pnpm notifications:acceptance"
+      },
+      "requiredEvidence": "Live provider account/configuration evidence, sanitized API response or delivery proof, quota/freshness handling, and passing live acceptance command.",
+      "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/24-notifications-provesti-live-webhook-delivery-acceptance.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/24-notifications-provesti-live-webhook-delivery-acceptance.json",
+      "gate": {
+        "section": "24. Notifications",
+        "item": "Провести live webhook delivery acceptance",
+        "gateType": "live_provider_acceptance_gate",
+        "relatedCommand": "pnpm notifications:acceptance"
+      },
+      "requiredEvidence": "Live provider account/configuration evidence, sanitized API response or delivery proof, quota/freshness handling, and passing live acceptance command.",
+      "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/25-billing-proverit-deployed-stripe-webhook-persistence-on-rds.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/25-billing-proverit-deployed-stripe-webhook-persistence-on-rds.json",
+      "gate": {
+        "section": "25. Billing",
+        "item": "Проверить deployed Stripe webhook persistence on RDS",
+        "gateType": "production_deployment_gate",
+        "relatedCommand": "pnpm verify:postgres"
+      },
+      "requiredEvidence": "Production-equivalent deployed target evidence, sanitized URLs/resource identifiers, and passing focused deployed acceptance command.",
+      "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/25-billing-provesti-live-customer-portal-acceptance.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/25-billing-provesti-live-customer-portal-acceptance.json",
+      "gate": {
+        "section": "25. Billing",
+        "item": "Провести live customer portal acceptance",
+        "gateType": "live_provider_acceptance_gate",
+        "relatedCommand": "pnpm billing:live-stripe-final-acceptance-packet"
+      },
+      "requiredEvidence": "Live provider account/configuration evidence, sanitized API response or delivery proof, quota/freshness handling, and passing live acceptance command.",
+      "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/25-billing-provesti-live-stripe-acceptance.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/25-billing-provesti-live-stripe-acceptance.json",
+      "gate": {
+        "section": "25. Billing",
+        "item": "Провести live Stripe acceptance",
+        "gateType": "live_provider_acceptance_gate",
+        "relatedCommand": "pnpm billing:live-stripe-final-acceptance-packet"
+      },
+      "requiredEvidence": "Live provider account/configuration evidence, sanitized API response or delivery proof, quota/freshness handling, and passing live acceptance command.",
+      "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/25-billing-provesti-live-subscription-trial-upgrade-downgrade-cancellation-acceptance.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/25-billing-provesti-live-subscription-trial-upgrade-downgrade-cancellation-acceptance.json",
+      "gate": {
+        "section": "25. Billing",
+        "item": "Провести live subscription/trial/upgrade/downgrade/cancellation acceptance",
+        "gateType": "live_provider_acceptance_gate",
+        "relatedCommand": "pnpm billing:live-stripe-final-acceptance-packet"
+      },
+      "requiredEvidence": "Live provider account/configuration evidence, sanitized API response or delivery proof, quota/freshness handling, and passing live acceptance command.",
+      "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/26-agency-mode-proverit-client-invite-email-delivery.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/26-agency-mode-proverit-client-invite-email-delivery.json",
+      "gate": {
+        "section": "26. Agency mode",
+        "item": "Проверить client invite email delivery",
+        "gateType": "live_provider_acceptance_gate",
+        "relatedCommand": "pnpm notifications:acceptance"
+      },
+      "requiredEvidence": "Live provider account/configuration evidence, sanitized API response or delivery proof, quota/freshness handling, and passing live acceptance command.",
+      "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/26-agency-mode-razvernut-client-portal.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/26-agency-mode-razvernut-client-portal.json",
+      "gate": {
+        "section": "26. Agency mode",
+        "item": "Развернуть client portal",
+        "gateType": "production_deployment_gate",
+        "relatedCommand": "pnpm agency:client-access-browser-e2e"
+      },
+      "requiredEvidence": "Production-equivalent deployed target evidence, sanitized URLs/resource identifiers, and passing focused deployed acceptance command.",
+      "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/26-agency-mode-realizovat-live-agency-billing.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/26-agency-mode-realizovat-live-agency-billing.json",
+      "gate": {
+        "section": "26. Agency mode",
+        "item": "Реализовать live agency billing",
+        "gateType": "live_provider_acceptance_gate",
+        "relatedCommand": "pnpm billing:live-stripe-final-acceptance-packet"
+      },
+      "requiredEvidence": "Live provider account/configuration evidence, sanitized API response or delivery proof, quota/freshness handling, and passing live acceptance command.",
+      "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/27-observability-podklyuchit-cloudwatch-otlp.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/27-observability-podklyuchit-cloudwatch-otlp.json",
+      "gate": {
+        "section": "27. Observability",
+        "item": "Подключить CloudWatch/OTLP",
+        "gateType": "production_deployment_gate",
+        "relatedCommand": "pnpm observability:acceptance"
+      },
+      "requiredEvidence": "Production-equivalent deployed target evidence, sanitized URLs/resource identifiers, and passing focused deployed acceptance command.",
+      "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/27-observability-razvernut-logging.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/27-observability-razvernut-logging.json",
+      "gate": {
+        "section": "27. Observability",
+        "item": "Развернуть logging",
+        "gateType": "production_deployment_gate",
+        "relatedCommand": "pnpm observability:acceptance"
+      },
+      "requiredEvidence": "Production-equivalent deployed target evidence, sanitized URLs/resource identifiers, and passing focused deployed acceptance command.",
+      "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/27-observability-razvernut-metrics.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/27-observability-razvernut-metrics.json",
+      "gate": {
+        "section": "27. Observability",
+        "item": "Развернуть metrics",
+        "gateType": "production_deployment_gate",
+        "relatedCommand": "pnpm observability:acceptance"
+      },
+      "requiredEvidence": "Production-equivalent deployed target evidence, sanitized URLs/resource identifiers, and passing focused deployed acceptance command.",
+      "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/27-observability-razvernut-tracing.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/27-observability-razvernut-tracing.json",
+      "gate": {
+        "section": "27. Observability",
+        "item": "Развернуть tracing",
+        "gateType": "production_deployment_gate",
+        "relatedCommand": "pnpm observability:acceptance"
+      },
+      "requiredEvidence": "Production-equivalent deployed target evidence, sanitized URLs/resource identifiers, and passing focused deployed acceptance command.",
+      "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/28-security-i-privacy-provesti-dast.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/28-security-i-privacy-provesti-dast.json",
+      "gate": {
+        "section": "28. Security и Privacy",
+        "item": "Провести DAST",
+        "gateType": "external_security_review_gate",
+        "relatedCommand": "pnpm security:dast"
+      },
+      "requiredEvidence": "Passed deployed-target DAST, independent penetration-test report, remediation sign-off, and security/legal approval.",
+      "nextOwnerAction": "Run DAST against deployed production-equivalent targets, commission independent penetration testing, remediate findings, and approve the final gate."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/28-security-i-privacy-zavershit-security-release-gate.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/28-security-i-privacy-zavershit-security-release-gate.json",
+      "gate": {
+        "section": "28. Security и Privacy",
+        "item": "Завершить security release gate",
+        "gateType": "external_security_review_gate",
+        "relatedCommand": "pnpm security:dast"
+      },
+      "requiredEvidence": "Passed deployed-target DAST, independent penetration-test report, remediation sign-off, and security/legal approval.",
+      "nextOwnerAction": "Run DAST against deployed production-equivalent targets, commission independent penetration testing, remediate findings, and approve the final gate."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-agency-mode-gotov.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-agency-mode-gotov.json",
+      "gate": {
+        "section": "31. Финальный SearchLint 1.0 Release Gate",
+        "item": "Agency mode готов",
+        "gateType": "production_deployment_gate",
+        "relatedCommand": "pnpm agency:acceptance"
+      },
+      "requiredEvidence": "Agency mode deterministic evidence plus deployed persistence, client access, hosted white-label links, and billing evidence.",
+      "nextOwnerAction": "Run agency acceptance and deployed agency evidence gates, then preserve live billing/client access evidence."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-api-deployment-proof-proiden.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-api-deployment-proof-proiden.json",
+      "gate": {
+        "section": "31. Финальный SearchLint 1.0 Release Gate",
+        "item": "API deployment proof пройден",
+        "gateType": "production_deployment_gate",
+        "relatedCommand": "pnpm api:acceptance"
+      },
+      "requiredEvidence": "Production-equivalent deployed target evidence, sanitized URLs/resource identifiers, and passing focused deployed acceptance command.",
+      "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-billing-live-acceptance-proiden.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-billing-live-acceptance-proiden.json",
+      "gate": {
+        "section": "31. Финальный SearchLint 1.0 Release Gate",
+        "item": "Billing live acceptance пройден",
+        "gateType": "live_provider_acceptance_gate",
+        "relatedCommand": "pnpm billing:live-stripe-final-acceptance-packet"
+      },
+      "requiredEvidence": "Live provider account/configuration evidence, sanitized API response or delivery proof, quota/freshness handling, and passing live acceptance command.",
+      "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-cognito-rbac-proof-proiden.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-cognito-rbac-proof-proiden.json",
+      "gate": {
+        "section": "31. Финальный SearchLint 1.0 Release Gate",
+        "item": "Cognito/RBAC proof пройден",
+        "gateType": "production_deployment_gate",
+        "relatedCommand": "pnpm auth:acceptance"
+      },
+      "requiredEvidence": "Production-equivalent deployed target evidence, sanitized URLs/resource identifiers, and passing focused deployed acceptance command.",
+      "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-dashboard-production-e2e-proiden.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-dashboard-production-e2e-proiden.json",
+      "gate": {
+        "section": "31. Финальный SearchLint 1.0 Release Gate",
+        "item": "Dashboard production E2E пройден",
+        "gateType": "production_deployment_gate",
+        "relatedCommand": "pnpm dashboard:production-e2e"
+      },
+      "requiredEvidence": "Production-equivalent deployed target evidence, sanitized URLs/resource identifiers, and passing focused deployed acceptance command.",
+      "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-google-live-acceptance-proiden.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-google-live-acceptance-proiden.json",
+      "gate": {
+        "section": "31. Финальный SearchLint 1.0 Release Gate",
+        "item": "Google live acceptance пройден",
+        "gateType": "live_provider_acceptance_gate",
+        "relatedCommand": "pnpm google:gsc:acceptance"
+      },
+      "requiredEvidence": "Live provider account/configuration evidence, sanitized API response or delivery proof, quota/freshness handling, and passing live acceptance command.",
+      "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-notifications-gotovy.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-notifications-gotovy.json",
+      "gate": {
+        "section": "31. Финальный SearchLint 1.0 Release Gate",
+        "item": "Notifications готовы",
+        "gateType": "live_provider_acceptance_gate",
+        "relatedCommand": "pnpm notifications:acceptance"
+      },
+      "requiredEvidence": "Notification contracts, persistence/redaction evidence, and live provider delivery evidence for the enabled channels.",
+      "nextOwnerAction": "Run notification acceptance plus live provider delivery checks and preserve sanitized delivery evidence."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-npm-pakety-opublikovany.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-npm-pakety-opublikovany.json",
+      "gate": {
+        "section": "31. Финальный SearchLint 1.0 Release Gate",
+        "item": "npm-пакеты опубликованы",
+        "gateType": "npm_publication_gate",
+        "relatedCommand": "pnpm final-release:gate"
+      },
+      "requiredEvidence": "Final 1.0.0 version approval, passing RC matrix, hosted npm publication proof, provenance, and clean public registry install.",
+      "nextOwnerAction": "Run final publication only after all release gates pass, then preserve npm publication and install evidence."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-oauth-vault-proof-proiden.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-oauth-vault-proof-proiden.json",
+      "gate": {
+        "section": "31. Финальный SearchLint 1.0 Release Gate",
+        "item": "OAuth vault proof пройден",
+        "gateType": "production_deployment_gate",
+        "relatedCommand": "pnpm oauth-vault:acceptance"
+      },
+      "requiredEvidence": "Deployed KMS/Secrets Manager OAuth vault acceptance evidence plus external security review sign-off.",
+      "nextOwnerAction": "Run deployed OAuth vault acceptance and complete the independent vault security review."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-observability-gotova.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-observability-gotova.json",
+      "gate": {
+        "section": "31. Финальный SearchLint 1.0 Release Gate",
+        "item": "Observability готова",
+        "gateType": "production_deployment_gate",
+        "relatedCommand": "pnpm observability:acceptance"
+      },
+      "requiredEvidence": "Production-equivalent deployed target evidence, sanitized URLs/resource identifiers, and passing focused deployed acceptance command.",
+      "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-opublikovan-searchlint-1-0.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-opublikovan-searchlint-1-0.json",
+      "gate": {
+        "section": "31. Финальный SearchLint 1.0 Release Gate",
+        "item": "Опубликован SearchLint 1.0",
+        "gateType": "final_release_action_gate",
+        "relatedCommand": "pnpm final-release:gate"
+      },
+      "requiredEvidence": "Passing full release-candidate matrix, signed tag, publication proof, and final release approval.",
+      "nextOwnerAction": "Run the final release gates only after all prerequisite gates pass."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-postgresql-rds-proof-proiden.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-postgresql-rds-proof-proiden.json",
+      "gate": {
+        "section": "31. Финальный SearchLint 1.0 Release Gate",
+        "item": "PostgreSQL/RDS proof пройден",
+        "gateType": "production_deployment_gate",
+        "relatedCommand": "pnpm verify:postgres"
+      },
+      "requiredEvidence": "Production-equivalent deployed target evidence, sanitized URLs/resource identifiers, and passing focused deployed acceptance command.",
+      "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-public-website-gotov.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-public-website-gotov.json",
+      "gate": {
+        "section": "31. Финальный SearchLint 1.0 Release Gate",
+        "item": "Public website готов",
+        "gateType": "deployed_public_website_gate",
+        "relatedCommand": "pnpm website:acceptance"
+      },
+      "requiredEvidence": "Deployed website domain/CDN evidence, approved marketing/legal copy, live link validation, and screenshots if required.",
+      "nextOwnerAction": "Deploy the public website and capture sanitized deployed website acceptance evidence."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-release-candidate-proshel-polnuyu-matricu.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-release-candidate-proshel-polnuyu-matricu.json",
+      "gate": {
+        "section": "31. Финальный SearchLint 1.0 Release Gate",
+        "item": "Release candidate прошёл полную матрицу",
+        "gateType": "final_release_action_gate",
+        "relatedCommand": "pnpm final-release:gate"
+      },
+      "requiredEvidence": "Passing full release-candidate matrix, signed tag, publication proof, and final release approval.",
+      "nextOwnerAction": "Run the final release gates only after all prerequisite gates pass."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-s3-proof-proiden.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-s3-proof-proiden.json",
+      "gate": {
+        "section": "31. Финальный SearchLint 1.0 Release Gate",
+        "item": "S3 proof пройден",
+        "gateType": "production_deployment_gate",
+        "relatedCommand": "pnpm object-storage:acceptance"
+      },
+      "requiredEvidence": "Production-equivalent deployed target evidence, sanitized URLs/resource identifiers, and passing focused deployed acceptance command.",
+      "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-security-audit-proiden.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-security-audit-proiden.json",
+      "gate": {
+        "section": "31. Финальный SearchLint 1.0 Release Gate",
+        "item": "Security audit пройден",
+        "gateType": "external_security_review_gate",
+        "relatedCommand": "pnpm security:dast"
+      },
+      "requiredEvidence": "Passed deployed-target DAST, independent penetration-test report, remediation sign-off, and security/legal approval.",
+      "nextOwnerAction": "Run DAST against deployed production-equivalent targets, commission independent penetration testing, remediate findings, and approve the final gate."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-sozdan-git-tag-v1-0-0.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-sozdan-git-tag-v1-0-0.json",
+      "gate": {
+        "section": "31. Финальный SearchLint 1.0 Release Gate",
+        "item": "Создан Git tag v1.0.0",
+        "gateType": "final_release_action_gate",
+        "relatedCommand": "pnpm final-release:gate"
+      },
+      "requiredEvidence": "Passing full release-candidate matrix, signed tag, publication proof, and final release approval.",
+      "nextOwnerAction": "Run the final release gates only after all prerequisite gates pass."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-vs-code-extension-opublikovan.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-vs-code-extension-opublikovan.json",
+      "gate": {
+        "section": "31. Финальный SearchLint 1.0 Release Gate",
+        "item": "VS Code extension опубликован",
+        "gateType": "vscode_marketplace_gate",
+        "relatedCommand": "pnpm vscode:update-e2e"
+      },
+      "requiredEvidence": "Signed and published VS Code extension on Marketplace, publisher metadata, and clean install/update evidence after publication.",
+      "nextOwnerAction": "After publisher setup and legal approval, publish the VSIX through the Marketplace flow and preserve publication/install evidence."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-workers-sqs-proof-proiden.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-workers-sqs-proof-proiden.json",
+      "gate": {
+        "section": "31. Финальный SearchLint 1.0 Release Gate",
+        "item": "Workers/SQS proof пройден",
+        "gateType": "production_deployment_gate",
+        "relatedCommand": "pnpm workers:acceptance"
+      },
+      "requiredEvidence": "Production-equivalent deployed target evidence, sanitized URLs/resource identifiers, and passing focused deployed acceptance command.",
+      "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-yandex-live-acceptance-proiden.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-yandex-live-acceptance-proiden.json",
+      "gate": {
+        "section": "31. Финальный SearchLint 1.0 Release Gate",
+        "item": "Yandex live acceptance пройден",
+        "gateType": "live_provider_acceptance_gate",
+        "relatedCommand": "pnpm yandex:acceptance"
+      },
+      "requiredEvidence": "Live provider account/configuration evidence, sanitized API response or delivery proof, quota/freshness handling, and passing live acceptance command.",
+      "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/7-vs-code-i-lsp-nastroit-publisher-account.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/7-vs-code-i-lsp-nastroit-publisher-account.json",
+      "gate": {
+        "section": "7. VS Code и LSP",
+        "item": "Настроить publisher account",
+        "gateType": "vscode_marketplace_gate",
+        "relatedCommand": "pnpm vscode:update-e2e"
+      },
+      "requiredEvidence": "VS Code Marketplace publisher account configured for SearchLint plus local VSIX readiness/update evidence.",
+      "nextOwnerAction": "Configure the Marketplace publisher account, keep the local VSIX/update evidence current, and preserve publisher setup evidence outside secrets."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/7-vs-code-i-lsp-podpisat-i-opublikovat-extension.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/7-vs-code-i-lsp-podpisat-i-opublikovat-extension.json",
+      "gate": {
+        "section": "7. VS Code и LSP",
+        "item": "Подписать и опубликовать extension",
+        "gateType": "vscode_marketplace_gate",
+        "relatedCommand": "pnpm vscode:update-e2e"
+      },
+      "requiredEvidence": "Signed and published VS Code extension on Marketplace, publisher metadata, and clean install/update evidence after publication.",
+      "nextOwnerAction": "After publisher setup and legal approval, publish the VSIX through the Marketplace flow and preserve publication/install evidence."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/8-npm-pakety-opublikovat-beta-packages.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/8-npm-pakety-opublikovat-beta-packages.json",
+      "gate": {
+        "section": "8. npm-пакеты",
+        "item": "Опубликовать beta packages",
+        "gateType": "npm_publication_gate",
+        "relatedCommand": "pnpm package:beta-publication-gate"
+      },
+      "requiredEvidence": "Hosted npm workflow publication proof for 1.0.0-beta.0, npm provenance, beta dist-tag, and no private package publication.",
+      "nextOwnerAction": "Complete legal/package metadata gates, configure npm trusted publishing, run the hosted workflow with publish=true and tag=beta, then preserve publication evidence."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/8-npm-pakety-podgotovit-finalnuyu-publikaciyu-1-0-0.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/8-npm-pakety-podgotovit-finalnuyu-publikaciyu-1-0-0.json",
+      "gate": {
+        "section": "8. npm-пакеты",
+        "item": "Подготовить финальную публикацию 1.0.0",
+        "gateType": "npm_publication_gate",
+        "relatedCommand": "pnpm final-release:gate"
+      },
+      "requiredEvidence": "Final 1.0.0 version approval, passing RC matrix, hosted npm publication proof, provenance, and clean public registry install.",
+      "nextOwnerAction": "Run final publication only after all release gates pass, then preserve npm publication and install evidence."
+    },
+    {
+      "templatePath": "docs/release-owner-evidence/templates/8-npm-pakety-zamenit-0-0-0-beta-versions-na-final-release-versions.example.json",
+      "expectedEvidencePath": "docs/release-owner-evidence/8-npm-pakety-zamenit-0-0-0-beta-versions-na-final-release-versions.json",
+      "gate": {
+        "section": "8. npm-пакеты",
+        "item": "Заменить `0.0.0`/beta versions на final release versions",
+        "gateType": "npm_publication_gate",
+        "relatedCommand": "pnpm final-release:gate"
+      },
+      "requiredEvidence": "Final 1.0.0 version approval, passing RC matrix, hosted npm publication proof, provenance, and clean public registry install.",
+      "nextOwnerAction": "Run final publication only after all release gates pass, then preserve npm publication and install evidence."
+    }
+  ],
+  "realEvidenceFiles": [],
+  "nonClaims": [
+    "Templates are examples only and are not owner evidence.",
+    "Generating templates does not close any release gate.",
+    "Real evidence must be written to the expected docs/release-owner-evidence/*.json paths and validated separately."
+  ]
+}

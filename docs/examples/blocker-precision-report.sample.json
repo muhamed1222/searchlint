@@ -1,0 +1,160 @@
+{
+  "schemaVersion": 1,
+  "benchmarkVersion": "0.1.0-synthetic",
+  "productVersion": "0.0.0",
+  "ruleCatalogVersion": "1",
+  "generatedAt": "2026-06-22T00:00:00.000Z",
+  "provenance": {
+    "datasetType": "synthetic",
+    "independentBenchmark": false,
+    "trainingFixturesExcluded": true,
+    "reviewerSignoff": "missing",
+    "fixtureManifestHash": "sha256:0d767e9f3ba3aaba60234de103096083f47c39b549521f0c07e9b445ac1c0f87",
+    "expectedResultManifestHash": "sha256:9be9e5ea5599b8595ea4a2978b4e6b28557c15d35bf0382a7b9359a631417e50",
+    "trainingFixtureManifestHash": "sha256:06ed0fa2e8b0c28884c605d2083b8350397309a25418c33c8b471245b7dd53bb",
+    "privacy": "contains no personal data, secrets, OAuth tokens, API keys, private URLs, raw customer payloads, or database connection strings"
+  },
+  "blockerRuleIds": [
+    "SL-CANON-002",
+    "SL-CANON-008",
+    "SL-HTTP-001",
+    "SL-HTTP-003",
+    "SL-HTTP-005",
+    "SL-HTTP-006",
+    "SL-INDEX-001",
+    "SL-INDEX-002",
+    "SL-INDEX-003",
+    "SL-INDEX-004",
+    "SL-INDEX-007",
+    "SL-INDEX-008",
+    "SL-META-001",
+    "SL-META-002"
+  ],
+  "summary": {
+    "tp": 560,
+    "fp": 0,
+    "fn": 0,
+    "tn": 1400,
+    "disputed": 0,
+    "positiveUnits": 560,
+    "negativeUnits": 1400,
+    "precision": 1,
+    "recall": 1,
+    "precisionWilsonLowerBound95": 0.9951919019004366
+  },
+  "perRule": [
+    {
+      "ruleId": "SL-CANON-002",
+      "positiveUnits": 40,
+      "negativeUnits": 100,
+      "tp": 40,
+      "fp": 0,
+      "fn": 0,
+      "tn": 100,
+      "disputed": 0,
+      "precision": 1,
+      "recall": 1,
+      "precisionWilsonLowerBound95": 0.9366465513545419,
+      "fixtures": {
+        "positive": "positive-metadata-structure",
+        "negative": "negative-no-evidence"
+      },
+      "reviewers": [],
+      "passFail": "pass"
+    },
+    {
+      "ruleId": "SL-CANON-008",
+      "positiveUnits": 40,
+      "negativeUnits": 100,
+      "tp": 40,
+      "fp": 0,
+      "fn": 0,
+      "tn": 100,
+      "disputed": 0,
+      "precision": 1,
+      "recall": 1,
+      "precisionWilsonLowerBound95": 0.9366465513545419,
+      "fixtures": {
+        "positive": "positive-canonical-cycle",
+        "negative": "negative-no-evidence"
+      },
+      "reviewers": [],
+      "passFail": "pass"
+    },
+    {
+      "ruleId": "SL-HTTP-001",
+      "positiveUnits": 40,
+      "negativeUnits": 100,
+      "tp": 40,
+      "fp": 0,
+      "fn": 0,
+      "tn": 100,
+      "disputed": 0,
+      "precision": 1,
+      "recall": 1,
+      "precisionWilsonLowerBound95": 0.9366465513545419,
+      "fixtures": {
+        "positive": "positive-http-index",
+        "negative": "negative-no-evidence"
+      },
+      "reviewers": [],
+      "passFail": "pass"
+    },
+    {
+      "ruleId": "SL-HTTP-003",
+      "positiveUnits": 40,
+      "negativeUnits": 100,
+      "tp": 40,
+      "fp": 0,
+      "fn": 0,
+      "tn": 100,
+      "disputed": 0,
+      "precision": 1,
+      "recall": 1,
+      "precisionWilsonLowerBound95": 0.9366465513545419,
+      "fixtures": {
+        "positive": "positive-http-index",
+        "negative": "negative-no-evidence"
+      },
+      "reviewers": [],
+      "passFail": "pass"
+    },
+    {
+      "ruleId": "SL-HTTP-005",
+      "positiveUnits": 40,
+      "negativeUnits": 100,
+      "tp": 40,
+      "fp": 0,
+      "fn": 0,
+      "tn": 100,
+      "disputed": 0,
+      "precision": 1,
+      "recall": 1,
+      "precisionWilsonLowerBound95": 0.9366465513545419,
+      "fixtures": {
+        "positive": "positive-http-index",
+        "negative": "negative-no-evidence"
+      },
+      "reviewers": [],
+      "passFail": "pass"
+    }
+  ],
+  "releaseGate": {
+    "passFail": "fail",
+    "gates": {
+      "allBlockerRulesIncluded": true,
+      "minimumPositiveUnitsPerRule": true,
+      "minimumNegativeUnitsPerRule": true,
+      "reviewerSignoffComplete": false,
+      "noTrainingFixtures": true,
+      "precisionAtLeast995": true,
+      "wilsonLowerBoundAtLeast990": true,
+      "fpAtMostOne": true,
+      "aggregateRecallAtLeast95": true,
+      "everyRuleRecallAtLeast90": true,
+      "noDisputedCases": true
+    },
+    "failedGates": ["reviewerSignoffComplete"]
+  },
+  "sampleNotice": "Sanitized sample: full generated report is written to reports/blocker-precision-report.json during CI."
+}

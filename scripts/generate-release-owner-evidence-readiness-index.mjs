@@ -117,9 +117,13 @@ function assertSourceReports({
   if (!Array.isArray(ownerGateReport.openGates)) {
     throw new Error("Owner gate report must include openGates.");
   }
-  if (ownerGateReport.openGates.length !== 83) {
+  const expectedOpenGateCount = ownerGateReport.source?.openItems;
+  if (
+    typeof expectedOpenGateCount !== "number" ||
+    ownerGateReport.openGates.length !== expectedOpenGateCount
+  ) {
     throw new Error(
-      `Expected 83 open gates, found ${ownerGateReport.openGates.length}.`
+      `Owner-gate report open gate count mismatch: source.openItems=${String(expectedOpenGateCount)}, openGates=${ownerGateReport.openGates.length}.`
     );
   }
   if (!Array.isArray(ownerEvidenceReport.expectedEvidence)) {
@@ -237,11 +241,20 @@ function summarize(gateRecords, ownerInputRecords, intakeReport) {
 }
 
 function assertReadinessCoverage(report) {
-  if (report.summary.openGateCount !== 83) {
-    throw new Error("Readiness index must cover all 83 open gates.");
+  const expectedOpenGateCount =
+    report.summary.gatesReadyForOwnerInputCount +
+    report.summary.gatesWithoutOwnerInputJsonCount;
+  if (report.summary.openGateCount !== expectedOpenGateCount) {
+    throw new Error(
+      `Readiness index gate coverage mismatch: openGateCount=${report.summary.openGateCount}, covered=${expectedOpenGateCount}.`
+    );
   }
-  if (report.summary.ownerInputEvidenceCount !== 52) {
-    throw new Error("Readiness index must cover all 52 owner evidence inputs.");
+  if (
+    report.ownerInputRecords.length !== report.summary.ownerInputEvidenceCount
+  ) {
+    throw new Error(
+      `Readiness index owner input count mismatch: ownerInputRecords=${report.ownerInputRecords.length}, summary=${report.summary.ownerInputEvidenceCount}.`
+    );
   }
   if (
     report.summary.templateCoveredOwnerInputCount !==

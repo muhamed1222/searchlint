@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "generatedBy": "searchlint-blocker-benchmark-review-handoff-verifier",
+  "generatedAt": "2026-06-23T00:00:00.000Z",
+  "status": "passed",
+  "scope": {
+    "proofType": "blocker benchmark independent-review handoff packet",
+    "doesNotClaim": [
+      "review packet delivered to reviewers",
+      "independent reviewer sign-off exists",
+      "OD-023 release gate passed",
+      "reviewer files created by Codex"
+    ]
+  },
+  "benchmark": {
+    "path": "reports/blocker-precision-report.json",
+    "benchmarkVersion": "0.1.0-synthetic",
+    "productVersion": "0.0.0",
+    "ruleCatalogVersion": "1",
+    "expectedCaseCount": 1960,
+    "positiveCaseCount": 560,
+    "negativeCaseCount": 1400,
+    "caseIndexPath": "docs/reviews/blocker-benchmark/BENCHMARK_CASE_INDEX.json",
+    "caseIndexSha256": "7fbf01dcd80aaa2517a2ad25d8d8388935ff64c83a30c596692055305ede8357"
+  },
+  "requiredPacketFiles": [
+    {
+      "path": "docs/reviews/blocker-benchmark/README.md",
+      "bytes": 2718,
+      "sha256": "dc8d528ccd321445d5a1a34260f47cc4f5bd1200b7defb4dd82287a4ca4f8283"
+    },
+    {
+      "path": "docs/reviews/blocker-benchmark/REVIEW_INSTRUCTIONS.md",
+      "bytes": 3003,
+      "sha256": "68398a4273412aa60f6d95214e9f1f773a74eb7cce7ecaf1d4f5bc8132c5eaa9"
+    },
+    {
+      "path": "docs/reviews/blocker-benchmark/REVIEW_FORM_TEMPLATE.md",
+      "bytes": 1463,
+      "sha256": "ac5581b700c915937bf5416c14c0a7a4372bba4849b88d96b3395cb9ad57f22c"
+    },
+    {
+      "path": "docs/reviews/blocker-benchmark/ADJUDICATION_LOG.md",
+      "bytes": 583,
+      "sha256": "6c2257f56a158395c86e6d4d1d23c8f58f97df7566a99e6bcef339c877500a20"
+    },
+    {
+      "path": "docs/reviews/blocker-benchmark/REVIEW_STATUS.md",
+      "bytes": 1625,
+      "sha256": "0ce393837682391a9325563b6761e407ac67295d6e2778b03f52521aa4506f8b"
+    },
+    {
+      "path": "docs/reviews/blocker-benchmark/reviewer-1.review.example.json",
+      "bytes": 601,
+      "sha256": "4d0a87b5981cd1cb03863f11f87cbec41b8ded54bcd390fb1fd56401b01d1a31"
+    },
+    {
+      "path": "docs/reviews/blocker-benchmark/reviewer-2.review.example.json",
+      "bytes": 601,
+      "sha256": "a072c02c07a3e31f21cdb9a3d085eca1264823a96a740316aadabcc151d1dab1"
+    }
+  ],
+  "reviewerOutputPaths": [
+    "docs/reviews/blocker-benchmark/reviewer-1.review.json",
+    "docs/reviews/blocker-benchmark/reviewer-2.review.json"
+  ],
+  "blockerRuleIds": [
+    "SL-CANON-002",
+    "SL-CANON-008",
+    "SL-HTTP-001",
+    "SL-HTTP-003",
+    "SL-HTTP-005",
+    "SL-HTTP-006",
+    "SL-INDEX-001",
+    "SL-INDEX-002",
+    "SL-INDEX-003",
+    "SL-INDEX-004",
+    "SL-INDEX-007",
+    "SL-INDEX-008",
+    "SL-META-001",
+    "SL-META-002"
+  ],
+  "caseSummary": {
+    "blockerRuleCount": 14,
+    "positiveCaseCount": 560,
+    "negativeCaseCount": 1400,
+    "trainingFixturesExcluded": true,
+    "privacy": "contains no personal data, secrets, OAuth tokens, API keys, private URLs, raw customer payloads, or database connection strings"
+  },
+  "releaseGate": {
+    "passFail": "blocked",
+    "blockers": [
+      "review packet delivery is not evidenced",
+      "reviewer-1.review.json is missing",
+      "reviewer-2.review.json is missing",
+      "pnpm rule-qa:review is expected to fail until real reviewer files exist"
+    ]
+  }
+}
