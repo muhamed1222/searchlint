@@ -11,6 +11,14 @@ Package-specific changelog notes may also exist in package directories, such as
 
 ## Unreleased
 
+## Current Published Beta Line
+
+Public npm beta packages are published only after the release owner completes
+the approved publication workflow and captures the required sanitized evidence.
+The current repository state records local beta readiness and package
+publication preparation; it does not claim final SearchLint 1.0 release,
+Marketplace publication, legal approval, or final npm publication.
+
 ### Release Gates
 
 - OD-023 independent reviewer sign-off is still required before blocker rule
