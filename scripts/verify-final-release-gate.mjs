@@ -12,6 +12,11 @@ const evidenceReadinessReportPath =
   "reports/release-evidence-readiness-summary-report.json";
 const evidenceReadinessSamplePath =
   "docs/examples/release-evidence-readiness-summary-report.sample.json";
+const hostedGithubGovernanceReportPath =
+  "reports/hosted-github-governance-evidence-report.json";
+const hostedGithubGovernanceEvidencePath =
+  "docs/github/hosted-governance-evidence.json";
+const branchProtectionPayloadPath = "docs/github/branch-protection-main.json";
 
 const requiredDocuments = [
   "docs/SEARCHLINT_1_0_FINAL_RELEASE_GATE.md",
@@ -175,6 +180,10 @@ const requiredEvidence = [
 
 async function main() {
   run("pnpm", ["release:evidence-readiness"]);
+  replaceRequiredEvidenceGate(
+    "branch-protection-ci",
+    await buildBranchProtectionCiGate()
+  );
 
   await verifyRequiredDocuments();
   await verifyEvidenceFiles();
@@ -269,6 +278,91 @@ async function main() {
 
 function gate(id, status, evidenceFiles, blockers) {
   return { id, status, evidenceFiles, blockers };
+}
+
+async function buildBranchProtectionCiGate() {
+  const result = spawnSync("pnpm", ["governance:hosted-github-evidence"], {
+    cwd: process.cwd(),
+    env: process.env,
+    encoding: "utf8",
+    stdio: "inherit"
+  });
+
+  if (result.status !== 0) {
+    return gate(
+      "branch-protection-ci",
+      "blocked",
+      [hostedGithubGovernanceEvidencePath, branchProtectionPayloadPath],
+      [
+        "hosted GitHub governance evidence did not pass validation; run pnpm governance:hosted-github-evidence for details"
+      ]
+    );
+  }
+
+  const report = await readJson(hostedGithubGovernanceReportPath);
+  if (report.status !== "passed") {
+    return gate(
+      "branch-protection-ci",
+      "blocked",
+      [
+        hostedGithubGovernanceEvidencePath,
+        branchProtectionPayloadPath,
+        hostedGithubGovernanceReportPath
+      ],
+      [
+        "hosted GitHub governance evidence report is not passed",
+        ...failureMessages(report.failures)
+      ]
+    );
+  }
+
+  if (
+    report.releaseGates?.protectedBranchConfigured !== true ||
+    report.releaseGates?.requiredCiChecksConfigured !== true
+  ) {
+    return gate(
+      "branch-protection-ci",
+      "blocked",
+      [
+        hostedGithubGovernanceEvidencePath,
+        branchProtectionPayloadPath,
+        hostedGithubGovernanceReportPath
+      ],
+      [
+        "hosted GitHub governance evidence does not close both protected branch and required CI gates"
+      ]
+    );
+  }
+
+  return gate(
+    "branch-protection-ci",
+    "present",
+    [
+      hostedGithubGovernanceEvidencePath,
+      branchProtectionPayloadPath,
+      hostedGithubGovernanceReportPath
+    ],
+    []
+  );
+}
+
+function replaceRequiredEvidenceGate(id, replacement) {
+  const index = requiredEvidence.findIndex((item) => item.id === id);
+  if (index === -1) {
+    throw new Error(`Unable to replace missing final release gate ${id}.`);
+  }
+  requiredEvidence[index] = replacement;
+}
+
+function failureMessages(failures) {
+  if (!Array.isArray(failures)) {
+    return [];
+  }
+  return failures.map((failure) => {
+    const code = failure.code ?? "unknown_failure";
+    const message = failure.message ?? "No failure message provided.";
+    return `${code}: ${message}`;
+  });
 }
 
 function run(command, args) {
