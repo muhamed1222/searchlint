@@ -15,8 +15,8 @@ release approval.
 - Missing owner input files with templates: 60
 - Missing owner input files without templates: 0
 - Template-covered owner inputs: 60
-- Evidence paths missing: 108
-- Blocked/failing supporting reports: 2
+- Evidence paths missing: 109
+- Blocked/failing supporting reports: 1
 - Gates missing external owner proof: 74
 - Release gate claim: `not_claimed`
 

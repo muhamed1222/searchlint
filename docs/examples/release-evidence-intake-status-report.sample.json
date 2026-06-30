@@ -30,12 +30,12 @@
     "openItemCount": 77,
     "totalItemCount": 599,
     "uniqueEvidencePathCount": 110,
-    "presentEvidencePathCount": 2,
-    "missingEvidencePathCount": 108,
+    "presentEvidencePathCount": 1,
+    "missingEvidencePathCount": 109,
     "ownerInputEvidencePathCount": 60,
     "generatedReportEvidencePathCount": 49,
     "sampleEvidencePathCount": 1,
-    "blockedOrFailingReportCount": 2,
+    "blockedOrFailingReportCount": 1,
     "gatesWithMissingEvidenceCount": 77,
     "gatesWithBlockingEvidenceIssuesCount": 77,
     "externalOwnerProofRequiredGateCount": 74,
@@ -70,7 +70,7 @@
           "relatedCommand": "pnpm final-release:gate"
         }
       ],
-      "bytes": 6390,
+      "bytes": 7051,
       "jsonParseStatus": "parsed",
       "statusSignals": [
         {
@@ -1734,7 +1734,7 @@
     {
       "path": "reports/final-release-gate-report.json",
       "kind": "generated_report",
-      "exists": true,
+      "exists": false,
       "usableForClosure": false,
       "usageCount": 6,
       "usages": [
@@ -1775,108 +1775,8 @@
           "relatedCommand": "pnpm final-release:gate"
         }
       ],
-      "bytes": 6390,
-      "jsonParseStatus": "parsed",
-      "statusSignals": [
-        {
-          "path": "evidenceReadiness.status",
-          "value": "blocked_external_evidence"
-        },
-        {
-          "path": "rcMatrix.status",
-          "value": "blocked"
-        },
-        {
-          "path": "requiredEvidence.0.status",
-          "value": "blocked"
-        },
-        {
-          "path": "requiredEvidence.1.status",
-          "value": "missing"
-        },
-        {
-          "path": "requiredEvidence.10.status",
-          "value": "present"
-        },
-        {
-          "path": "requiredEvidence.11.status",
-          "value": "blocked"
-        },
-        {
-          "path": "requiredEvidence.12.status",
-          "value": "blocked"
-        },
-        {
-          "path": "requiredEvidence.13.status",
-          "value": "blocked"
-        },
-        {
-          "path": "requiredEvidence.14.status",
-          "value": "present"
-        },
-        {
-          "path": "requiredEvidence.15.status",
-          "value": "present"
-        },
-        {
-          "path": "requiredEvidence.16.status",
-          "value": "blocked"
-        },
-        {
-          "path": "requiredEvidence.17.status",
-          "value": "blocked"
-        },
-        {
-          "path": "requiredEvidence.18.status",
-          "value": "missing"
-        },
-        {
-          "path": "requiredEvidence.19.status",
-          "value": "missing"
-        },
-        {
-          "path": "requiredEvidence.2.status",
-          "value": "blocked"
-        },
-        {
-          "path": "requiredEvidence.3.status",
-          "value": "blocked"
-        },
-        {
-          "path": "requiredEvidence.4.status",
-          "value": "blocked"
-        },
-        {
-          "path": "requiredEvidence.5.status",
-          "value": "present"
-        },
-        {
-          "path": "requiredEvidence.6.status",
-          "value": "blocked"
-        },
-        {
-          "path": "requiredEvidence.7.status",
-          "value": "blocked"
-        },
-        {
-          "path": "requiredEvidence.8.status",
-          "value": "blocked"
-        },
-        {
-          "path": "requiredEvidence.9.status",
-          "value": "present"
-        },
-        {
-          "path": "status",
-          "value": "blocked"
-        },
-        {
-          "path": "verdict",
-          "value": "SearchLint 1.0 must not be tagged or published yet."
-        }
-      ],
-      "intakeStatus": "present_blocked_or_failing",
-      "issue": "Present JSON records blocked or failing status."
+      "intakeStatus": "missing",
+      "issue": "Required evidence path does not exist."
     },
     {
       "path": "reports/google-performance-acceptance-report.json",
@@ -3691,8 +3591,8 @@
       "requiredEvidence": "Final 1.0.0 version approval, passing RC matrix, hosted npm publication proof, provenance, and clean public registry install.",
       "nextOwnerAction": "Run final publication only after all release gates pass, then preserve npm publication and install evidence.",
       "evidencePathCount": 3,
-      "presentEvidencePathCount": 1,
-      "missingEvidencePathCount": 2,
+      "presentEvidencePathCount": 0,
+      "missingEvidencePathCount": 3,
       "externalOwnerProofRequired": true,
       "ownerProofEvidencePathCount": 0,
       "missingExternalOwnerProof": true,
@@ -3703,7 +3603,7 @@
         },
         {
           "path": "reports/final-release-gate-report.json",
-          "intakeStatus": "present_blocked_or_failing"
+          "intakeStatus": "missing"
         },
         {
           "path": "reports/searchlint-1-0-rc-matrix-report.json",
@@ -3725,8 +3625,8 @@
         {
           "path": "reports/final-release-gate-report.json",
           "kind": "generated_report",
-          "exists": true,
-          "intakeStatus": "present_blocked_or_failing",
+          "exists": false,
+          "intakeStatus": "missing",
           "usableForClosure": false
         },
         {
@@ -3801,8 +3701,8 @@
       "requiredEvidence": "Final 1.0.0 version approval, passing RC matrix, hosted npm publication proof, provenance, and clean public registry install.",
       "nextOwnerAction": "Run final publication only after all release gates pass, then preserve npm publication and install evidence.",
       "evidencePathCount": 3,
-      "presentEvidencePathCount": 1,
-      "missingEvidencePathCount": 2,
+      "presentEvidencePathCount": 0,
+      "missingEvidencePathCount": 3,
       "externalOwnerProofRequired": true,
       "ownerProofEvidencePathCount": 0,
       "missingExternalOwnerProof": true,
@@ -3813,7 +3713,7 @@
         },
         {
           "path": "reports/final-release-gate-report.json",
-          "intakeStatus": "present_blocked_or_failing"
+          "intakeStatus": "missing"
         },
         {
           "path": "reports/searchlint-1-0-rc-matrix-report.json",
@@ -3835,8 +3735,8 @@
         {
           "path": "reports/final-release-gate-report.json",
           "kind": "generated_report",
-          "exists": true,
-          "intakeStatus": "present_blocked_or_failing",
+          "exists": false,
+          "intakeStatus": "missing",
           "usableForClosure": false
         },
         {
@@ -5333,8 +5233,8 @@
       "requiredEvidence": "Final 1.0.0 version approval, passing RC matrix, hosted npm publication proof, provenance, and clean public registry install.",
       "nextOwnerAction": "Run final publication only after all release gates pass, then preserve npm publication and install evidence.",
       "evidencePathCount": 3,
-      "presentEvidencePathCount": 1,
-      "missingEvidencePathCount": 2,
+      "presentEvidencePathCount": 0,
+      "missingEvidencePathCount": 3,
       "externalOwnerProofRequired": true,
       "ownerProofEvidencePathCount": 0,
       "missingExternalOwnerProof": true,
@@ -5345,7 +5245,7 @@
         },
         {
           "path": "reports/final-release-gate-report.json",
-          "intakeStatus": "present_blocked_or_failing"
+          "intakeStatus": "missing"
         },
         {
           "path": "reports/searchlint-1-0-rc-matrix-report.json",
@@ -5367,8 +5267,8 @@
         {
           "path": "reports/final-release-gate-report.json",
           "kind": "generated_report",
-          "exists": true,
-          "intakeStatus": "present_blocked_or_failing",
+          "exists": false,
+          "intakeStatus": "missing",
           "usableForClosure": false
         },
         {
@@ -6466,8 +6366,8 @@
       "requiredEvidence": "Passing full release-candidate matrix, signed tag, publication proof, and final release approval.",
       "nextOwnerAction": "Run the final release gates only after all prerequisite gates pass.",
       "evidencePathCount": 3,
-      "presentEvidencePathCount": 2,
-      "missingEvidencePathCount": 1,
+      "presentEvidencePathCount": 1,
+      "missingEvidencePathCount": 2,
       "externalOwnerProofRequired": true,
       "ownerProofEvidencePathCount": 0,
       "missingExternalOwnerProof": true,
@@ -6478,7 +6378,7 @@
         },
         {
           "path": "reports/final-release-gate-report.json",
-          "intakeStatus": "present_blocked_or_failing"
+          "intakeStatus": "missing"
         },
         {
           "path": "docs/examples/final-release-gate-report.sample.json",
@@ -6500,8 +6400,8 @@
         {
           "path": "reports/final-release-gate-report.json",
           "kind": "generated_report",
-          "exists": true,
-          "intakeStatus": "present_blocked_or_failing",
+          "exists": false,
+          "intakeStatus": "missing",
           "usableForClosure": false
         },
         {
@@ -6521,8 +6421,8 @@
       "requiredEvidence": "Passing full release-candidate matrix, signed tag, publication proof, and final release approval.",
       "nextOwnerAction": "Run the final release gates only after all prerequisite gates pass.",
       "evidencePathCount": 3,
-      "presentEvidencePathCount": 2,
-      "missingEvidencePathCount": 1,
+      "presentEvidencePathCount": 1,
+      "missingEvidencePathCount": 2,
       "externalOwnerProofRequired": true,
       "ownerProofEvidencePathCount": 0,
       "missingExternalOwnerProof": true,
@@ -6533,7 +6433,7 @@
         },
         {
           "path": "reports/final-release-gate-report.json",
-          "intakeStatus": "present_blocked_or_failing"
+          "intakeStatus": "missing"
         },
         {
           "path": "docs/examples/final-release-gate-report.sample.json",
@@ -6555,8 +6455,8 @@
         {
           "path": "reports/final-release-gate-report.json",
           "kind": "generated_report",
-          "exists": true,
-          "intakeStatus": "present_blocked_or_failing",
+          "exists": false,
+          "intakeStatus": "missing",
           "usableForClosure": false
         },
         {
@@ -6576,8 +6476,8 @@
       "requiredEvidence": "Passing full release-candidate matrix, signed tag, publication proof, and final release approval.",
       "nextOwnerAction": "Run the final release gates only after all prerequisite gates pass.",
       "evidencePathCount": 3,
-      "presentEvidencePathCount": 2,
-      "missingEvidencePathCount": 1,
+      "presentEvidencePathCount": 1,
+      "missingEvidencePathCount": 2,
       "externalOwnerProofRequired": true,
       "ownerProofEvidencePathCount": 0,
       "missingExternalOwnerProof": true,
@@ -6588,7 +6488,7 @@
         },
         {
           "path": "reports/final-release-gate-report.json",
-          "intakeStatus": "present_blocked_or_failing"
+          "intakeStatus": "missing"
         },
         {
           "path": "docs/examples/final-release-gate-report.sample.json",
@@ -6610,8 +6510,8 @@
         {
           "path": "reports/final-release-gate-report.json",
           "kind": "generated_report",
-          "exists": true,
-          "intakeStatus": "present_blocked_or_failing",
+          "exists": false,
+          "intakeStatus": "missing",
           "usableForClosure": false
         },
         {
