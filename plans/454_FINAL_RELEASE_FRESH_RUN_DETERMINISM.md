@@ -20,6 +20,8 @@ generated evidence classification deterministic.
 - Regenerate release evidence readiness docs and samples from a fresh run.
 - Remove the `OD-027` numbering collision in `docs/OPEN_DECISIONS.md`; published
   docs already use `OD-027` for the Docker base-image decision.
+- Repair missing public website/onboarding source files that the existing
+  deterministic `pnpm website:acceptance` verifier requires.
 
 ## Non-goals
 
@@ -55,6 +57,8 @@ generated evidence classification deterministic.
   tag.
 - `docs/OPEN_DECISIONS.md` no longer reuses `OD-027` for the historical ExecPlan
   traceability gap.
+- `pnpm website:acceptance` passes against checked-in public website source docs
+  and demo project files without claiming deployed public website evidence.
 - `pnpm format`, `pnpm lint`, and `pnpm final-release:gate` pass as validation
   commands for this plan.
 
@@ -65,6 +69,8 @@ generated evidence classification deterministic.
 - [x] Open decision numbering collision removed.
 - [x] Generated readiness docs refreshed.
 - [x] Validation commands passed.
+- [x] Missing public website/onboarding source docs and demo project files
+      repaired.
 
 ## Decision Log
 
@@ -74,6 +80,9 @@ generated evidence classification deterministic.
   when that command is the command being run.
 - 2026-06-30: Renumber the newly added open decisions instead of changing the
   established Docker base-image `OD-027` references.
+- 2026-06-30: Treat missing website/onboarding source files as a repository
+  verifier gap, not external release evidence. The fix adds only source docs and
+  examples; deployed public website approval remains blocked on owner evidence.
 
 ## Evidence
 
@@ -85,3 +94,5 @@ generated evidence classification deterministic.
   preflight report.
 - `pnpm lint` passed.
 - `pnpm format` passed after formatting this ExecPlan.
+- `pnpm website:acceptance` passes after adding the required source docs and
+  demo project files.
