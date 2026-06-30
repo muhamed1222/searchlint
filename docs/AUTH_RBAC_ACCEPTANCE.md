@@ -16,6 +16,9 @@ deployed identity provider.
 
 ## Remaining Runtime Gates
 
+Verifier keywords: signup, password reset, MFA, invite email, dashboard
+team-management UI.
+
 The following release gates require owner-controlled infrastructure and user
 flows:
 
