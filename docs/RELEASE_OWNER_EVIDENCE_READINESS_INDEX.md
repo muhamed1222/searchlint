@@ -438,7 +438,7 @@ owner evidence. It is not release approval.
     `docs/release-owner-evidence/templates/8-npm-pakety-zamenit-0-0-0-beta-versions-na-final-release-versions.example.json`
     -> `missing`
 - Generated/supporting evidence:
-  - `reports/final-release-gate-report.json` -> `missing`
+  - `reports/final-release-gate-report.json` -> `present_blocked_or_failing`
   - `reports/searchlint-1-0-rc-matrix-report.json` -> `missing`
 
 ### 21. 8. npm-пакеты: Опубликовать beta packages
@@ -475,7 +475,7 @@ owner evidence. It is not release approval.
     `docs/release-owner-evidence/templates/8-npm-pakety-podgotovit-finalnuyu-publikaciyu-1-0-0.example.json`
     -> `missing`
 - Generated/supporting evidence:
-  - `reports/final-release-gate-report.json` -> `missing`
+  - `reports/final-release-gate-report.json` -> `present_blocked_or_failing`
   - `reports/searchlint-1-0-rc-matrix-report.json` -> `missing`
 
 ### 23. 10. Crawler: Проверить 100 000 URL в cloud
@@ -1035,7 +1035,7 @@ owner evidence. It is not release approval.
     `docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-npm-pakety-opublikovany.example.json`
     -> `missing`
 - Generated/supporting evidence:
-  - `reports/final-release-gate-report.json` -> `missing`
+  - `reports/final-release-gate-report.json` -> `present_blocked_or_failing`
   - `reports/searchlint-1-0-rc-matrix-report.json` -> `missing`
 
 ### 55. 31. Финальный SearchLint 1.0 Release Gate: VS Code extension опубликован
@@ -1408,7 +1408,7 @@ owner evidence. It is not release approval.
     `docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-release-candidate-proshel-polnuyu-matricu.example.json`
     -> `missing`
 - Generated/supporting evidence:
-  - `reports/final-release-gate-report.json` -> `missing`
+  - `reports/final-release-gate-report.json` -> `present_blocked_or_failing`
   - `docs/examples/final-release-gate-report.sample.json` ->
     `present_blocked_or_failing`
 
@@ -1427,7 +1427,7 @@ owner evidence. It is not release approval.
     `docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-sozdan-git-tag-v1-0-0.example.json`
     -> `missing`
 - Generated/supporting evidence:
-  - `reports/final-release-gate-report.json` -> `missing`
+  - `reports/final-release-gate-report.json` -> `present_blocked_or_failing`
   - `docs/examples/final-release-gate-report.sample.json` ->
     `present_blocked_or_failing`
 
@@ -1446,7 +1446,7 @@ owner evidence. It is not release approval.
     `docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-opublikovan-searchlint-1-0.example.json`
     -> `missing`
 - Generated/supporting evidence:
-  - `reports/final-release-gate-report.json` -> `missing`
+  - `reports/final-release-gate-report.json` -> `present_blocked_or_failing`
   - `docs/examples/final-release-gate-report.sample.json` ->
     `present_blocked_or_failing`
 
