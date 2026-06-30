@@ -17,8 +17,8 @@
     "gatesReadyForOwnerInputCount": 74,
     "gatesWithoutOwnerInputJsonCount": 3,
     "intakeStatus": "blocked_external_evidence",
-    "missingEvidencePathCount": 109,
-    "blockedOrFailingReportCount": 1
+    "missingEvidencePathCount": 108,
+    "blockedOrFailingReportCount": 2
   },
   "gateRecords": [
     {
@@ -828,7 +828,7 @@
         {
           "evidencePath": "reports/final-release-gate-report.json",
           "kind": "generated_report",
-          "evidenceStatus": "missing"
+          "evidenceStatus": "present_blocked_or_failing"
         },
         {
           "evidencePath": "reports/searchlint-1-0-rc-matrix-report.json",
@@ -900,7 +900,7 @@
         {
           "evidencePath": "reports/final-release-gate-report.json",
           "kind": "generated_report",
-          "evidenceStatus": "missing"
+          "evidenceStatus": "present_blocked_or_failing"
         },
         {
           "evidencePath": "reports/searchlint-1-0-rc-matrix-report.json",
@@ -1956,7 +1956,7 @@
         {
           "evidencePath": "reports/final-release-gate-report.json",
           "kind": "generated_report",
-          "evidenceStatus": "missing"
+          "evidenceStatus": "present_blocked_or_failing"
         },
         {
           "evidencePath": "reports/searchlint-1-0-rc-matrix-report.json",
@@ -2698,7 +2698,7 @@
         {
           "evidencePath": "reports/final-release-gate-report.json",
           "kind": "generated_report",
-          "evidenceStatus": "missing"
+          "evidenceStatus": "present_blocked_or_failing"
         },
         {
           "evidencePath": "docs/examples/final-release-gate-report.sample.json",
@@ -2734,7 +2734,7 @@
         {
           "evidencePath": "reports/final-release-gate-report.json",
           "kind": "generated_report",
-          "evidenceStatus": "missing"
+          "evidenceStatus": "present_blocked_or_failing"
         },
         {
           "evidencePath": "docs/examples/final-release-gate-report.sample.json",
@@ -2770,7 +2770,7 @@
         {
           "evidencePath": "reports/final-release-gate-report.json",
           "kind": "generated_report",
-          "evidenceStatus": "missing"
+          "evidenceStatus": "present_blocked_or_failing"
         },
         {
           "evidencePath": "docs/examples/final-release-gate-report.sample.json",
