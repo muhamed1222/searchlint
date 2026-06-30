@@ -8,9 +8,9 @@ status, and does not approve SearchLint 1.0.
 
 ## Current Baseline
 
-- Baseline commit: `ae5cd871ae85ca030e06906b1eedc8646b097555`
+- Baseline commit: `5b088433aace4c935516ee365d4e06559207ce68`
 - Baseline CI: passed in GitHub Actions run
-  `https://github.com/muhamed1222/searchlint/actions/runs/28462720725`
+  `https://github.com/muhamed1222/searchlint/actions/runs/28463386901`
 - Final release gate: `BLOCKED`
 - Release readiness: 522/599 done; 77 remaining
 - Real owner evidence inputs: 0/60 present
@@ -25,6 +25,7 @@ Authoritative generated status remains:
 - `docs/RELEASE_OWNER_EVIDENCE_READINESS_INDEX.md`
 - `docs/RELEASE_MISSING_EVIDENCE_TEMPLATE_INDEX.md`
 - `docs/SEARCHLINT_1_0_FINAL_RELEASE_GATE.md`
+- `docs/RELEASE_OWNER_OUTREACH_MESSAGE_KIT.md`
 
 After any real evidence lands, rerun the affected verifier and then rerun:
 
@@ -67,6 +68,9 @@ The full file list for every package is in
 not to decide completion.
 
 ## Immediate Dispatch Packets
+
+Ready-to-send outreach text for all lanes is in
+`docs/RELEASE_OWNER_OUTREACH_MESSAGE_KIT.md`.
 
 ### Reviewer Dispatch
 
