@@ -26,7 +26,7 @@ Resolution path: add the missing required-reading documents as governance
 reconciliation docs derived from `SEARCHLINT_1_0_DEVELOPMENT_PLAN.md`,
 `README.md`, `docs/RELEASE_GOVERNANCE.md`, and the current release gate docs.
 
-## OD-027: Historical ExecPlan Index Is Not Present On Published Main
+## OD-029: Historical ExecPlan Index Is Not Present On Published Main
 
 Status: open
 
@@ -38,7 +38,7 @@ Resolution path: either restore the historical ExecPlan archive or document the
 intentional archive boundary and ensure new multi-step changes create current
 plans in `plans/`.
 
-## OD-028: SearchLint 1.0 Final Release Remains Externally Blocked
+## OD-030: SearchLint 1.0 Final Release Remains Externally Blocked
 
 Status: open
 
