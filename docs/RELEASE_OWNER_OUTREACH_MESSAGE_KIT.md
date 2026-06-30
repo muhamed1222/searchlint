@@ -8,9 +8,9 @@ approve release, and does not replace the repository verifier commands.
 
 ## Current Baseline
 
-- Baseline commit: `5b088433aace4c935516ee365d4e06559207ce68`
+- Baseline commit: `1c94ca5400dc98ae456db6b34e0db9618a9fb0ab`
 - Baseline CI: passed in GitHub Actions run
-  `https://github.com/muhamed1222/searchlint/actions/runs/28463386901`
+  `https://github.com/muhamed1222/searchlint/actions/runs/28464174357`
 - Final release gate: `BLOCKED`
 - Release readiness: 522/599 done; 77 remaining
 - Real owner evidence inputs: 0/60 present
@@ -24,6 +24,8 @@ lane and then rerun:
 pnpm release:evidence-readiness
 pnpm final-release:gate
 ```
+
+For short recurring status updates, use `docs/RELEASE_OWNER_STATUS_DIGEST.md`.
 
 ## Sending Rules
 
