@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "generatedBy": "searchlint-npm-release-workflow-verifier",
+  "generatedAt": "2026-06-23T00:00:00.000Z",
+  "status": "PASS",
+  "workflow": ".github/workflows/npm-release.yml",
+  "checks": [
+    {
+      "id": "manual-dispatch",
+      "status": "PASS",
+      "evidence": "workflow_dispatch includes publish=false by default"
+    },
+    {
+      "id": "oidc-permissions",
+      "status": "PASS",
+      "evidence": "workflow requests GitHub OIDC id-token permission"
+    },
+    {
+      "id": "node-24",
+      "status": "PASS",
+      "evidence": "workflow configures Node.js 24 and npm registry URL"
+    },
+    {
+      "id": "supported-github-actions",
+      "status": "PASS",
+      "evidence": "workflow uses supported GitHub Actions versions for checkout and setup-node"
+    },
+    {
+      "id": "prepublish-gates",
+      "status": "PASS",
+      "evidence": "workflow runs release, dry-run, and npm-like registry checks"
+    },
+    {
+      "id": "trusted-publish-command",
+      "status": "PASS",
+      "evidence": "workflow publish command uses npm provenance and public access"
+    },
+    {
+      "id": "manual-publish-gate",
+      "status": "PASS",
+      "evidence": "workflow only publishes when manual publish=true"
+    },
+    {
+      "id": "public-package-allowlist",
+      "status": "PASS",
+      "evidence": "workflow publish loop contains all public package directories"
+    },
+    {
+      "id": "environment-gate",
+      "status": "PASS",
+      "evidence": "workflow uses npm-release environment for owner approval gates"
+    }
+  ],
+  "releaseGatesStillOpen": [
+    "Create and verify the npm organization/package trusted-publisher bindings in npm.",
+    "Configure the npm-release GitHub environment reviewers and branch/tag protections.",
+    "Run the workflow in the hosted repository with publish=false and preserve logs.",
+    "Run the workflow with publish=true only for approved beta/final releases.",
+    "Verify clean install from the public npm registry after publication."
+  ]
+}
