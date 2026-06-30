@@ -17,8 +17,8 @@
     "gatesReadyForOwnerInputCount": 74,
     "gatesWithoutOwnerInputJsonCount": 3,
     "intakeStatus": "blocked_external_evidence",
-    "missingEvidencePathCount": 108,
-    "blockedOrFailingReportCount": 2
+    "missingEvidencePathCount": 109,
+    "blockedOrFailingReportCount": 1
   },
   "gateRecords": [
     {
@@ -828,7 +828,7 @@
         {
           "evidencePath": "reports/final-release-gate-report.json",
           "kind": "generated_report",
-          "evidenceStatus": "present_blocked_or_failing"
+          "evidenceStatus": "missing"
         },
         {
           "evidencePath": "reports/searchlint-1-0-rc-matrix-report.json",
@@ -900,7 +900,7 @@
         {
           "evidencePath": "reports/final-release-gate-report.json",
           "kind": "generated_report",
-          "evidenceStatus": "present_blocked_or_failing"
+          "evidenceStatus": "missing"
         },
         {
           "evidencePath": "reports/searchlint-1-0-rc-matrix-report.json",
@@ -1956,7 +1956,7 @@
         {
           "evidencePath": "reports/final-release-gate-report.json",
           "kind": "generated_report",
-          "evidenceStatus": "present_blocked_or_failing"
+          "evidenceStatus": "missing"
         },
         {
           "evidencePath": "reports/searchlint-1-0-rc-matrix-report.json",
@@ -2698,7 +2698,7 @@
         {
           "evidencePath": "reports/final-release-gate-report.json",
           "kind": "generated_report",
-          "evidenceStatus": "present_blocked_or_failing"
+          "evidenceStatus": "missing"
         },
         {
           "evidencePath": "docs/examples/final-release-gate-report.sample.json",
@@ -2734,7 +2734,7 @@
         {
           "evidencePath": "reports/final-release-gate-report.json",
           "kind": "generated_report",
-          "evidenceStatus": "present_blocked_or_failing"
+          "evidenceStatus": "missing"
         },
         {
           "evidencePath": "docs/examples/final-release-gate-report.sample.json",
@@ -2770,7 +2770,7 @@
         {
           "evidencePath": "reports/final-release-gate-report.json",
           "kind": "generated_report",
-          "evidenceStatus": "present_blocked_or_failing"
+          "evidenceStatus": "missing"
         },
         {
           "evidencePath": "docs/examples/final-release-gate-report.sample.json",
@@ -2794,7 +2794,9 @@
       "nextOwnerAction": "Complete legal review and provide the approved release-gate evidence file.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/live-backup-restore-drill.json",
@@ -2809,7 +2811,9 @@
       "nextOwnerAction": "Provide live backup/restore drill evidence and run the backup restore live gate.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/10-crawler-proverit-100-000-url-v-cloud.json",
@@ -2826,7 +2830,9 @@
       "nextOwnerAction": "Run the cloud crawler scale acceptance in the deployed environment and preserve sanitized evidence.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/11-postgresql-i-hranenie-dannyh-razvernut-nastoyashii-postgresql-rds.json",
@@ -2843,7 +2849,9 @@
       "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/12-s3-object-storage-razvernut-realnoe-object-storage.json",
@@ -2860,7 +2868,9 @@
       "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/13-backend-api-razvernut-production-api.json",
@@ -2877,7 +2887,9 @@
       "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/18-google-search-console-provesti-live-acceptance-na-realnom-saite.json",
@@ -2894,7 +2906,9 @@
       "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/19-pagespeed-i-crux-provesti-live-acceptance.json",
@@ -2911,7 +2925,9 @@
       "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/20-yandeks-vebmaster-provesti-live-acceptance.json",
@@ -2928,7 +2944,9 @@
       "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/21-yandeks-metrika-provesti-live-acceptance.json",
@@ -2945,7 +2963,9 @@
       "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/22-istoriya-i-korrelyaciya-provesti-deployed-dashboard-timeline-acceptance.json",
@@ -2962,7 +2982,9 @@
       "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/24-notifications-provesti-live-email-delivery-acceptance.json",
@@ -2979,7 +3001,9 @@
       "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/24-notifications-provesti-live-slack-delivery-acceptance.json",
@@ -2996,7 +3020,9 @@
       "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/24-notifications-provesti-live-telegram-delivery-acceptance-esli-nuzhen.json",
@@ -3013,7 +3039,9 @@
       "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/24-notifications-provesti-live-webhook-delivery-acceptance.json",
@@ -3030,7 +3058,9 @@
       "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/25-billing-proverit-deployed-stripe-webhook-persistence-on-rds.json",
@@ -3047,7 +3077,9 @@
       "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/25-billing-provesti-live-customer-portal-acceptance.json",
@@ -3064,7 +3096,9 @@
       "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/25-billing-provesti-live-stripe-acceptance.json",
@@ -3081,7 +3115,9 @@
       "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/25-billing-provesti-live-subscription-trial-upgrade-downgrade-cancellation-acceptance.json",
@@ -3098,7 +3134,9 @@
       "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/26-agency-mode-proverit-client-invite-email-delivery.json",
@@ -3115,7 +3153,9 @@
       "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/26-agency-mode-razvernut-client-portal.json",
@@ -3132,7 +3172,9 @@
       "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/26-agency-mode-realizovat-live-agency-billing.json",
@@ -3149,7 +3191,9 @@
       "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/27-observability-podklyuchit-cloudwatch-otlp.json",
@@ -3166,7 +3210,9 @@
       "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/27-observability-razvernut-logging.json",
@@ -3183,7 +3229,9 @@
       "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/27-observability-razvernut-metrics.json",
@@ -3200,7 +3248,9 @@
       "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/27-observability-razvernut-tracing.json",
@@ -3217,7 +3267,9 @@
       "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/28-security-i-privacy-provesti-dast.json",
@@ -3234,7 +3286,9 @@
       "nextOwnerAction": "Run DAST against deployed production-equivalent targets, commission independent penetration testing, remediate findings, and approve the final gate.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/28-security-i-privacy-zavershit-security-release-gate.json",
@@ -3251,7 +3305,9 @@
       "nextOwnerAction": "Run DAST against deployed production-equivalent targets, commission independent penetration testing, remediate findings, and approve the final gate.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-agency-mode-gotov.json",
@@ -3268,7 +3324,9 @@
       "nextOwnerAction": "Run agency acceptance and deployed agency evidence gates, then preserve live billing/client access evidence.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-api-deployment-proof-proiden.json",
@@ -3285,7 +3343,9 @@
       "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-billing-live-acceptance-proiden.json",
@@ -3302,7 +3362,9 @@
       "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-cognito-rbac-proof-proiden.json",
@@ -3319,7 +3381,9 @@
       "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-dashboard-production-e2e-proiden.json",
@@ -3336,7 +3400,9 @@
       "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-google-live-acceptance-proiden.json",
@@ -3353,7 +3419,9 @@
       "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-notifications-gotovy.json",
@@ -3370,7 +3438,9 @@
       "nextOwnerAction": "Run notification acceptance plus live provider delivery checks and preserve sanitized delivery evidence.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-npm-pakety-opublikovany.json",
@@ -3387,7 +3457,9 @@
       "nextOwnerAction": "Run final publication only after all release gates pass, then preserve npm publication and install evidence.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-oauth-vault-proof-proiden.json",
@@ -3404,7 +3476,9 @@
       "nextOwnerAction": "Run deployed OAuth vault acceptance and complete the independent vault security review.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-observability-gotova.json",
@@ -3421,7 +3495,9 @@
       "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-opublikovan-searchlint-1-0.json",
@@ -3438,7 +3514,9 @@
       "nextOwnerAction": "Run the final release gates only after all prerequisite gates pass.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-postgresql-rds-proof-proiden.json",
@@ -3455,7 +3533,9 @@
       "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-public-website-gotov.json",
@@ -3472,7 +3552,9 @@
       "nextOwnerAction": "Deploy the public website and capture sanitized deployed website acceptance evidence.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-release-candidate-proshel-polnuyu-matricu.json",
@@ -3489,7 +3571,9 @@
       "nextOwnerAction": "Run the final release gates only after all prerequisite gates pass.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-s3-proof-proiden.json",
@@ -3506,7 +3590,9 @@
       "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-security-audit-proiden.json",
@@ -3523,7 +3609,9 @@
       "nextOwnerAction": "Run DAST against deployed production-equivalent targets, commission independent penetration testing, remediate findings, and approve the final gate.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-sozdan-git-tag-v1-0-0.json",
@@ -3540,7 +3628,9 @@
       "nextOwnerAction": "Run the final release gates only after all prerequisite gates pass.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-vs-code-extension-opublikovan.json",
@@ -3557,7 +3647,9 @@
       "nextOwnerAction": "After publisher setup and legal approval, publish the VSIX through the Marketplace flow and preserve publication/install evidence.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-workers-sqs-proof-proiden.json",
@@ -3574,7 +3666,9 @@
       "nextOwnerAction": "Deploy the target surface in the approved environment and capture sanitized deployed acceptance evidence.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-yandex-live-acceptance-proiden.json",
@@ -3591,7 +3685,9 @@
       "nextOwnerAction": "Provide live provider credentials/configuration outside the repo, run the relevant acceptance packet, and store sanitized evidence.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/7-vs-code-i-lsp-nastroit-publisher-account.json",
@@ -3608,7 +3704,9 @@
       "nextOwnerAction": "Configure the Marketplace publisher account, keep the local VSIX/update evidence current, and preserve publisher setup evidence outside secrets.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/7-vs-code-i-lsp-podpisat-i-opublikovat-extension.json",
@@ -3625,7 +3723,9 @@
       "nextOwnerAction": "After publisher setup and legal approval, publish the VSIX through the Marketplace flow and preserve publication/install evidence.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/8-npm-pakety-opublikovat-beta-packages.json",
@@ -3642,7 +3742,9 @@
       "nextOwnerAction": "Complete legal/package metadata gates, configure npm trusted publishing, run the hosted workflow with publish=true and tag=beta, then preserve publication evidence.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/8-npm-pakety-podgotovit-finalnuyu-publikaciyu-1-0-0.json",
@@ -3659,7 +3761,9 @@
       "nextOwnerAction": "Run final publication only after all release gates pass, then preserve npm publication and install evidence.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/release-owner-evidence/8-npm-pakety-zamenit-0-0-0-beta-versions-na-final-release-versions.json",
@@ -3676,7 +3780,9 @@
       "nextOwnerAction": "Run final publication only after all release gates pass, then preserve npm publication and install evidence.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/reviews/blocker-benchmark/DELIVERY_EVIDENCE.json",
@@ -3696,7 +3802,9 @@
       "nextOwnerAction": "Send the handoff packet to two intended independent reviewers, provide DELIVERY_EVIDENCE.json, then run the delivery gate.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/reviews/blocker-benchmark/reviewer-1.review.json",
@@ -3716,7 +3824,9 @@
       "nextOwnerAction": "Select two independent reviewers, collect reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then rerun the review gate.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/reviews/blocker-benchmark/reviewer-2.review.json",
@@ -3736,7 +3846,9 @@
       "nextOwnerAction": "Select two independent reviewers, collect reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then rerun the review gate.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/reviews/oauth-vault-security/reviewer-1.review.json",
@@ -3753,7 +3865,9 @@
       "nextOwnerAction": "Provide real OAuth vault security reviewer evidence and rerun the vault security review gate.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/reviews/oauth-vault-security/reviewer-2.review.json",
@@ -3770,7 +3884,9 @@
       "nextOwnerAction": "Provide real OAuth vault security reviewer evidence and rerun the vault security review gate.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/reviews/overlay-accessibility/reviewer.review.json",
@@ -3787,7 +3903,9 @@
       "nextOwnerAction": "Run the manual accessibility review and record reviewer evidence.; Run overlay acceptance/visual checks and provide real manual accessibility reviewer evidence.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     },
     {
       "evidencePath": "docs/reviews/penetration-test/report-summary.json",
@@ -3804,7 +3922,9 @@
       "nextOwnerAction": "Run DAST against deployed production-equivalent targets, commission independent penetration testing, remediate findings, and approve the final gate.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
-      "exists": false
+      "exists": false,
+      "usableForClosure": false,
+      "issue": "Required evidence path does not exist."
     }
   ],
   "nonClaims": [

@@ -227,7 +227,9 @@ function buildOwnerInputRecords(
         templateStatus:
           templatePaths.length > 0 ? "covered" : "missing_template",
         evidenceStatus: entry.intakeStatus,
-        exists: entry.exists
+        exists: entry.exists,
+        usableForClosure: entry.usableForClosure,
+        issue: entry.issue
       };
     });
 }
@@ -239,8 +241,9 @@ function summarize(gateRecords, ownerInputRecords, intakeReport) {
     templateCoveredOwnerInputCount: ownerInputRecords.filter(
       (entry) => entry.templateStatus === "covered"
     ).length,
-    realOwnerEvidenceCount: ownerInputRecords.filter((entry) => entry.exists)
-      .length,
+    realOwnerEvidenceCount: ownerInputRecords.filter(
+      (entry) => entry.usableForClosure
+    ).length,
     gatesReadyForOwnerInputCount: gateRecords.filter(
       (entry) => entry.readinessStatus === "ready_for_owner_input"
     ).length,
@@ -306,7 +309,7 @@ function renderMarkdown(report) {
 
   for (const entry of report.ownerInputRecords) {
     lines.push(
-      `| \`${entry.evidencePath}\` | ${entry.templatePaths.map((templatePath) => `\`${templatePath}\``).join("<br>")} | ${escapeMarkdown(entry.gate.section)} / ${escapeMarkdown(entry.gate.item)} | \`${entry.evidenceStatus}\`, \`${entry.templateStatus}\` |`
+      `| \`${entry.evidencePath}\` | ${entry.templatePaths.map((templatePath) => `\`${templatePath}\``).join("<br>")} | ${escapeMarkdown(entry.gate.section)} / ${escapeMarkdown(entry.gate.item)} | \`${entry.evidenceStatus}\`, \`${entry.templateStatus}\`, usable: \`${String(entry.usableForClosure)}\` |`
     );
   }
 
