@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { execFileSync } from "node:child_process";
+import { access, mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import { format } from "prettier";
@@ -15,6 +16,15 @@ const samplePath =
   "docs/examples/reviewer-rule-quality-owner-input-guide-report.sample.json";
 const generatedAt = "2026-06-23T00:00:00.000Z";
 
+await ensureReport(handoffManifestPath, "pnpm", ["rule-qa:review-handoff"], {
+  allowFailure: false
+});
+await ensureReport(
+  packageGateReportPath,
+  "pnpm",
+  ["release:reviewer-rule-quality-package"],
+  { allowFailure: true }
+);
 const handoff = await readJson(handoffManifestPath);
 const packageGate = await readJson(packageGateReportPath);
 const requiredInputs = [
@@ -128,6 +138,25 @@ console.log(`Sample: ${samplePath}`);
 
 async function readJson(filePath) {
   return JSON.parse(await readFile(filePath, "utf8"));
+}
+
+async function ensureReport(filePath, command, args, { allowFailure }) {
+  try {
+    await access(filePath);
+  } catch {
+    try {
+      execFileSync(command, args, {
+        cwd: process.cwd(),
+        env: process.env,
+        stdio: "inherit"
+      });
+    } catch (error) {
+      if (!allowFailure) {
+        throw error;
+      }
+    }
+    await access(filePath);
+  }
 }
 
 async function writeMarkdown(filePath, markdown) {
