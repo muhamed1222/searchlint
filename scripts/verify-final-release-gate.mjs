@@ -180,6 +180,7 @@ const requiredEvidence = [
 ];
 
 async function main() {
+  await writeFinalReleasePreflightReport();
   run("pnpm", ["release:evidence-readiness"]);
   replaceRequiredEvidenceGate(
     "branch-protection-ci",
@@ -258,6 +259,7 @@ async function main() {
   await mkdir(path.dirname(samplePath), { recursive: true });
   await writeJson(reportPath, report);
   await writeJson(samplePath, report);
+  run("pnpm", ["release:evidence-readiness"]);
 
   console.log(
     `SearchLint 1.0 final release gate BLOCKED: ${summary.blockedOrMissingCount}/${summary.gateCount} final gate(s) remain blocked or missing`
@@ -269,6 +271,27 @@ async function main() {
 
 function gate(id, status, evidenceFiles, blockers) {
   return { id, status, evidenceFiles, blockers };
+}
+
+async function writeFinalReleasePreflightReport() {
+  const report = {
+    generatedBy: "searchlint-1-0-final-release-gate-verifier",
+    generatedAt: "2026-06-22T00:00:00.000Z",
+    releaseVersion: "1.0.0",
+    status: "blocked",
+    verdict:
+      "SearchLint 1.0 final release gate is running; release remains blocked until the complete report is written.",
+    preflight: true,
+    nonClaims: [
+      "This preflight report exists only so release evidence readiness can evaluate the final gate report path during a fresh final-release run.",
+      "This preflight report does not close release gates.",
+      "This preflight report does not authorize tagging, publishing, marketplace release, public website release, or launch announcement."
+    ]
+  };
+
+  assertNoSensitiveValues(JSON.stringify(report));
+  await mkdir(path.dirname(reportPath), { recursive: true });
+  await writeJson(reportPath, report);
 }
 
 async function buildBranchProtectionCiGate() {
