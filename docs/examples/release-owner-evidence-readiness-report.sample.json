@@ -11,14 +11,14 @@
   },
   "summary": {
     "openGateCount": 77,
-    "ownerInputEvidenceCount": 51,
-    "templateCoveredOwnerInputCount": 51,
+    "ownerInputEvidenceCount": 60,
+    "templateCoveredOwnerInputCount": 60,
     "realOwnerEvidenceCount": 0,
-    "gatesReadyForOwnerInputCount": 51,
-    "gatesWithoutOwnerInputJsonCount": 26,
+    "gatesReadyForOwnerInputCount": 74,
+    "gatesWithoutOwnerInputJsonCount": 3,
     "intakeStatus": "blocked_external_evidence",
-    "missingEvidencePathCount": 105,
-    "blockedOrFailingReportCount": 4
+    "missingEvidencePathCount": 108,
+    "blockedOrFailingReportCount": 2
   },
   "gateRecords": [
     {
@@ -29,17 +29,20 @@
       "relatedCommand": "pnpm legal:release-gate",
       "requiredEvidence": "Qualified legal/owner approval JSON plus reviewed public/private repository boundary evidence.",
       "nextOwnerAction": "Complete legal review and provide the approved release-gate evidence file.",
-      "ownerInputCount": 0,
-      "templateCoveredOwnerInputCount": 0,
-      "generatedEvidenceCount": 2,
-      "readinessStatus": "waiting_for_external_non_owner_json_evidence",
-      "ownerInputs": [],
-      "generatedEvidence": [
+      "ownerInputCount": 1,
+      "templateCoveredOwnerInputCount": 1,
+      "generatedEvidenceCount": 1,
+      "readinessStatus": "ready_for_owner_input",
+      "ownerInputs": [
         {
           "evidencePath": "docs/legal-release-approval.json",
-          "kind": "owner_input",
+          "templatePath": "docs/legal-release-approval.example.json",
+          "templatePaths": ["docs/legal-release-approval.example.json"],
+          "templateStatus": "covered",
           "evidenceStatus": "missing"
-        },
+        }
+      ],
+      "generatedEvidence": [
         {
           "evidencePath": "reports/legal-release-approval-report.json",
           "kind": "generated_report",
@@ -55,26 +58,41 @@
       "relatedCommand": "pnpm rule-qa:review",
       "requiredEvidence": "Two real independent reviewer JSON files, full benchmark coverage, matching benchmarkVersion, adjudicated disagreements, and passing pnpm rule-qa:review.",
       "nextOwnerAction": "Select two independent reviewers, collect reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then rerun the review gate.",
-      "ownerInputCount": 0,
-      "templateCoveredOwnerInputCount": 0,
-      "generatedEvidenceCount": 3,
-      "readinessStatus": "waiting_for_external_non_owner_json_evidence",
-      "ownerInputs": [],
-      "generatedEvidence": [
+      "ownerInputCount": 2,
+      "templateCoveredOwnerInputCount": 2,
+      "generatedEvidenceCount": 1,
+      "readinessStatus": "ready_for_owner_input",
+      "ownerInputs": [
         {
           "evidencePath": "docs/reviews/blocker-benchmark/reviewer-1.review.json",
-          "kind": "owner_input",
+          "templatePath": "docs/reviews/blocker-benchmark/reviewer-1.review.example.json",
+          "templatePaths": [
+            "docs/reviews/blocker-benchmark/reviewer-1.review.example.json",
+            "docs/reviews/blocker-benchmark/README.md",
+            "docs/reviews/blocker-benchmark/REVIEW_INSTRUCTIONS.md",
+            "docs/reviews/blocker-benchmark/REVIEW_FORM_TEMPLATE.md"
+          ],
+          "templateStatus": "covered",
           "evidenceStatus": "missing"
         },
         {
           "evidencePath": "docs/reviews/blocker-benchmark/reviewer-2.review.json",
-          "kind": "owner_input",
+          "templatePath": "docs/reviews/blocker-benchmark/reviewer-2.review.example.json",
+          "templatePaths": [
+            "docs/reviews/blocker-benchmark/reviewer-2.review.example.json",
+            "docs/reviews/blocker-benchmark/README.md",
+            "docs/reviews/blocker-benchmark/REVIEW_INSTRUCTIONS.md",
+            "docs/reviews/blocker-benchmark/REVIEW_FORM_TEMPLATE.md"
+          ],
+          "templateStatus": "covered",
           "evidenceStatus": "missing"
-        },
+        }
+      ],
+      "generatedEvidence": [
         {
           "evidencePath": "reports/blocker-benchmark-adjudication-summary.json",
           "kind": "generated_report",
-          "evidenceStatus": "present_blocked_or_failing"
+          "evidenceStatus": "missing"
         }
       ]
     },
@@ -86,21 +104,29 @@
       "relatedCommand": "pnpm rule-qa:review-delivery",
       "requiredEvidence": "Owner-provided DELIVERY_EVIDENCE.json proving the blocker benchmark review packet was sent to two intended independent reviewers, with matching benchmarkVersion and case-index SHA-256.",
       "nextOwnerAction": "Send the handoff packet to two intended independent reviewers, provide DELIVERY_EVIDENCE.json, then run the delivery gate.",
-      "ownerInputCount": 0,
-      "templateCoveredOwnerInputCount": 0,
-      "generatedEvidenceCount": 2,
-      "readinessStatus": "waiting_for_external_non_owner_json_evidence",
-      "ownerInputs": [],
-      "generatedEvidence": [
+      "ownerInputCount": 1,
+      "templateCoveredOwnerInputCount": 1,
+      "generatedEvidenceCount": 1,
+      "readinessStatus": "ready_for_owner_input",
+      "ownerInputs": [
         {
           "evidencePath": "docs/reviews/blocker-benchmark/DELIVERY_EVIDENCE.json",
-          "kind": "owner_input",
+          "templatePath": "docs/reviews/blocker-benchmark/DELIVERY_EVIDENCE.example.json",
+          "templatePaths": [
+            "docs/reviews/blocker-benchmark/DELIVERY_EVIDENCE.example.json",
+            "docs/reviews/blocker-benchmark/README.md",
+            "docs/reviews/blocker-benchmark/REVIEW_INSTRUCTIONS.md",
+            "docs/reviews/blocker-benchmark/REVIEW_FORM_TEMPLATE.md"
+          ],
+          "templateStatus": "covered",
           "evidenceStatus": "missing"
-        },
+        }
+      ],
+      "generatedEvidence": [
         {
           "evidencePath": "reports/blocker-benchmark-review-delivery-report.json",
           "kind": "generated_report",
-          "evidenceStatus": "present_blocked_or_failing"
+          "evidenceStatus": "missing"
         }
       ]
     },
@@ -112,26 +138,41 @@
       "relatedCommand": "pnpm rule-qa:review",
       "requiredEvidence": "Two real independent reviewer JSON files, full benchmark coverage, matching benchmarkVersion, adjudicated disagreements, and passing pnpm rule-qa:review.",
       "nextOwnerAction": "Select two independent reviewers, collect reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then rerun the review gate.",
-      "ownerInputCount": 0,
-      "templateCoveredOwnerInputCount": 0,
-      "generatedEvidenceCount": 3,
-      "readinessStatus": "waiting_for_external_non_owner_json_evidence",
-      "ownerInputs": [],
-      "generatedEvidence": [
+      "ownerInputCount": 2,
+      "templateCoveredOwnerInputCount": 2,
+      "generatedEvidenceCount": 1,
+      "readinessStatus": "ready_for_owner_input",
+      "ownerInputs": [
         {
           "evidencePath": "docs/reviews/blocker-benchmark/reviewer-1.review.json",
-          "kind": "owner_input",
+          "templatePath": "docs/reviews/blocker-benchmark/reviewer-1.review.example.json",
+          "templatePaths": [
+            "docs/reviews/blocker-benchmark/reviewer-1.review.example.json",
+            "docs/reviews/blocker-benchmark/README.md",
+            "docs/reviews/blocker-benchmark/REVIEW_INSTRUCTIONS.md",
+            "docs/reviews/blocker-benchmark/REVIEW_FORM_TEMPLATE.md"
+          ],
+          "templateStatus": "covered",
           "evidenceStatus": "missing"
         },
         {
           "evidencePath": "docs/reviews/blocker-benchmark/reviewer-2.review.json",
-          "kind": "owner_input",
+          "templatePath": "docs/reviews/blocker-benchmark/reviewer-2.review.example.json",
+          "templatePaths": [
+            "docs/reviews/blocker-benchmark/reviewer-2.review.example.json",
+            "docs/reviews/blocker-benchmark/README.md",
+            "docs/reviews/blocker-benchmark/REVIEW_INSTRUCTIONS.md",
+            "docs/reviews/blocker-benchmark/REVIEW_FORM_TEMPLATE.md"
+          ],
+          "templateStatus": "covered",
           "evidenceStatus": "missing"
-        },
+        }
+      ],
+      "generatedEvidence": [
         {
           "evidencePath": "reports/blocker-benchmark-adjudication-summary.json",
           "kind": "generated_report",
-          "evidenceStatus": "present_blocked_or_failing"
+          "evidenceStatus": "missing"
         }
       ]
     },
@@ -143,26 +184,41 @@
       "relatedCommand": "pnpm rule-qa:review",
       "requiredEvidence": "Two real independent reviewer JSON files, full benchmark coverage, matching benchmarkVersion, adjudicated disagreements, and passing pnpm rule-qa:review.",
       "nextOwnerAction": "Select two independent reviewers, collect reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then rerun the review gate.",
-      "ownerInputCount": 0,
-      "templateCoveredOwnerInputCount": 0,
-      "generatedEvidenceCount": 3,
-      "readinessStatus": "waiting_for_external_non_owner_json_evidence",
-      "ownerInputs": [],
-      "generatedEvidence": [
+      "ownerInputCount": 2,
+      "templateCoveredOwnerInputCount": 2,
+      "generatedEvidenceCount": 1,
+      "readinessStatus": "ready_for_owner_input",
+      "ownerInputs": [
         {
           "evidencePath": "docs/reviews/blocker-benchmark/reviewer-1.review.json",
-          "kind": "owner_input",
+          "templatePath": "docs/reviews/blocker-benchmark/reviewer-1.review.example.json",
+          "templatePaths": [
+            "docs/reviews/blocker-benchmark/reviewer-1.review.example.json",
+            "docs/reviews/blocker-benchmark/README.md",
+            "docs/reviews/blocker-benchmark/REVIEW_INSTRUCTIONS.md",
+            "docs/reviews/blocker-benchmark/REVIEW_FORM_TEMPLATE.md"
+          ],
+          "templateStatus": "covered",
           "evidenceStatus": "missing"
         },
         {
           "evidencePath": "docs/reviews/blocker-benchmark/reviewer-2.review.json",
-          "kind": "owner_input",
+          "templatePath": "docs/reviews/blocker-benchmark/reviewer-2.review.example.json",
+          "templatePaths": [
+            "docs/reviews/blocker-benchmark/reviewer-2.review.example.json",
+            "docs/reviews/blocker-benchmark/README.md",
+            "docs/reviews/blocker-benchmark/REVIEW_INSTRUCTIONS.md",
+            "docs/reviews/blocker-benchmark/REVIEW_FORM_TEMPLATE.md"
+          ],
+          "templateStatus": "covered",
           "evidenceStatus": "missing"
-        },
+        }
+      ],
+      "generatedEvidence": [
         {
           "evidencePath": "reports/blocker-benchmark-adjudication-summary.json",
           "kind": "generated_report",
-          "evidenceStatus": "present_blocked_or_failing"
+          "evidenceStatus": "missing"
         }
       ]
     },
@@ -174,26 +230,41 @@
       "relatedCommand": "pnpm rule-qa:review",
       "requiredEvidence": "Two real independent reviewer JSON files, full benchmark coverage, matching benchmarkVersion, adjudicated disagreements, and passing pnpm rule-qa:review.",
       "nextOwnerAction": "Select two independent reviewers, collect reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then rerun the review gate.",
-      "ownerInputCount": 0,
-      "templateCoveredOwnerInputCount": 0,
-      "generatedEvidenceCount": 3,
-      "readinessStatus": "waiting_for_external_non_owner_json_evidence",
-      "ownerInputs": [],
-      "generatedEvidence": [
+      "ownerInputCount": 2,
+      "templateCoveredOwnerInputCount": 2,
+      "generatedEvidenceCount": 1,
+      "readinessStatus": "ready_for_owner_input",
+      "ownerInputs": [
         {
           "evidencePath": "docs/reviews/blocker-benchmark/reviewer-1.review.json",
-          "kind": "owner_input",
+          "templatePath": "docs/reviews/blocker-benchmark/reviewer-1.review.example.json",
+          "templatePaths": [
+            "docs/reviews/blocker-benchmark/reviewer-1.review.example.json",
+            "docs/reviews/blocker-benchmark/README.md",
+            "docs/reviews/blocker-benchmark/REVIEW_INSTRUCTIONS.md",
+            "docs/reviews/blocker-benchmark/REVIEW_FORM_TEMPLATE.md"
+          ],
+          "templateStatus": "covered",
           "evidenceStatus": "missing"
         },
         {
           "evidencePath": "docs/reviews/blocker-benchmark/reviewer-2.review.json",
-          "kind": "owner_input",
+          "templatePath": "docs/reviews/blocker-benchmark/reviewer-2.review.example.json",
+          "templatePaths": [
+            "docs/reviews/blocker-benchmark/reviewer-2.review.example.json",
+            "docs/reviews/blocker-benchmark/README.md",
+            "docs/reviews/blocker-benchmark/REVIEW_INSTRUCTIONS.md",
+            "docs/reviews/blocker-benchmark/REVIEW_FORM_TEMPLATE.md"
+          ],
+          "templateStatus": "covered",
           "evidenceStatus": "missing"
-        },
+        }
+      ],
+      "generatedEvidence": [
         {
           "evidencePath": "reports/blocker-benchmark-adjudication-summary.json",
           "kind": "generated_report",
-          "evidenceStatus": "present_blocked_or_failing"
+          "evidenceStatus": "missing"
         }
       ]
     },
@@ -205,26 +276,41 @@
       "relatedCommand": "pnpm rule-qa:review",
       "requiredEvidence": "Two real independent reviewer JSON files, full benchmark coverage, matching benchmarkVersion, adjudicated disagreements, and passing pnpm rule-qa:review.",
       "nextOwnerAction": "Select two independent reviewers, collect reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then rerun the review gate.",
-      "ownerInputCount": 0,
-      "templateCoveredOwnerInputCount": 0,
-      "generatedEvidenceCount": 3,
-      "readinessStatus": "waiting_for_external_non_owner_json_evidence",
-      "ownerInputs": [],
-      "generatedEvidence": [
+      "ownerInputCount": 2,
+      "templateCoveredOwnerInputCount": 2,
+      "generatedEvidenceCount": 1,
+      "readinessStatus": "ready_for_owner_input",
+      "ownerInputs": [
         {
           "evidencePath": "docs/reviews/blocker-benchmark/reviewer-1.review.json",
-          "kind": "owner_input",
+          "templatePath": "docs/reviews/blocker-benchmark/reviewer-1.review.example.json",
+          "templatePaths": [
+            "docs/reviews/blocker-benchmark/reviewer-1.review.example.json",
+            "docs/reviews/blocker-benchmark/README.md",
+            "docs/reviews/blocker-benchmark/REVIEW_INSTRUCTIONS.md",
+            "docs/reviews/blocker-benchmark/REVIEW_FORM_TEMPLATE.md"
+          ],
+          "templateStatus": "covered",
           "evidenceStatus": "missing"
         },
         {
           "evidencePath": "docs/reviews/blocker-benchmark/reviewer-2.review.json",
-          "kind": "owner_input",
+          "templatePath": "docs/reviews/blocker-benchmark/reviewer-2.review.example.json",
+          "templatePaths": [
+            "docs/reviews/blocker-benchmark/reviewer-2.review.example.json",
+            "docs/reviews/blocker-benchmark/README.md",
+            "docs/reviews/blocker-benchmark/REVIEW_INSTRUCTIONS.md",
+            "docs/reviews/blocker-benchmark/REVIEW_FORM_TEMPLATE.md"
+          ],
+          "templateStatus": "covered",
           "evidenceStatus": "missing"
-        },
+        }
+      ],
+      "generatedEvidence": [
         {
           "evidencePath": "reports/blocker-benchmark-adjudication-summary.json",
           "kind": "generated_report",
-          "evidenceStatus": "present_blocked_or_failing"
+          "evidenceStatus": "missing"
         }
       ]
     },
@@ -236,26 +322,41 @@
       "relatedCommand": "pnpm rule-qa:review",
       "requiredEvidence": "Two real independent reviewer JSON files, full benchmark coverage, matching benchmarkVersion, adjudicated disagreements, and passing pnpm rule-qa:review.",
       "nextOwnerAction": "Select two independent reviewers, collect reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then rerun the review gate.",
-      "ownerInputCount": 0,
-      "templateCoveredOwnerInputCount": 0,
-      "generatedEvidenceCount": 3,
-      "readinessStatus": "waiting_for_external_non_owner_json_evidence",
-      "ownerInputs": [],
-      "generatedEvidence": [
+      "ownerInputCount": 2,
+      "templateCoveredOwnerInputCount": 2,
+      "generatedEvidenceCount": 1,
+      "readinessStatus": "ready_for_owner_input",
+      "ownerInputs": [
         {
           "evidencePath": "docs/reviews/blocker-benchmark/reviewer-1.review.json",
-          "kind": "owner_input",
+          "templatePath": "docs/reviews/blocker-benchmark/reviewer-1.review.example.json",
+          "templatePaths": [
+            "docs/reviews/blocker-benchmark/reviewer-1.review.example.json",
+            "docs/reviews/blocker-benchmark/README.md",
+            "docs/reviews/blocker-benchmark/REVIEW_INSTRUCTIONS.md",
+            "docs/reviews/blocker-benchmark/REVIEW_FORM_TEMPLATE.md"
+          ],
+          "templateStatus": "covered",
           "evidenceStatus": "missing"
         },
         {
           "evidencePath": "docs/reviews/blocker-benchmark/reviewer-2.review.json",
-          "kind": "owner_input",
+          "templatePath": "docs/reviews/blocker-benchmark/reviewer-2.review.example.json",
+          "templatePaths": [
+            "docs/reviews/blocker-benchmark/reviewer-2.review.example.json",
+            "docs/reviews/blocker-benchmark/README.md",
+            "docs/reviews/blocker-benchmark/REVIEW_INSTRUCTIONS.md",
+            "docs/reviews/blocker-benchmark/REVIEW_FORM_TEMPLATE.md"
+          ],
+          "templateStatus": "covered",
           "evidenceStatus": "missing"
-        },
+        }
+      ],
+      "generatedEvidence": [
         {
           "evidencePath": "reports/blocker-benchmark-adjudication-summary.json",
           "kind": "generated_report",
-          "evidenceStatus": "present_blocked_or_failing"
+          "evidenceStatus": "missing"
         }
       ]
     },
@@ -267,26 +368,41 @@
       "relatedCommand": "pnpm rule-qa:review",
       "requiredEvidence": "Two real independent reviewer JSON files, full benchmark coverage, matching benchmarkVersion, adjudicated disagreements, and passing pnpm rule-qa:review.",
       "nextOwnerAction": "Select two independent reviewers, collect reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then rerun the review gate.",
-      "ownerInputCount": 0,
-      "templateCoveredOwnerInputCount": 0,
-      "generatedEvidenceCount": 3,
-      "readinessStatus": "waiting_for_external_non_owner_json_evidence",
-      "ownerInputs": [],
-      "generatedEvidence": [
+      "ownerInputCount": 2,
+      "templateCoveredOwnerInputCount": 2,
+      "generatedEvidenceCount": 1,
+      "readinessStatus": "ready_for_owner_input",
+      "ownerInputs": [
         {
           "evidencePath": "docs/reviews/blocker-benchmark/reviewer-1.review.json",
-          "kind": "owner_input",
+          "templatePath": "docs/reviews/blocker-benchmark/reviewer-1.review.example.json",
+          "templatePaths": [
+            "docs/reviews/blocker-benchmark/reviewer-1.review.example.json",
+            "docs/reviews/blocker-benchmark/README.md",
+            "docs/reviews/blocker-benchmark/REVIEW_INSTRUCTIONS.md",
+            "docs/reviews/blocker-benchmark/REVIEW_FORM_TEMPLATE.md"
+          ],
+          "templateStatus": "covered",
           "evidenceStatus": "missing"
         },
         {
           "evidencePath": "docs/reviews/blocker-benchmark/reviewer-2.review.json",
-          "kind": "owner_input",
+          "templatePath": "docs/reviews/blocker-benchmark/reviewer-2.review.example.json",
+          "templatePaths": [
+            "docs/reviews/blocker-benchmark/reviewer-2.review.example.json",
+            "docs/reviews/blocker-benchmark/README.md",
+            "docs/reviews/blocker-benchmark/REVIEW_INSTRUCTIONS.md",
+            "docs/reviews/blocker-benchmark/REVIEW_FORM_TEMPLATE.md"
+          ],
+          "templateStatus": "covered",
           "evidenceStatus": "missing"
-        },
+        }
+      ],
+      "generatedEvidence": [
         {
           "evidencePath": "reports/blocker-benchmark-adjudication-summary.json",
           "kind": "generated_report",
-          "evidenceStatus": "present_blocked_or_failing"
+          "evidenceStatus": "missing"
         }
       ]
     },
@@ -298,26 +414,41 @@
       "relatedCommand": "pnpm rule-qa:review",
       "requiredEvidence": "Two real independent reviewer JSON files, full benchmark coverage, matching benchmarkVersion, adjudicated disagreements, and passing pnpm rule-qa:review.",
       "nextOwnerAction": "Select two independent reviewers, collect reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then rerun the review gate.",
-      "ownerInputCount": 0,
-      "templateCoveredOwnerInputCount": 0,
-      "generatedEvidenceCount": 3,
-      "readinessStatus": "waiting_for_external_non_owner_json_evidence",
-      "ownerInputs": [],
-      "generatedEvidence": [
+      "ownerInputCount": 2,
+      "templateCoveredOwnerInputCount": 2,
+      "generatedEvidenceCount": 1,
+      "readinessStatus": "ready_for_owner_input",
+      "ownerInputs": [
         {
           "evidencePath": "docs/reviews/blocker-benchmark/reviewer-1.review.json",
-          "kind": "owner_input",
+          "templatePath": "docs/reviews/blocker-benchmark/reviewer-1.review.example.json",
+          "templatePaths": [
+            "docs/reviews/blocker-benchmark/reviewer-1.review.example.json",
+            "docs/reviews/blocker-benchmark/README.md",
+            "docs/reviews/blocker-benchmark/REVIEW_INSTRUCTIONS.md",
+            "docs/reviews/blocker-benchmark/REVIEW_FORM_TEMPLATE.md"
+          ],
+          "templateStatus": "covered",
           "evidenceStatus": "missing"
         },
         {
           "evidencePath": "docs/reviews/blocker-benchmark/reviewer-2.review.json",
-          "kind": "owner_input",
+          "templatePath": "docs/reviews/blocker-benchmark/reviewer-2.review.example.json",
+          "templatePaths": [
+            "docs/reviews/blocker-benchmark/reviewer-2.review.example.json",
+            "docs/reviews/blocker-benchmark/README.md",
+            "docs/reviews/blocker-benchmark/REVIEW_INSTRUCTIONS.md",
+            "docs/reviews/blocker-benchmark/REVIEW_FORM_TEMPLATE.md"
+          ],
+          "templateStatus": "covered",
           "evidenceStatus": "missing"
-        },
+        }
+      ],
+      "generatedEvidence": [
         {
           "evidencePath": "reports/blocker-benchmark-adjudication-summary.json",
           "kind": "generated_report",
-          "evidenceStatus": "present_blocked_or_failing"
+          "evidenceStatus": "missing"
         }
       ]
     },
@@ -329,26 +460,41 @@
       "relatedCommand": "pnpm rule-qa:review",
       "requiredEvidence": "Two real independent reviewer JSON files, full benchmark coverage, matching benchmarkVersion, adjudicated disagreements, and passing pnpm rule-qa:review.",
       "nextOwnerAction": "Select two independent reviewers, collect reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then rerun the review gate.",
-      "ownerInputCount": 0,
-      "templateCoveredOwnerInputCount": 0,
-      "generatedEvidenceCount": 3,
-      "readinessStatus": "waiting_for_external_non_owner_json_evidence",
-      "ownerInputs": [],
-      "generatedEvidence": [
+      "ownerInputCount": 2,
+      "templateCoveredOwnerInputCount": 2,
+      "generatedEvidenceCount": 1,
+      "readinessStatus": "ready_for_owner_input",
+      "ownerInputs": [
         {
           "evidencePath": "docs/reviews/blocker-benchmark/reviewer-1.review.json",
-          "kind": "owner_input",
+          "templatePath": "docs/reviews/blocker-benchmark/reviewer-1.review.example.json",
+          "templatePaths": [
+            "docs/reviews/blocker-benchmark/reviewer-1.review.example.json",
+            "docs/reviews/blocker-benchmark/README.md",
+            "docs/reviews/blocker-benchmark/REVIEW_INSTRUCTIONS.md",
+            "docs/reviews/blocker-benchmark/REVIEW_FORM_TEMPLATE.md"
+          ],
+          "templateStatus": "covered",
           "evidenceStatus": "missing"
         },
         {
           "evidencePath": "docs/reviews/blocker-benchmark/reviewer-2.review.json",
-          "kind": "owner_input",
+          "templatePath": "docs/reviews/blocker-benchmark/reviewer-2.review.example.json",
+          "templatePaths": [
+            "docs/reviews/blocker-benchmark/reviewer-2.review.example.json",
+            "docs/reviews/blocker-benchmark/README.md",
+            "docs/reviews/blocker-benchmark/REVIEW_INSTRUCTIONS.md",
+            "docs/reviews/blocker-benchmark/REVIEW_FORM_TEMPLATE.md"
+          ],
+          "templateStatus": "covered",
           "evidenceStatus": "missing"
-        },
+        }
+      ],
+      "generatedEvidence": [
         {
           "evidencePath": "reports/blocker-benchmark-adjudication-summary.json",
           "kind": "generated_report",
-          "evidenceStatus": "present_blocked_or_failing"
+          "evidenceStatus": "missing"
         }
       ]
     },
@@ -360,26 +506,41 @@
       "relatedCommand": "pnpm rule-qa:review",
       "requiredEvidence": "Two real independent reviewer JSON files, full benchmark coverage, matching benchmarkVersion, adjudicated disagreements, and passing pnpm rule-qa:review.",
       "nextOwnerAction": "Select two independent reviewers, collect reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then rerun the review gate.",
-      "ownerInputCount": 0,
-      "templateCoveredOwnerInputCount": 0,
-      "generatedEvidenceCount": 3,
-      "readinessStatus": "waiting_for_external_non_owner_json_evidence",
-      "ownerInputs": [],
-      "generatedEvidence": [
+      "ownerInputCount": 2,
+      "templateCoveredOwnerInputCount": 2,
+      "generatedEvidenceCount": 1,
+      "readinessStatus": "ready_for_owner_input",
+      "ownerInputs": [
         {
           "evidencePath": "docs/reviews/blocker-benchmark/reviewer-1.review.json",
-          "kind": "owner_input",
+          "templatePath": "docs/reviews/blocker-benchmark/reviewer-1.review.example.json",
+          "templatePaths": [
+            "docs/reviews/blocker-benchmark/reviewer-1.review.example.json",
+            "docs/reviews/blocker-benchmark/README.md",
+            "docs/reviews/blocker-benchmark/REVIEW_INSTRUCTIONS.md",
+            "docs/reviews/blocker-benchmark/REVIEW_FORM_TEMPLATE.md"
+          ],
+          "templateStatus": "covered",
           "evidenceStatus": "missing"
         },
         {
           "evidencePath": "docs/reviews/blocker-benchmark/reviewer-2.review.json",
-          "kind": "owner_input",
+          "templatePath": "docs/reviews/blocker-benchmark/reviewer-2.review.example.json",
+          "templatePaths": [
+            "docs/reviews/blocker-benchmark/reviewer-2.review.example.json",
+            "docs/reviews/blocker-benchmark/README.md",
+            "docs/reviews/blocker-benchmark/REVIEW_INSTRUCTIONS.md",
+            "docs/reviews/blocker-benchmark/REVIEW_FORM_TEMPLATE.md"
+          ],
+          "templateStatus": "covered",
           "evidenceStatus": "missing"
-        },
+        }
+      ],
+      "generatedEvidence": [
         {
           "evidencePath": "reports/blocker-benchmark-adjudication-summary.json",
           "kind": "generated_report",
-          "evidenceStatus": "present_blocked_or_failing"
+          "evidenceStatus": "missing"
         }
       ]
     },
@@ -391,26 +552,41 @@
       "relatedCommand": "pnpm rule-qa:review",
       "requiredEvidence": "Two real independent reviewer JSON files, full benchmark coverage, matching benchmarkVersion, adjudicated disagreements, and passing pnpm rule-qa:review.",
       "nextOwnerAction": "Select two independent reviewers, collect reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then rerun the review gate.",
-      "ownerInputCount": 0,
-      "templateCoveredOwnerInputCount": 0,
-      "generatedEvidenceCount": 3,
-      "readinessStatus": "waiting_for_external_non_owner_json_evidence",
-      "ownerInputs": [],
-      "generatedEvidence": [
+      "ownerInputCount": 2,
+      "templateCoveredOwnerInputCount": 2,
+      "generatedEvidenceCount": 1,
+      "readinessStatus": "ready_for_owner_input",
+      "ownerInputs": [
         {
           "evidencePath": "docs/reviews/blocker-benchmark/reviewer-1.review.json",
-          "kind": "owner_input",
+          "templatePath": "docs/reviews/blocker-benchmark/reviewer-1.review.example.json",
+          "templatePaths": [
+            "docs/reviews/blocker-benchmark/reviewer-1.review.example.json",
+            "docs/reviews/blocker-benchmark/README.md",
+            "docs/reviews/blocker-benchmark/REVIEW_INSTRUCTIONS.md",
+            "docs/reviews/blocker-benchmark/REVIEW_FORM_TEMPLATE.md"
+          ],
+          "templateStatus": "covered",
           "evidenceStatus": "missing"
         },
         {
           "evidencePath": "docs/reviews/blocker-benchmark/reviewer-2.review.json",
-          "kind": "owner_input",
+          "templatePath": "docs/reviews/blocker-benchmark/reviewer-2.review.example.json",
+          "templatePaths": [
+            "docs/reviews/blocker-benchmark/reviewer-2.review.example.json",
+            "docs/reviews/blocker-benchmark/README.md",
+            "docs/reviews/blocker-benchmark/REVIEW_INSTRUCTIONS.md",
+            "docs/reviews/blocker-benchmark/REVIEW_FORM_TEMPLATE.md"
+          ],
+          "templateStatus": "covered",
           "evidenceStatus": "missing"
-        },
+        }
+      ],
+      "generatedEvidence": [
         {
           "evidencePath": "reports/blocker-benchmark-adjudication-summary.json",
           "kind": "generated_report",
-          "evidenceStatus": "present_blocked_or_failing"
+          "evidenceStatus": "missing"
         }
       ]
     },
@@ -431,12 +607,12 @@
         {
           "evidencePath": "reports/blocker-benchmark-adjudication-summary.json",
           "kind": "generated_report",
-          "evidenceStatus": "present_blocked_or_failing"
+          "evidenceStatus": "missing"
         },
         {
           "evidencePath": "reports/rule-qa-summary.json",
           "kind": "generated_report",
-          "evidenceStatus": "present_with_pass_signal"
+          "evidenceStatus": "missing"
         }
       ]
     },
@@ -448,26 +624,41 @@
       "relatedCommand": "pnpm rule-qa:review",
       "requiredEvidence": "Two real independent reviewer JSON files, full benchmark coverage, matching benchmarkVersion, adjudicated disagreements, and passing pnpm rule-qa:review.",
       "nextOwnerAction": "Select two independent reviewers, collect reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then rerun the review gate.",
-      "ownerInputCount": 0,
-      "templateCoveredOwnerInputCount": 0,
-      "generatedEvidenceCount": 3,
-      "readinessStatus": "waiting_for_external_non_owner_json_evidence",
-      "ownerInputs": [],
-      "generatedEvidence": [
+      "ownerInputCount": 2,
+      "templateCoveredOwnerInputCount": 2,
+      "generatedEvidenceCount": 1,
+      "readinessStatus": "ready_for_owner_input",
+      "ownerInputs": [
         {
           "evidencePath": "docs/reviews/blocker-benchmark/reviewer-1.review.json",
-          "kind": "owner_input",
+          "templatePath": "docs/reviews/blocker-benchmark/reviewer-1.review.example.json",
+          "templatePaths": [
+            "docs/reviews/blocker-benchmark/reviewer-1.review.example.json",
+            "docs/reviews/blocker-benchmark/README.md",
+            "docs/reviews/blocker-benchmark/REVIEW_INSTRUCTIONS.md",
+            "docs/reviews/blocker-benchmark/REVIEW_FORM_TEMPLATE.md"
+          ],
+          "templateStatus": "covered",
           "evidenceStatus": "missing"
         },
         {
           "evidencePath": "docs/reviews/blocker-benchmark/reviewer-2.review.json",
-          "kind": "owner_input",
+          "templatePath": "docs/reviews/blocker-benchmark/reviewer-2.review.example.json",
+          "templatePaths": [
+            "docs/reviews/blocker-benchmark/reviewer-2.review.example.json",
+            "docs/reviews/blocker-benchmark/README.md",
+            "docs/reviews/blocker-benchmark/REVIEW_INSTRUCTIONS.md",
+            "docs/reviews/blocker-benchmark/REVIEW_FORM_TEMPLATE.md"
+          ],
+          "templateStatus": "covered",
           "evidenceStatus": "missing"
-        },
+        }
+      ],
+      "generatedEvidence": [
         {
           "evidencePath": "reports/blocker-benchmark-adjudication-summary.json",
           "kind": "generated_report",
-          "evidenceStatus": "present_blocked_or_failing"
+          "evidenceStatus": "missing"
         }
       ]
     },
@@ -479,17 +670,22 @@
       "relatedCommand": "pnpm overlay:manual-a11y-review",
       "requiredEvidence": "Manual accessibility review evidence for the required assistive technology/browser matrix.",
       "nextOwnerAction": "Run the manual accessibility review and record reviewer evidence.",
-      "ownerInputCount": 0,
-      "templateCoveredOwnerInputCount": 0,
-      "generatedEvidenceCount": 2,
-      "readinessStatus": "waiting_for_external_non_owner_json_evidence",
-      "ownerInputs": [],
-      "generatedEvidence": [
+      "ownerInputCount": 1,
+      "templateCoveredOwnerInputCount": 1,
+      "generatedEvidenceCount": 1,
+      "readinessStatus": "ready_for_owner_input",
+      "ownerInputs": [
         {
           "evidencePath": "docs/reviews/overlay-accessibility/reviewer.review.json",
-          "kind": "owner_input",
+          "templatePath": "docs/reviews/overlay-accessibility/REVIEW_FORM_TEMPLATE.md",
+          "templatePaths": [
+            "docs/reviews/overlay-accessibility/REVIEW_FORM_TEMPLATE.md"
+          ],
+          "templateStatus": "covered",
           "evidenceStatus": "missing"
-        },
+        }
+      ],
+      "generatedEvidence": [
         {
           "evidencePath": "reports/overlay-manual-a11y-review-report.json",
           "kind": "generated_report",
@@ -505,17 +701,22 @@
       "relatedCommand": "pnpm overlay:manual-a11y-review",
       "requiredEvidence": "Manual accessibility review evidence for the required assistive technology/browser matrix.",
       "nextOwnerAction": "Run the manual accessibility review and record reviewer evidence.",
-      "ownerInputCount": 0,
-      "templateCoveredOwnerInputCount": 0,
-      "generatedEvidenceCount": 2,
-      "readinessStatus": "waiting_for_external_non_owner_json_evidence",
-      "ownerInputs": [],
-      "generatedEvidence": [
+      "ownerInputCount": 1,
+      "templateCoveredOwnerInputCount": 1,
+      "generatedEvidenceCount": 1,
+      "readinessStatus": "ready_for_owner_input",
+      "ownerInputs": [
         {
           "evidencePath": "docs/reviews/overlay-accessibility/reviewer.review.json",
-          "kind": "owner_input",
+          "templatePath": "docs/reviews/overlay-accessibility/REVIEW_FORM_TEMPLATE.md",
+          "templatePaths": [
+            "docs/reviews/overlay-accessibility/REVIEW_FORM_TEMPLATE.md"
+          ],
+          "templateStatus": "covered",
           "evidenceStatus": "missing"
-        },
+        }
+      ],
+      "generatedEvidence": [
         {
           "evidencePath": "reports/overlay-manual-a11y-review-report.json",
           "kind": "generated_report",
@@ -539,6 +740,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/7-vs-code-i-lsp-nastroit-publisher-account.json",
           "templatePath": "docs/release-owner-evidence/templates/7-vs-code-i-lsp-nastroit-publisher-account.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/7-vs-code-i-lsp-nastroit-publisher-account.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -572,6 +776,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/7-vs-code-i-lsp-podpisat-i-opublikovat-extension.json",
           "templatePath": "docs/release-owner-evidence/templates/7-vs-code-i-lsp-podpisat-i-opublikovat-extension.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/7-vs-code-i-lsp-podpisat-i-opublikovat-extension.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -610,6 +817,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/8-npm-pakety-zamenit-0-0-0-beta-versions-na-final-release-versions.json",
           "templatePath": "docs/release-owner-evidence/templates/8-npm-pakety-zamenit-0-0-0-beta-versions-na-final-release-versions.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/8-npm-pakety-zamenit-0-0-0-beta-versions-na-final-release-versions.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -643,6 +853,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/8-npm-pakety-opublikovat-beta-packages.json",
           "templatePath": "docs/release-owner-evidence/templates/8-npm-pakety-opublikovat-beta-packages.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/8-npm-pakety-opublikovat-beta-packages.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -676,6 +889,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/8-npm-pakety-podgotovit-finalnuyu-publikaciyu-1-0-0.json",
           "templatePath": "docs/release-owner-evidence/templates/8-npm-pakety-podgotovit-finalnuyu-publikaciyu-1-0-0.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/8-npm-pakety-podgotovit-finalnuyu-publikaciyu-1-0-0.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -709,6 +925,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/10-crawler-proverit-100-000-url-v-cloud.json",
           "templatePath": "docs/release-owner-evidence/templates/10-crawler-proverit-100-000-url-v-cloud.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/10-crawler-proverit-100-000-url-v-cloud.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -737,6 +956,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/11-postgresql-i-hranenie-dannyh-razvernut-nastoyashii-postgresql-rds.json",
           "templatePath": "docs/release-owner-evidence/templates/11-postgresql-i-hranenie-dannyh-razvernut-nastoyashii-postgresql-rds.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/11-postgresql-i-hranenie-dannyh-razvernut-nastoyashii-postgresql-rds.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -770,6 +992,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/12-s3-object-storage-razvernut-realnoe-object-storage.json",
           "templatePath": "docs/release-owner-evidence/templates/12-s3-object-storage-razvernut-realnoe-object-storage.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/12-s3-object-storage-razvernut-realnoe-object-storage.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -803,6 +1028,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/13-backend-api-razvernut-production-api.json",
           "templatePath": "docs/release-owner-evidence/templates/13-backend-api-razvernut-production-api.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/13-backend-api-razvernut-production-api.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -823,22 +1051,31 @@
       "relatedCommand": "pnpm oauth-vault:security-review",
       "requiredEvidence": "Two real independent OAuth vault security reviewer files plus passing vault security review report.",
       "nextOwnerAction": "Provide real OAuth vault security reviewer evidence and rerun the vault security review gate.",
-      "ownerInputCount": 0,
-      "templateCoveredOwnerInputCount": 0,
-      "generatedEvidenceCount": 3,
-      "readinessStatus": "waiting_for_external_non_owner_json_evidence",
-      "ownerInputs": [],
-      "generatedEvidence": [
+      "ownerInputCount": 2,
+      "templateCoveredOwnerInputCount": 2,
+      "generatedEvidenceCount": 1,
+      "readinessStatus": "ready_for_owner_input",
+      "ownerInputs": [
         {
           "evidencePath": "docs/reviews/oauth-vault-security/reviewer-1.review.json",
-          "kind": "owner_input",
+          "templatePath": "docs/reviews/oauth-vault-security/REVIEW_FORM_TEMPLATE.md",
+          "templatePaths": [
+            "docs/reviews/oauth-vault-security/REVIEW_FORM_TEMPLATE.md"
+          ],
+          "templateStatus": "covered",
           "evidenceStatus": "missing"
         },
         {
           "evidencePath": "docs/reviews/oauth-vault-security/reviewer-2.review.json",
-          "kind": "owner_input",
+          "templatePath": "docs/reviews/oauth-vault-security/REVIEW_FORM_TEMPLATE.md",
+          "templatePaths": [
+            "docs/reviews/oauth-vault-security/REVIEW_FORM_TEMPLATE.md"
+          ],
+          "templateStatus": "covered",
           "evidenceStatus": "missing"
-        },
+        }
+      ],
+      "generatedEvidence": [
         {
           "evidencePath": "reports/oauth-vault-security-review-report.json",
           "kind": "generated_report",
@@ -862,6 +1099,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/18-google-search-console-provesti-live-acceptance-na-realnom-saite.json",
           "templatePath": "docs/release-owner-evidence/templates/18-google-search-console-provesti-live-acceptance-na-realnom-saite.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/18-google-search-console-provesti-live-acceptance-na-realnom-saite.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -890,6 +1130,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/19-pagespeed-i-crux-provesti-live-acceptance.json",
           "templatePath": "docs/release-owner-evidence/templates/19-pagespeed-i-crux-provesti-live-acceptance.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/19-pagespeed-i-crux-provesti-live-acceptance.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -923,6 +1166,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/20-yandeks-vebmaster-provesti-live-acceptance.json",
           "templatePath": "docs/release-owner-evidence/templates/20-yandeks-vebmaster-provesti-live-acceptance.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/20-yandeks-vebmaster-provesti-live-acceptance.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -951,6 +1197,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/21-yandeks-metrika-provesti-live-acceptance.json",
           "templatePath": "docs/release-owner-evidence/templates/21-yandeks-metrika-provesti-live-acceptance.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/21-yandeks-metrika-provesti-live-acceptance.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -979,6 +1228,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/22-istoriya-i-korrelyaciya-provesti-deployed-dashboard-timeline-acceptance.json",
           "templatePath": "docs/release-owner-evidence/templates/22-istoriya-i-korrelyaciya-provesti-deployed-dashboard-timeline-acceptance.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/22-istoriya-i-korrelyaciya-provesti-deployed-dashboard-timeline-acceptance.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -1007,6 +1259,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/24-notifications-provesti-live-email-delivery-acceptance.json",
           "templatePath": "docs/release-owner-evidence/templates/24-notifications-provesti-live-email-delivery-acceptance.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/24-notifications-provesti-live-email-delivery-acceptance.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -1035,6 +1290,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/24-notifications-provesti-live-slack-delivery-acceptance.json",
           "templatePath": "docs/release-owner-evidence/templates/24-notifications-provesti-live-slack-delivery-acceptance.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/24-notifications-provesti-live-slack-delivery-acceptance.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -1063,6 +1321,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/24-notifications-provesti-live-webhook-delivery-acceptance.json",
           "templatePath": "docs/release-owner-evidence/templates/24-notifications-provesti-live-webhook-delivery-acceptance.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/24-notifications-provesti-live-webhook-delivery-acceptance.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -1091,6 +1352,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/24-notifications-provesti-live-telegram-delivery-acceptance-esli-nuzhen.json",
           "templatePath": "docs/release-owner-evidence/templates/24-notifications-provesti-live-telegram-delivery-acceptance-esli-nuzhen.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/24-notifications-provesti-live-telegram-delivery-acceptance-esli-nuzhen.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -1119,6 +1383,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/25-billing-provesti-live-customer-portal-acceptance.json",
           "templatePath": "docs/release-owner-evidence/templates/25-billing-provesti-live-customer-portal-acceptance.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/25-billing-provesti-live-customer-portal-acceptance.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -1147,6 +1414,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/25-billing-provesti-live-subscription-trial-upgrade-downgrade-cancellation-acceptance.json",
           "templatePath": "docs/release-owner-evidence/templates/25-billing-provesti-live-subscription-trial-upgrade-downgrade-cancellation-acceptance.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/25-billing-provesti-live-subscription-trial-upgrade-downgrade-cancellation-acceptance.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -1175,6 +1445,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/25-billing-proverit-deployed-stripe-webhook-persistence-on-rds.json",
           "templatePath": "docs/release-owner-evidence/templates/25-billing-proverit-deployed-stripe-webhook-persistence-on-rds.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/25-billing-proverit-deployed-stripe-webhook-persistence-on-rds.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -1203,6 +1476,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/25-billing-provesti-live-stripe-acceptance.json",
           "templatePath": "docs/release-owner-evidence/templates/25-billing-provesti-live-stripe-acceptance.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/25-billing-provesti-live-stripe-acceptance.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -1231,6 +1507,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/26-agency-mode-razvernut-client-portal.json",
           "templatePath": "docs/release-owner-evidence/templates/26-agency-mode-razvernut-client-portal.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/26-agency-mode-razvernut-client-portal.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -1259,6 +1538,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/26-agency-mode-realizovat-live-agency-billing.json",
           "templatePath": "docs/release-owner-evidence/templates/26-agency-mode-realizovat-live-agency-billing.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/26-agency-mode-realizovat-live-agency-billing.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -1287,6 +1569,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/26-agency-mode-proverit-client-invite-email-delivery.json",
           "templatePath": "docs/release-owner-evidence/templates/26-agency-mode-proverit-client-invite-email-delivery.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/26-agency-mode-proverit-client-invite-email-delivery.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -1315,6 +1600,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/27-observability-razvernut-logging.json",
           "templatePath": "docs/release-owner-evidence/templates/27-observability-razvernut-logging.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/27-observability-razvernut-logging.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -1348,6 +1636,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/27-observability-razvernut-metrics.json",
           "templatePath": "docs/release-owner-evidence/templates/27-observability-razvernut-metrics.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/27-observability-razvernut-metrics.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -1381,6 +1672,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/27-observability-razvernut-tracing.json",
           "templatePath": "docs/release-owner-evidence/templates/27-observability-razvernut-tracing.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/27-observability-razvernut-tracing.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -1414,6 +1708,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/27-observability-podklyuchit-cloudwatch-otlp.json",
           "templatePath": "docs/release-owner-evidence/templates/27-observability-podklyuchit-cloudwatch-otlp.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/27-observability-podklyuchit-cloudwatch-otlp.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -1447,6 +1744,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/28-security-i-privacy-provesti-dast.json",
           "templatePath": "docs/release-owner-evidence/templates/28-security-i-privacy-provesti-dast.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/28-security-i-privacy-provesti-dast.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -1467,17 +1767,22 @@
       "relatedCommand": "pnpm security:pentest",
       "requiredEvidence": "Passed deployed-target DAST, independent penetration-test report, remediation sign-off, and security/legal approval.",
       "nextOwnerAction": "Run DAST against deployed production-equivalent targets, commission independent penetration testing, remediate findings, and approve the final gate.",
-      "ownerInputCount": 0,
-      "templateCoveredOwnerInputCount": 0,
-      "generatedEvidenceCount": 2,
-      "readinessStatus": "waiting_for_external_non_owner_json_evidence",
-      "ownerInputs": [],
-      "generatedEvidence": [
+      "ownerInputCount": 1,
+      "templateCoveredOwnerInputCount": 1,
+      "generatedEvidenceCount": 1,
+      "readinessStatus": "ready_for_owner_input",
+      "ownerInputs": [
         {
           "evidencePath": "docs/reviews/penetration-test/report-summary.json",
-          "kind": "owner_input",
+          "templatePath": "docs/reviews/penetration-test/REPORT_SUMMARY_TEMPLATE.md",
+          "templatePaths": [
+            "docs/reviews/penetration-test/REPORT_SUMMARY_TEMPLATE.md"
+          ],
+          "templateStatus": "covered",
           "evidenceStatus": "missing"
-        },
+        }
+      ],
+      "generatedEvidence": [
         {
           "evidencePath": "reports/penetration-test-release-gate-report.json",
           "kind": "generated_report",
@@ -1501,6 +1806,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/28-security-i-privacy-zavershit-security-release-gate.json",
           "templatePath": "docs/release-owner-evidence/templates/28-security-i-privacy-zavershit-security-release-gate.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/28-security-i-privacy-zavershit-security-release-gate.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -1531,26 +1839,41 @@
       "relatedCommand": "pnpm rule-qa:review",
       "requiredEvidence": "Two real independent reviewer JSON files, full benchmark coverage, matching benchmarkVersion, adjudicated disagreements, and passing pnpm rule-qa:review.",
       "nextOwnerAction": "Select two independent reviewers, collect reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then rerun the review gate.",
-      "ownerInputCount": 0,
-      "templateCoveredOwnerInputCount": 0,
-      "generatedEvidenceCount": 3,
-      "readinessStatus": "waiting_for_external_non_owner_json_evidence",
-      "ownerInputs": [],
-      "generatedEvidence": [
+      "ownerInputCount": 2,
+      "templateCoveredOwnerInputCount": 2,
+      "generatedEvidenceCount": 1,
+      "readinessStatus": "ready_for_owner_input",
+      "ownerInputs": [
         {
           "evidencePath": "docs/reviews/blocker-benchmark/reviewer-1.review.json",
-          "kind": "owner_input",
+          "templatePath": "docs/reviews/blocker-benchmark/reviewer-1.review.example.json",
+          "templatePaths": [
+            "docs/reviews/blocker-benchmark/reviewer-1.review.example.json",
+            "docs/reviews/blocker-benchmark/README.md",
+            "docs/reviews/blocker-benchmark/REVIEW_INSTRUCTIONS.md",
+            "docs/reviews/blocker-benchmark/REVIEW_FORM_TEMPLATE.md"
+          ],
+          "templateStatus": "covered",
           "evidenceStatus": "missing"
         },
         {
           "evidencePath": "docs/reviews/blocker-benchmark/reviewer-2.review.json",
-          "kind": "owner_input",
+          "templatePath": "docs/reviews/blocker-benchmark/reviewer-2.review.example.json",
+          "templatePaths": [
+            "docs/reviews/blocker-benchmark/reviewer-2.review.example.json",
+            "docs/reviews/blocker-benchmark/README.md",
+            "docs/reviews/blocker-benchmark/REVIEW_INSTRUCTIONS.md",
+            "docs/reviews/blocker-benchmark/REVIEW_FORM_TEMPLATE.md"
+          ],
+          "templateStatus": "covered",
           "evidenceStatus": "missing"
-        },
+        }
+      ],
+      "generatedEvidence": [
         {
           "evidencePath": "reports/blocker-benchmark-adjudication-summary.json",
           "kind": "generated_report",
-          "evidenceStatus": "present_blocked_or_failing"
+          "evidenceStatus": "missing"
         }
       ]
     },
@@ -1571,12 +1894,12 @@
         {
           "evidencePath": "reports/blocker-benchmark-adjudication-summary.json",
           "kind": "generated_report",
-          "evidenceStatus": "present_blocked_or_failing"
+          "evidenceStatus": "missing"
         },
         {
           "evidencePath": "reports/rule-qa-summary.json",
           "kind": "generated_report",
-          "evidenceStatus": "present_with_pass_signal"
+          "evidenceStatus": "missing"
         }
       ]
     },
@@ -1597,12 +1920,12 @@
         {
           "evidencePath": "reports/blocker-benchmark-adjudication-summary.json",
           "kind": "generated_report",
-          "evidenceStatus": "present_blocked_or_failing"
+          "evidenceStatus": "missing"
         },
         {
           "evidencePath": "reports/rule-qa-summary.json",
           "kind": "generated_report",
-          "evidenceStatus": "present_with_pass_signal"
+          "evidenceStatus": "missing"
         }
       ]
     },
@@ -1622,6 +1945,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-npm-pakety-opublikovany.json",
           "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-npm-pakety-opublikovany.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-npm-pakety-opublikovany.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -1655,6 +1981,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-vs-code-extension-opublikovan.json",
           "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-vs-code-extension-opublikovan.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-vs-code-extension-opublikovan.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -1685,11 +2014,21 @@
       "relatedCommand": "pnpm overlay:manual-a11y-review",
       "requiredEvidence": "Overlay automated acceptance, visual regression, and manual accessibility/screen-reader reviewer evidence.",
       "nextOwnerAction": "Run overlay acceptance/visual checks and provide real manual accessibility reviewer evidence.",
-      "ownerInputCount": 0,
-      "templateCoveredOwnerInputCount": 0,
-      "generatedEvidenceCount": 4,
-      "readinessStatus": "waiting_for_external_non_owner_json_evidence",
-      "ownerInputs": [],
+      "ownerInputCount": 1,
+      "templateCoveredOwnerInputCount": 1,
+      "generatedEvidenceCount": 3,
+      "readinessStatus": "ready_for_owner_input",
+      "ownerInputs": [
+        {
+          "evidencePath": "docs/reviews/overlay-accessibility/reviewer.review.json",
+          "templatePath": "docs/reviews/overlay-accessibility/REVIEW_FORM_TEMPLATE.md",
+          "templatePaths": [
+            "docs/reviews/overlay-accessibility/REVIEW_FORM_TEMPLATE.md"
+          ],
+          "templateStatus": "covered",
+          "evidenceStatus": "missing"
+        }
+      ],
       "generatedEvidence": [
         {
           "evidencePath": "reports/overlay-acceptance-report.json",
@@ -1699,11 +2038,6 @@
         {
           "evidencePath": "reports/overlay-visual-regression-report.json",
           "kind": "generated_report",
-          "evidenceStatus": "missing"
-        },
-        {
-          "evidencePath": "docs/reviews/overlay-accessibility/reviewer.review.json",
-          "kind": "owner_input",
           "evidenceStatus": "missing"
         },
         {
@@ -1729,6 +2063,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-postgresql-rds-proof-proiden.json",
           "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-postgresql-rds-proof-proiden.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-postgresql-rds-proof-proiden.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -1762,6 +2099,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-api-deployment-proof-proiden.json",
           "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-api-deployment-proof-proiden.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-api-deployment-proof-proiden.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -1790,6 +2130,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-workers-sqs-proof-proiden.json",
           "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-workers-sqs-proof-proiden.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-workers-sqs-proof-proiden.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -1828,6 +2171,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-s3-proof-proiden.json",
           "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-s3-proof-proiden.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-s3-proof-proiden.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -1861,6 +2207,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-cognito-rbac-proof-proiden.json",
           "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-cognito-rbac-proof-proiden.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-cognito-rbac-proof-proiden.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -1894,6 +2243,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-oauth-vault-proof-proiden.json",
           "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-oauth-vault-proof-proiden.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-oauth-vault-proof-proiden.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -1927,6 +2279,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-dashboard-production-e2e-proiden.json",
           "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-dashboard-production-e2e-proiden.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-dashboard-production-e2e-proiden.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -1955,6 +2310,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-google-live-acceptance-proiden.json",
           "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-google-live-acceptance-proiden.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-google-live-acceptance-proiden.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -1983,6 +2341,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-yandex-live-acceptance-proiden.json",
           "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-yandex-live-acceptance-proiden.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-yandex-live-acceptance-proiden.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -2011,6 +2372,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-billing-live-acceptance-proiden.json",
           "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-billing-live-acceptance-proiden.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-billing-live-acceptance-proiden.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -2039,6 +2403,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-notifications-gotovy.json",
           "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-notifications-gotovy.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-notifications-gotovy.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -2082,6 +2449,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-agency-mode-gotov.json",
           "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-agency-mode-gotov.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-agency-mode-gotov.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -2120,6 +2490,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-observability-gotova.json",
           "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-observability-gotova.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-observability-gotova.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -2153,6 +2526,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-security-audit-proiden.json",
           "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-security-audit-proiden.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-security-audit-proiden.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -2183,17 +2559,22 @@
       "relatedCommand": "pnpm security:pentest",
       "requiredEvidence": "Passed deployed-target DAST, independent penetration-test report, remediation sign-off, and security/legal approval.",
       "nextOwnerAction": "Run DAST against deployed production-equivalent targets, commission independent penetration testing, remediate findings, and approve the final gate.",
-      "ownerInputCount": 0,
-      "templateCoveredOwnerInputCount": 0,
-      "generatedEvidenceCount": 2,
-      "readinessStatus": "waiting_for_external_non_owner_json_evidence",
-      "ownerInputs": [],
-      "generatedEvidence": [
+      "ownerInputCount": 1,
+      "templateCoveredOwnerInputCount": 1,
+      "generatedEvidenceCount": 1,
+      "readinessStatus": "ready_for_owner_input",
+      "ownerInputs": [
         {
           "evidencePath": "docs/reviews/penetration-test/report-summary.json",
-          "kind": "owner_input",
+          "templatePath": "docs/reviews/penetration-test/REPORT_SUMMARY_TEMPLATE.md",
+          "templatePaths": [
+            "docs/reviews/penetration-test/REPORT_SUMMARY_TEMPLATE.md"
+          ],
+          "templateStatus": "covered",
           "evidenceStatus": "missing"
-        },
+        }
+      ],
+      "generatedEvidence": [
         {
           "evidencePath": "reports/penetration-test-release-gate-report.json",
           "kind": "generated_report",
@@ -2209,17 +2590,20 @@
       "relatedCommand": "pnpm backup:restore-live-gate",
       "requiredEvidence": "Live RDS backup restore, RDS PITR, and S3 object restore drill evidence.",
       "nextOwnerAction": "Provide live backup/restore drill evidence and run the backup restore live gate.",
-      "ownerInputCount": 0,
-      "templateCoveredOwnerInputCount": 0,
-      "generatedEvidenceCount": 2,
-      "readinessStatus": "waiting_for_external_non_owner_json_evidence",
-      "ownerInputs": [],
-      "generatedEvidence": [
+      "ownerInputCount": 1,
+      "templateCoveredOwnerInputCount": 1,
+      "generatedEvidenceCount": 1,
+      "readinessStatus": "ready_for_owner_input",
+      "ownerInputs": [
         {
           "evidencePath": "docs/live-backup-restore-drill.json",
-          "kind": "owner_input",
+          "templatePath": "docs/live-backup-restore-drill.example.json",
+          "templatePaths": ["docs/live-backup-restore-drill.example.json"],
+          "templateStatus": "covered",
           "evidenceStatus": "missing"
-        },
+        }
+      ],
+      "generatedEvidence": [
         {
           "evidencePath": "reports/live-backup-restore-drill-report.json",
           "kind": "generated_report",
@@ -2243,6 +2627,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-public-website-gotov.json",
           "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-public-website-gotov.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-public-website-gotov.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -2263,17 +2650,20 @@
       "relatedCommand": "pnpm legal:release-gate",
       "requiredEvidence": "Qualified legal/owner approval JSON plus reviewed public/private repository boundary evidence.",
       "nextOwnerAction": "Complete legal review and provide the approved release-gate evidence file.",
-      "ownerInputCount": 0,
-      "templateCoveredOwnerInputCount": 0,
-      "generatedEvidenceCount": 2,
-      "readinessStatus": "waiting_for_external_non_owner_json_evidence",
-      "ownerInputs": [],
-      "generatedEvidence": [
+      "ownerInputCount": 1,
+      "templateCoveredOwnerInputCount": 1,
+      "generatedEvidenceCount": 1,
+      "readinessStatus": "ready_for_owner_input",
+      "ownerInputs": [
         {
           "evidencePath": "docs/legal-release-approval.json",
-          "kind": "owner_input",
+          "templatePath": "docs/legal-release-approval.example.json",
+          "templatePaths": ["docs/legal-release-approval.example.json"],
+          "templateStatus": "covered",
           "evidenceStatus": "missing"
-        },
+        }
+      ],
+      "generatedEvidence": [
         {
           "evidencePath": "reports/legal-release-approval-report.json",
           "kind": "generated_report",
@@ -2297,6 +2687,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-release-candidate-proshel-polnuyu-matricu.json",
           "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-release-candidate-proshel-polnuyu-matricu.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-release-candidate-proshel-polnuyu-matricu.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -2330,6 +2723,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-sozdan-git-tag-v1-0-0.json",
           "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-sozdan-git-tag-v1-0-0.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-sozdan-git-tag-v1-0-0.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -2363,6 +2759,9 @@
         {
           "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-opublikovan-searchlint-1-0.json",
           "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-opublikovan-searchlint-1-0.example.json",
+          "templatePaths": [
+            "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-opublikovan-searchlint-1-0.example.json"
+          ],
           "templateStatus": "covered",
           "evidenceStatus": "missing"
         }
@@ -2383,8 +2782,40 @@
   ],
   "ownerInputRecords": [
     {
+      "evidencePath": "docs/legal-release-approval.json",
+      "templatePaths": ["docs/legal-release-approval.example.json"],
+      "gate": {
+        "section": "1. Управление проектом",
+        "item": "2 release gates",
+        "gateType": "legal_owner_gate",
+        "relatedCommand": "pnpm legal:release-gate"
+      },
+      "requiredEvidence": "Qualified legal/owner approval JSON plus reviewed public/private repository boundary evidence.",
+      "nextOwnerAction": "Complete legal review and provide the approved release-gate evidence file.",
+      "templateStatus": "covered",
+      "evidenceStatus": "missing",
+      "exists": false
+    },
+    {
+      "evidencePath": "docs/live-backup-restore-drill.json",
+      "templatePaths": ["docs/live-backup-restore-drill.example.json"],
+      "gate": {
+        "section": "31. Финальный SearchLint 1.0 Release Gate",
+        "item": "Backup/restore проверены",
+        "gateType": "production_deployment_gate",
+        "relatedCommand": "pnpm backup:restore-live-gate"
+      },
+      "requiredEvidence": "Live RDS backup restore, RDS PITR, and S3 object restore drill evidence.",
+      "nextOwnerAction": "Provide live backup/restore drill evidence and run the backup restore live gate.",
+      "templateStatus": "covered",
+      "evidenceStatus": "missing",
+      "exists": false
+    },
+    {
       "evidencePath": "docs/release-owner-evidence/10-crawler-proverit-100-000-url-v-cloud.json",
-      "templatePath": "docs/release-owner-evidence/templates/10-crawler-proverit-100-000-url-v-cloud.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/10-crawler-proverit-100-000-url-v-cloud.example.json"
+      ],
       "gate": {
         "section": "10. Crawler",
         "item": "Проверить 100 000 URL в cloud",
@@ -2399,7 +2830,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/11-postgresql-i-hranenie-dannyh-razvernut-nastoyashii-postgresql-rds.json",
-      "templatePath": "docs/release-owner-evidence/templates/11-postgresql-i-hranenie-dannyh-razvernut-nastoyashii-postgresql-rds.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/11-postgresql-i-hranenie-dannyh-razvernut-nastoyashii-postgresql-rds.example.json"
+      ],
       "gate": {
         "section": "11. PostgreSQL и хранение данных",
         "item": "Развернуть настоящий PostgreSQL/RDS",
@@ -2414,7 +2847,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/12-s3-object-storage-razvernut-realnoe-object-storage.json",
-      "templatePath": "docs/release-owner-evidence/templates/12-s3-object-storage-razvernut-realnoe-object-storage.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/12-s3-object-storage-razvernut-realnoe-object-storage.example.json"
+      ],
       "gate": {
         "section": "12. S3/Object Storage",
         "item": "Развернуть реальное object storage",
@@ -2429,7 +2864,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/13-backend-api-razvernut-production-api.json",
-      "templatePath": "docs/release-owner-evidence/templates/13-backend-api-razvernut-production-api.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/13-backend-api-razvernut-production-api.example.json"
+      ],
       "gate": {
         "section": "13. Backend API",
         "item": "Развернуть production API",
@@ -2444,7 +2881,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/18-google-search-console-provesti-live-acceptance-na-realnom-saite.json",
-      "templatePath": "docs/release-owner-evidence/templates/18-google-search-console-provesti-live-acceptance-na-realnom-saite.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/18-google-search-console-provesti-live-acceptance-na-realnom-saite.example.json"
+      ],
       "gate": {
         "section": "18. Google Search Console",
         "item": "Провести live acceptance на реальном сайте",
@@ -2459,7 +2898,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/19-pagespeed-i-crux-provesti-live-acceptance.json",
-      "templatePath": "docs/release-owner-evidence/templates/19-pagespeed-i-crux-provesti-live-acceptance.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/19-pagespeed-i-crux-provesti-live-acceptance.example.json"
+      ],
       "gate": {
         "section": "19. PageSpeed и CrUX",
         "item": "Провести live acceptance",
@@ -2474,7 +2915,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/20-yandeks-vebmaster-provesti-live-acceptance.json",
-      "templatePath": "docs/release-owner-evidence/templates/20-yandeks-vebmaster-provesti-live-acceptance.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/20-yandeks-vebmaster-provesti-live-acceptance.example.json"
+      ],
       "gate": {
         "section": "20. Яндекс.Вебмастер",
         "item": "Провести live acceptance",
@@ -2489,7 +2932,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/21-yandeks-metrika-provesti-live-acceptance.json",
-      "templatePath": "docs/release-owner-evidence/templates/21-yandeks-metrika-provesti-live-acceptance.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/21-yandeks-metrika-provesti-live-acceptance.example.json"
+      ],
       "gate": {
         "section": "21. Яндекс.Метрика",
         "item": "Провести live acceptance",
@@ -2504,7 +2949,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/22-istoriya-i-korrelyaciya-provesti-deployed-dashboard-timeline-acceptance.json",
-      "templatePath": "docs/release-owner-evidence/templates/22-istoriya-i-korrelyaciya-provesti-deployed-dashboard-timeline-acceptance.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/22-istoriya-i-korrelyaciya-provesti-deployed-dashboard-timeline-acceptance.example.json"
+      ],
       "gate": {
         "section": "22. История и корреляция",
         "item": "Провести deployed dashboard timeline acceptance",
@@ -2519,7 +2966,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/24-notifications-provesti-live-email-delivery-acceptance.json",
-      "templatePath": "docs/release-owner-evidence/templates/24-notifications-provesti-live-email-delivery-acceptance.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/24-notifications-provesti-live-email-delivery-acceptance.example.json"
+      ],
       "gate": {
         "section": "24. Notifications",
         "item": "Провести live email delivery acceptance",
@@ -2534,7 +2983,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/24-notifications-provesti-live-slack-delivery-acceptance.json",
-      "templatePath": "docs/release-owner-evidence/templates/24-notifications-provesti-live-slack-delivery-acceptance.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/24-notifications-provesti-live-slack-delivery-acceptance.example.json"
+      ],
       "gate": {
         "section": "24. Notifications",
         "item": "Провести live Slack delivery acceptance",
@@ -2549,7 +3000,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/24-notifications-provesti-live-telegram-delivery-acceptance-esli-nuzhen.json",
-      "templatePath": "docs/release-owner-evidence/templates/24-notifications-provesti-live-telegram-delivery-acceptance-esli-nuzhen.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/24-notifications-provesti-live-telegram-delivery-acceptance-esli-nuzhen.example.json"
+      ],
       "gate": {
         "section": "24. Notifications",
         "item": "Провести live Telegram delivery acceptance, если нужен",
@@ -2564,7 +3017,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/24-notifications-provesti-live-webhook-delivery-acceptance.json",
-      "templatePath": "docs/release-owner-evidence/templates/24-notifications-provesti-live-webhook-delivery-acceptance.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/24-notifications-provesti-live-webhook-delivery-acceptance.example.json"
+      ],
       "gate": {
         "section": "24. Notifications",
         "item": "Провести live webhook delivery acceptance",
@@ -2579,7 +3034,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/25-billing-proverit-deployed-stripe-webhook-persistence-on-rds.json",
-      "templatePath": "docs/release-owner-evidence/templates/25-billing-proverit-deployed-stripe-webhook-persistence-on-rds.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/25-billing-proverit-deployed-stripe-webhook-persistence-on-rds.example.json"
+      ],
       "gate": {
         "section": "25. Billing",
         "item": "Проверить deployed Stripe webhook persistence on RDS",
@@ -2594,7 +3051,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/25-billing-provesti-live-customer-portal-acceptance.json",
-      "templatePath": "docs/release-owner-evidence/templates/25-billing-provesti-live-customer-portal-acceptance.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/25-billing-provesti-live-customer-portal-acceptance.example.json"
+      ],
       "gate": {
         "section": "25. Billing",
         "item": "Провести live customer portal acceptance",
@@ -2609,7 +3068,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/25-billing-provesti-live-stripe-acceptance.json",
-      "templatePath": "docs/release-owner-evidence/templates/25-billing-provesti-live-stripe-acceptance.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/25-billing-provesti-live-stripe-acceptance.example.json"
+      ],
       "gate": {
         "section": "25. Billing",
         "item": "Провести live Stripe acceptance",
@@ -2624,7 +3085,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/25-billing-provesti-live-subscription-trial-upgrade-downgrade-cancellation-acceptance.json",
-      "templatePath": "docs/release-owner-evidence/templates/25-billing-provesti-live-subscription-trial-upgrade-downgrade-cancellation-acceptance.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/25-billing-provesti-live-subscription-trial-upgrade-downgrade-cancellation-acceptance.example.json"
+      ],
       "gate": {
         "section": "25. Billing",
         "item": "Провести live subscription/trial/upgrade/downgrade/cancellation acceptance",
@@ -2639,7 +3102,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/26-agency-mode-proverit-client-invite-email-delivery.json",
-      "templatePath": "docs/release-owner-evidence/templates/26-agency-mode-proverit-client-invite-email-delivery.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/26-agency-mode-proverit-client-invite-email-delivery.example.json"
+      ],
       "gate": {
         "section": "26. Agency mode",
         "item": "Проверить client invite email delivery",
@@ -2654,7 +3119,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/26-agency-mode-razvernut-client-portal.json",
-      "templatePath": "docs/release-owner-evidence/templates/26-agency-mode-razvernut-client-portal.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/26-agency-mode-razvernut-client-portal.example.json"
+      ],
       "gate": {
         "section": "26. Agency mode",
         "item": "Развернуть client portal",
@@ -2669,7 +3136,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/26-agency-mode-realizovat-live-agency-billing.json",
-      "templatePath": "docs/release-owner-evidence/templates/26-agency-mode-realizovat-live-agency-billing.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/26-agency-mode-realizovat-live-agency-billing.example.json"
+      ],
       "gate": {
         "section": "26. Agency mode",
         "item": "Реализовать live agency billing",
@@ -2684,7 +3153,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/27-observability-podklyuchit-cloudwatch-otlp.json",
-      "templatePath": "docs/release-owner-evidence/templates/27-observability-podklyuchit-cloudwatch-otlp.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/27-observability-podklyuchit-cloudwatch-otlp.example.json"
+      ],
       "gate": {
         "section": "27. Observability",
         "item": "Подключить CloudWatch/OTLP",
@@ -2699,7 +3170,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/27-observability-razvernut-logging.json",
-      "templatePath": "docs/release-owner-evidence/templates/27-observability-razvernut-logging.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/27-observability-razvernut-logging.example.json"
+      ],
       "gate": {
         "section": "27. Observability",
         "item": "Развернуть logging",
@@ -2714,7 +3187,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/27-observability-razvernut-metrics.json",
-      "templatePath": "docs/release-owner-evidence/templates/27-observability-razvernut-metrics.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/27-observability-razvernut-metrics.example.json"
+      ],
       "gate": {
         "section": "27. Observability",
         "item": "Развернуть metrics",
@@ -2729,7 +3204,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/27-observability-razvernut-tracing.json",
-      "templatePath": "docs/release-owner-evidence/templates/27-observability-razvernut-tracing.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/27-observability-razvernut-tracing.example.json"
+      ],
       "gate": {
         "section": "27. Observability",
         "item": "Развернуть tracing",
@@ -2744,7 +3221,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/28-security-i-privacy-provesti-dast.json",
-      "templatePath": "docs/release-owner-evidence/templates/28-security-i-privacy-provesti-dast.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/28-security-i-privacy-provesti-dast.example.json"
+      ],
       "gate": {
         "section": "28. Security и Privacy",
         "item": "Провести DAST",
@@ -2759,7 +3238,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/28-security-i-privacy-zavershit-security-release-gate.json",
-      "templatePath": "docs/release-owner-evidence/templates/28-security-i-privacy-zavershit-security-release-gate.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/28-security-i-privacy-zavershit-security-release-gate.example.json"
+      ],
       "gate": {
         "section": "28. Security и Privacy",
         "item": "Завершить security release gate",
@@ -2774,7 +3255,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-agency-mode-gotov.json",
-      "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-agency-mode-gotov.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-agency-mode-gotov.example.json"
+      ],
       "gate": {
         "section": "31. Финальный SearchLint 1.0 Release Gate",
         "item": "Agency mode готов",
@@ -2789,7 +3272,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-api-deployment-proof-proiden.json",
-      "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-api-deployment-proof-proiden.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-api-deployment-proof-proiden.example.json"
+      ],
       "gate": {
         "section": "31. Финальный SearchLint 1.0 Release Gate",
         "item": "API deployment proof пройден",
@@ -2804,7 +3289,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-billing-live-acceptance-proiden.json",
-      "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-billing-live-acceptance-proiden.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-billing-live-acceptance-proiden.example.json"
+      ],
       "gate": {
         "section": "31. Финальный SearchLint 1.0 Release Gate",
         "item": "Billing live acceptance пройден",
@@ -2819,7 +3306,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-cognito-rbac-proof-proiden.json",
-      "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-cognito-rbac-proof-proiden.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-cognito-rbac-proof-proiden.example.json"
+      ],
       "gate": {
         "section": "31. Финальный SearchLint 1.0 Release Gate",
         "item": "Cognito/RBAC proof пройден",
@@ -2834,7 +3323,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-dashboard-production-e2e-proiden.json",
-      "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-dashboard-production-e2e-proiden.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-dashboard-production-e2e-proiden.example.json"
+      ],
       "gate": {
         "section": "31. Финальный SearchLint 1.0 Release Gate",
         "item": "Dashboard production E2E пройден",
@@ -2849,7 +3340,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-google-live-acceptance-proiden.json",
-      "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-google-live-acceptance-proiden.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-google-live-acceptance-proiden.example.json"
+      ],
       "gate": {
         "section": "31. Финальный SearchLint 1.0 Release Gate",
         "item": "Google live acceptance пройден",
@@ -2864,7 +3357,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-notifications-gotovy.json",
-      "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-notifications-gotovy.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-notifications-gotovy.example.json"
+      ],
       "gate": {
         "section": "31. Финальный SearchLint 1.0 Release Gate",
         "item": "Notifications готовы",
@@ -2879,7 +3374,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-npm-pakety-opublikovany.json",
-      "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-npm-pakety-opublikovany.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-npm-pakety-opublikovany.example.json"
+      ],
       "gate": {
         "section": "31. Финальный SearchLint 1.0 Release Gate",
         "item": "npm-пакеты опубликованы",
@@ -2894,7 +3391,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-oauth-vault-proof-proiden.json",
-      "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-oauth-vault-proof-proiden.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-oauth-vault-proof-proiden.example.json"
+      ],
       "gate": {
         "section": "31. Финальный SearchLint 1.0 Release Gate",
         "item": "OAuth vault proof пройден",
@@ -2909,7 +3408,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-observability-gotova.json",
-      "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-observability-gotova.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-observability-gotova.example.json"
+      ],
       "gate": {
         "section": "31. Финальный SearchLint 1.0 Release Gate",
         "item": "Observability готова",
@@ -2924,7 +3425,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-opublikovan-searchlint-1-0.json",
-      "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-opublikovan-searchlint-1-0.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-opublikovan-searchlint-1-0.example.json"
+      ],
       "gate": {
         "section": "31. Финальный SearchLint 1.0 Release Gate",
         "item": "Опубликован SearchLint 1.0",
@@ -2939,7 +3442,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-postgresql-rds-proof-proiden.json",
-      "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-postgresql-rds-proof-proiden.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-postgresql-rds-proof-proiden.example.json"
+      ],
       "gate": {
         "section": "31. Финальный SearchLint 1.0 Release Gate",
         "item": "PostgreSQL/RDS proof пройден",
@@ -2954,7 +3459,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-public-website-gotov.json",
-      "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-public-website-gotov.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-public-website-gotov.example.json"
+      ],
       "gate": {
         "section": "31. Финальный SearchLint 1.0 Release Gate",
         "item": "Public website готов",
@@ -2969,7 +3476,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-release-candidate-proshel-polnuyu-matricu.json",
-      "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-release-candidate-proshel-polnuyu-matricu.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-release-candidate-proshel-polnuyu-matricu.example.json"
+      ],
       "gate": {
         "section": "31. Финальный SearchLint 1.0 Release Gate",
         "item": "Release candidate прошёл полную матрицу",
@@ -2984,7 +3493,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-s3-proof-proiden.json",
-      "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-s3-proof-proiden.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-s3-proof-proiden.example.json"
+      ],
       "gate": {
         "section": "31. Финальный SearchLint 1.0 Release Gate",
         "item": "S3 proof пройден",
@@ -2999,7 +3510,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-security-audit-proiden.json",
-      "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-security-audit-proiden.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-security-audit-proiden.example.json"
+      ],
       "gate": {
         "section": "31. Финальный SearchLint 1.0 Release Gate",
         "item": "Security audit пройден",
@@ -3014,7 +3527,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-sozdan-git-tag-v1-0-0.json",
-      "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-sozdan-git-tag-v1-0-0.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-sozdan-git-tag-v1-0-0.example.json"
+      ],
       "gate": {
         "section": "31. Финальный SearchLint 1.0 Release Gate",
         "item": "Создан Git tag v1.0.0",
@@ -3029,7 +3544,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-vs-code-extension-opublikovan.json",
-      "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-vs-code-extension-opublikovan.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-vs-code-extension-opublikovan.example.json"
+      ],
       "gate": {
         "section": "31. Финальный SearchLint 1.0 Release Gate",
         "item": "VS Code extension опубликован",
@@ -3044,7 +3561,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-workers-sqs-proof-proiden.json",
-      "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-workers-sqs-proof-proiden.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-workers-sqs-proof-proiden.example.json"
+      ],
       "gate": {
         "section": "31. Финальный SearchLint 1.0 Release Gate",
         "item": "Workers/SQS proof пройден",
@@ -3059,7 +3578,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-yandex-live-acceptance-proiden.json",
-      "templatePath": "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-yandex-live-acceptance-proiden.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-yandex-live-acceptance-proiden.example.json"
+      ],
       "gate": {
         "section": "31. Финальный SearchLint 1.0 Release Gate",
         "item": "Yandex live acceptance пройден",
@@ -3074,7 +3595,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/7-vs-code-i-lsp-nastroit-publisher-account.json",
-      "templatePath": "docs/release-owner-evidence/templates/7-vs-code-i-lsp-nastroit-publisher-account.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/7-vs-code-i-lsp-nastroit-publisher-account.example.json"
+      ],
       "gate": {
         "section": "7. VS Code и LSP",
         "item": "Настроить publisher account",
@@ -3089,7 +3612,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/7-vs-code-i-lsp-podpisat-i-opublikovat-extension.json",
-      "templatePath": "docs/release-owner-evidence/templates/7-vs-code-i-lsp-podpisat-i-opublikovat-extension.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/7-vs-code-i-lsp-podpisat-i-opublikovat-extension.example.json"
+      ],
       "gate": {
         "section": "7. VS Code и LSP",
         "item": "Подписать и опубликовать extension",
@@ -3104,7 +3629,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/8-npm-pakety-opublikovat-beta-packages.json",
-      "templatePath": "docs/release-owner-evidence/templates/8-npm-pakety-opublikovat-beta-packages.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/8-npm-pakety-opublikovat-beta-packages.example.json"
+      ],
       "gate": {
         "section": "8. npm-пакеты",
         "item": "Опубликовать beta packages",
@@ -3119,7 +3646,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/8-npm-pakety-podgotovit-finalnuyu-publikaciyu-1-0-0.json",
-      "templatePath": "docs/release-owner-evidence/templates/8-npm-pakety-podgotovit-finalnuyu-publikaciyu-1-0-0.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/8-npm-pakety-podgotovit-finalnuyu-publikaciyu-1-0-0.example.json"
+      ],
       "gate": {
         "section": "8. npm-пакеты",
         "item": "Подготовить финальную публикацию 1.0.0",
@@ -3134,7 +3663,9 @@
     },
     {
       "evidencePath": "docs/release-owner-evidence/8-npm-pakety-zamenit-0-0-0-beta-versions-na-final-release-versions.json",
-      "templatePath": "docs/release-owner-evidence/templates/8-npm-pakety-zamenit-0-0-0-beta-versions-na-final-release-versions.example.json",
+      "templatePaths": [
+        "docs/release-owner-evidence/templates/8-npm-pakety-zamenit-0-0-0-beta-versions-na-final-release-versions.example.json"
+      ],
       "gate": {
         "section": "8. npm-пакеты",
         "item": "Заменить `0.0.0`/beta versions на final release versions",
@@ -3143,6 +3674,134 @@
       },
       "requiredEvidence": "Final 1.0.0 version approval, passing RC matrix, hosted npm publication proof, provenance, and clean public registry install.",
       "nextOwnerAction": "Run final publication only after all release gates pass, then preserve npm publication and install evidence.",
+      "templateStatus": "covered",
+      "evidenceStatus": "missing",
+      "exists": false
+    },
+    {
+      "evidencePath": "docs/reviews/blocker-benchmark/DELIVERY_EVIDENCE.json",
+      "templatePaths": [
+        "docs/reviews/blocker-benchmark/DELIVERY_EVIDENCE.example.json",
+        "docs/reviews/blocker-benchmark/README.md",
+        "docs/reviews/blocker-benchmark/REVIEW_INSTRUCTIONS.md",
+        "docs/reviews/blocker-benchmark/REVIEW_FORM_TEMPLATE.md"
+      ],
+      "gate": {
+        "section": "2. Независимая проверка blocker-правил",
+        "item": "Передать им review packet",
+        "gateType": "independent_reviewer_delivery_gate",
+        "relatedCommand": "pnpm rule-qa:review-delivery"
+      },
+      "requiredEvidence": "Owner-provided DELIVERY_EVIDENCE.json proving the blocker benchmark review packet was sent to two intended independent reviewers, with matching benchmarkVersion and case-index SHA-256.",
+      "nextOwnerAction": "Send the handoff packet to two intended independent reviewers, provide DELIVERY_EVIDENCE.json, then run the delivery gate.",
+      "templateStatus": "covered",
+      "evidenceStatus": "missing",
+      "exists": false
+    },
+    {
+      "evidencePath": "docs/reviews/blocker-benchmark/reviewer-1.review.json",
+      "templatePaths": [
+        "docs/reviews/blocker-benchmark/reviewer-1.review.example.json",
+        "docs/reviews/blocker-benchmark/README.md",
+        "docs/reviews/blocker-benchmark/REVIEW_INSTRUCTIONS.md",
+        "docs/reviews/blocker-benchmark/REVIEW_FORM_TEMPLATE.md"
+      ],
+      "gate": {
+        "section": "2. Независимая проверка blocker-правил",
+        "item": "13 release gates",
+        "gateType": "independent_reviewer_gate",
+        "relatedCommand": "pnpm rule-qa:review"
+      },
+      "requiredEvidence": "Two real independent reviewer JSON files, full benchmark coverage, matching benchmarkVersion, adjudicated disagreements, and passing pnpm rule-qa:review.",
+      "nextOwnerAction": "Select two independent reviewers, collect reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then rerun the review gate.",
+      "templateStatus": "covered",
+      "evidenceStatus": "missing",
+      "exists": false
+    },
+    {
+      "evidencePath": "docs/reviews/blocker-benchmark/reviewer-2.review.json",
+      "templatePaths": [
+        "docs/reviews/blocker-benchmark/reviewer-2.review.example.json",
+        "docs/reviews/blocker-benchmark/README.md",
+        "docs/reviews/blocker-benchmark/REVIEW_INSTRUCTIONS.md",
+        "docs/reviews/blocker-benchmark/REVIEW_FORM_TEMPLATE.md"
+      ],
+      "gate": {
+        "section": "2. Независимая проверка blocker-правил",
+        "item": "13 release gates",
+        "gateType": "independent_reviewer_gate",
+        "relatedCommand": "pnpm rule-qa:review"
+      },
+      "requiredEvidence": "Two real independent reviewer JSON files, full benchmark coverage, matching benchmarkVersion, adjudicated disagreements, and passing pnpm rule-qa:review.",
+      "nextOwnerAction": "Select two independent reviewers, collect reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then rerun the review gate.",
+      "templateStatus": "covered",
+      "evidenceStatus": "missing",
+      "exists": false
+    },
+    {
+      "evidencePath": "docs/reviews/oauth-vault-security/reviewer-1.review.json",
+      "templatePaths": [
+        "docs/reviews/oauth-vault-security/REVIEW_FORM_TEMPLATE.md"
+      ],
+      "gate": {
+        "section": "16. OAuth vault",
+        "item": "Провести external security review vault",
+        "gateType": "external_security_review_gate",
+        "relatedCommand": "pnpm oauth-vault:security-review"
+      },
+      "requiredEvidence": "Two real independent OAuth vault security reviewer files plus passing vault security review report.",
+      "nextOwnerAction": "Provide real OAuth vault security reviewer evidence and rerun the vault security review gate.",
+      "templateStatus": "covered",
+      "evidenceStatus": "missing",
+      "exists": false
+    },
+    {
+      "evidencePath": "docs/reviews/oauth-vault-security/reviewer-2.review.json",
+      "templatePaths": [
+        "docs/reviews/oauth-vault-security/REVIEW_FORM_TEMPLATE.md"
+      ],
+      "gate": {
+        "section": "16. OAuth vault",
+        "item": "Провести external security review vault",
+        "gateType": "external_security_review_gate",
+        "relatedCommand": "pnpm oauth-vault:security-review"
+      },
+      "requiredEvidence": "Two real independent OAuth vault security reviewer files plus passing vault security review report.",
+      "nextOwnerAction": "Provide real OAuth vault security reviewer evidence and rerun the vault security review gate.",
+      "templateStatus": "covered",
+      "evidenceStatus": "missing",
+      "exists": false
+    },
+    {
+      "evidencePath": "docs/reviews/overlay-accessibility/reviewer.review.json",
+      "templatePaths": [
+        "docs/reviews/overlay-accessibility/REVIEW_FORM_TEMPLATE.md"
+      ],
+      "gate": {
+        "section": "6. Badge и Overlay",
+        "item": "3 release gates",
+        "gateType": "manual_accessibility_review_gate",
+        "relatedCommand": "pnpm overlay:manual-a11y-review"
+      },
+      "requiredEvidence": "Manual accessibility review evidence for the required assistive technology/browser matrix.; Overlay automated acceptance, visual regression, and manual accessibility/screen-reader reviewer evidence.",
+      "nextOwnerAction": "Run the manual accessibility review and record reviewer evidence.; Run overlay acceptance/visual checks and provide real manual accessibility reviewer evidence.",
+      "templateStatus": "covered",
+      "evidenceStatus": "missing",
+      "exists": false
+    },
+    {
+      "evidencePath": "docs/reviews/penetration-test/report-summary.json",
+      "templatePaths": [
+        "docs/reviews/penetration-test/REPORT_SUMMARY_TEMPLATE.md"
+      ],
+      "gate": {
+        "section": "28. Security и Privacy",
+        "item": "2 release gates",
+        "gateType": "external_security_review_gate",
+        "relatedCommand": "pnpm security:pentest"
+      },
+      "requiredEvidence": "Passed deployed-target DAST, independent penetration-test report, remediation sign-off, and security/legal approval.",
+      "nextOwnerAction": "Run DAST against deployed production-equivalent targets, commission independent penetration testing, remediate findings, and approve the final gate.",
       "templateStatus": "covered",
       "evidenceStatus": "missing",
       "exists": false

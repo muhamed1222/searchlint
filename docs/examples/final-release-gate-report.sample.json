@@ -16,10 +16,10 @@
     "checkedItemCount": 522,
     "totalItemCount": 599,
     "openGateCount": 77,
-    "expectedOwnerEvidenceCount": 51,
+    "expectedOwnerEvidenceCount": 60,
     "realOwnerEvidenceCount": 0,
     "missingOwnerInputCount": 60,
-    "templateCoveredOwnerInputCount": 51,
+    "templateCoveredOwnerInputCount": 60,
     "releaseGateClaim": "not_claimed"
   },
   "summary": {

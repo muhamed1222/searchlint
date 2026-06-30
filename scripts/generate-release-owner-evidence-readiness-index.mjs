@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { execFileSync } from "node:child_process";
+import { existsSync } from "node:fs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
@@ -14,7 +15,6 @@ const markdownPath = "docs/RELEASE_OWNER_EVIDENCE_READINESS_INDEX.md";
 const reportPath = "reports/release-owner-evidence-readiness-report.json";
 const samplePath =
   "docs/examples/release-owner-evidence-readiness-report.sample.json";
-const evidenceDir = "docs/release-owner-evidence";
 const templateDir = "docs/release-owner-evidence/templates";
 const generatedAt = "2026-06-23T00:00:00.000Z";
 
@@ -56,9 +56,9 @@ const gateRecords = ownerGateReport.openGates.map((gate, index) =>
   )
 );
 const ownerInputRecords = buildOwnerInputRecords(
-  ownerEvidenceReport.expectedEvidence,
-  templateByEvidencePath,
-  intakeByPath
+  intakeReport.evidenceRecords,
+  ownerGateReport.openGates,
+  templateByEvidencePath
 );
 const summary = summarize(gateRecords, ownerInputRecords, intakeReport);
 
@@ -149,13 +149,17 @@ function buildGateReadinessRecord(
   const evidencePaths = gate.evidencePaths ?? [];
   const ownerInputPaths = evidencePaths.filter(isOwnerInputPath);
   const ownerInputs = ownerInputPaths.map((evidencePath) => {
-    const template = templateByEvidencePath.get(evidencePath);
     const intake = intakeByPath.get(evidencePath);
+    const templatePaths = templatePathsForOwnerInput(
+      evidencePath,
+      templateByEvidencePath
+    );
     return {
       evidencePath,
       templatePath:
-        template?.templatePath ?? templatePathForEvidencePath(evidencePath),
-      templateStatus: template ? "covered" : "missing_template",
+        templatePaths[0] ?? templatePathForEvidencePath(evidencePath),
+      templatePaths,
+      templateStatus: templatePaths.length > 0 ? "covered" : "missing_template",
       evidenceStatus: intake?.intakeStatus ?? "not_in_intake_report"
     };
   });
@@ -196,25 +200,36 @@ function buildGateReadinessRecord(
 }
 
 function buildOwnerInputRecords(
-  expectedEvidence,
-  templateByEvidencePath,
-  intakeByPath
+  evidenceRecords,
+  gates,
+  templateByEvidencePath
 ) {
-  return expectedEvidence.map((entry) => {
-    const template = templateByEvidencePath.get(entry.path);
-    const intake = intakeByPath.get(entry.path);
-    return {
-      evidencePath: entry.path,
-      templatePath:
-        template?.templatePath ?? templatePathForEvidencePath(entry.path),
-      gate: entry.gate,
-      requiredEvidence: entry.requiredEvidence,
-      nextOwnerAction: entry.nextOwnerAction,
-      templateStatus: template ? "covered" : "missing_template",
-      evidenceStatus: intake?.intakeStatus ?? "not_in_intake_report",
-      exists: intake?.exists ?? false
-    };
-  });
+  return evidenceRecords
+    .filter((entry) => entry.kind === "owner_input")
+    .map((entry) => {
+      const relatedGates = gates.filter((gate) =>
+        (gate.evidencePaths ?? []).includes(entry.path)
+      );
+      const templatePaths = templatePathsForOwnerInput(
+        entry.path,
+        templateByEvidencePath
+      );
+      return {
+        evidencePath: entry.path,
+        templatePaths,
+        gate: ownerInputGate(entry, relatedGates),
+        requiredEvidence: joinedUnique(
+          relatedGates.map((gate) => gate.requiredEvidence)
+        ),
+        nextOwnerAction: joinedUnique(
+          relatedGates.map((gate) => gate.nextOwnerAction)
+        ),
+        templateStatus:
+          templatePaths.length > 0 ? "covered" : "missing_template",
+        evidenceStatus: entry.intakeStatus,
+        exists: entry.exists
+      };
+    });
 }
 
 function summarize(gateRecords, ownerInputRecords, intakeReport) {
@@ -291,7 +306,7 @@ function renderMarkdown(report) {
 
   for (const entry of report.ownerInputRecords) {
     lines.push(
-      `| \`${entry.evidencePath}\` | \`${entry.templatePath}\` | ${escapeMarkdown(entry.gate.section)} / ${escapeMarkdown(entry.gate.item)} | \`${entry.evidenceStatus}\`, \`${entry.templateStatus}\` |`
+      `| \`${entry.evidencePath}\` | ${entry.templatePaths.map((templatePath) => `\`${templatePath}\``).join("<br>")} | ${escapeMarkdown(entry.gate.section)} / ${escapeMarkdown(entry.gate.item)} | \`${entry.evidenceStatus}\`, \`${entry.templateStatus}\` |`
     );
   }
 
@@ -336,11 +351,57 @@ function renderMarkdown(report) {
 }
 
 function isOwnerInputPath(filePath) {
-  return filePath.startsWith(`${evidenceDir}/`) && filePath.endsWith(".json");
+  return (
+    filePath.endsWith(".json") &&
+    classifyEvidenceKind(filePath) === "owner_input"
+  );
 }
 
 function templatePathForEvidencePath(evidencePath) {
   return `${templateDir}/${path.basename(evidencePath, ".json")}.example.json`;
+}
+
+function templatePathsForOwnerInput(evidencePath, templateByEvidencePath) {
+  const coveredTemplate = templateByEvidencePath.get(evidencePath);
+  if (coveredTemplate) return [coveredTemplate.templatePath];
+
+  const directory = path.dirname(evidencePath);
+  const basename = path.basename(evidencePath, ".json");
+  const candidates = [
+    path.join(directory, `${basename}.example.json`),
+    path.join(directory, `${basename}.template.json`),
+    path.join(directory, "README.md"),
+    path.join(directory, "REVIEW_INSTRUCTIONS.md"),
+    path.join(directory, "REVIEW_FORM_TEMPLATE.md"),
+    path.join(directory, "REPORT_SUMMARY_TEMPLATE.md")
+  ];
+
+  if (evidencePath.endsWith("REPORT_SUMMARY.json")) {
+    candidates.push(path.join(directory, "report-summary.example.json"));
+  }
+
+  return [...new Set(candidates)].filter((candidate) => existsSync(candidate));
+}
+
+function ownerInputGate(entry, relatedGates) {
+  const firstUsage = entry.usages[0];
+  const firstGate = relatedGates[0] ?? firstUsage;
+  const relatedCommands = joinedUnique(
+    entry.usages.map((usage) => usage.relatedCommand)
+  );
+  return {
+    section: firstGate.section,
+    item:
+      entry.usages.length === 1
+        ? firstGate.item
+        : `${entry.usages.length} release gates`,
+    gateType: firstGate.gateType,
+    relatedCommand: relatedCommands
+  };
+}
+
+function joinedUnique(values) {
+  return [...new Set(values.filter(Boolean))].join("; ");
 }
 
 function classifyEvidenceKind(evidencePath) {

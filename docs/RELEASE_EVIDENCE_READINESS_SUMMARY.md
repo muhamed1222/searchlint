@@ -9,13 +9,14 @@ release approval.
 
 - Status: `blocked_external_evidence`
 - Checklist: 522/599 done; 77 remaining
-- Owner evidence files: 0/51 present
+- Owner input files: 0/60 present
+- Release-owner-evidence directory files: 0/51 present
 - Missing owner input files: 60
 - Missing owner input files with templates: 60
 - Missing owner input files without templates: 0
-- Template-covered owner inputs: 51
-- Evidence paths missing: 105
-- Blocked/failing supporting reports: 4
+- Template-covered owner inputs: 60
+- Evidence paths missing: 108
+- Blocked/failing supporting reports: 2
 - Gates missing external owner proof: 74
 - Release gate claim: `not_claimed`
 
