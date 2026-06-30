@@ -123,9 +123,17 @@ function buildSummary(reports) {
     totalItemCount: intake.summary.totalItemCount,
     ownerEvidenceSelfTestCases: selfTest.caseCount,
     ownerEvidenceSelfTestPassedCases: selfTest.passedCaseCount,
-    expectedOwnerEvidenceCount: ownerEvidence.expectedEvidenceCount,
-    realOwnerEvidenceCount: ownerEvidence.presentEvidenceCount,
-    missingOwnerEvidenceCount: ownerEvidence.missingEvidenceCount,
+    expectedOwnerEvidenceCount: readiness.summary.ownerInputEvidenceCount,
+    realOwnerEvidenceCount: readiness.summary.realOwnerEvidenceCount,
+    missingOwnerEvidenceCount:
+      readiness.summary.ownerInputEvidenceCount -
+      readiness.summary.realOwnerEvidenceCount,
+    releaseOwnerEvidenceDirectoryExpectedCount:
+      ownerEvidence.expectedEvidenceCount,
+    releaseOwnerEvidenceDirectoryPresentCount:
+      ownerEvidence.presentEvidenceCount,
+    releaseOwnerEvidenceDirectoryMissingCount:
+      ownerEvidence.missingEvidenceCount,
     ownerEvidenceFailureCount: ownerEvidence.failureCount,
     templateCoverageStatus: templateCoverage.status,
     templateCoveredOwnerInputCount:
@@ -202,7 +210,8 @@ function renderMarkdown(report) {
     "",
     `- Status: \`${report.status}\``,
     `- Checklist: ${report.summary.checkedItemCount}/${report.summary.totalItemCount} done; ${report.summary.openGateCount} remaining`,
-    `- Owner evidence files: ${report.summary.realOwnerEvidenceCount}/${report.summary.expectedOwnerEvidenceCount} present`,
+    `- Owner input files: ${report.summary.realOwnerEvidenceCount}/${report.summary.expectedOwnerEvidenceCount} present`,
+    `- Release-owner-evidence directory files: ${report.summary.releaseOwnerEvidenceDirectoryPresentCount}/${report.summary.releaseOwnerEvidenceDirectoryExpectedCount} present`,
     `- Missing owner input files: ${report.summary.missingOwnerInputCount}`,
     `- Missing owner input files with templates: ${report.summary.missingOwnerInputWithTemplatesCount}`,
     `- Missing owner input files without templates: ${report.summary.missingOwnerInputWithoutTemplatesCount}`,

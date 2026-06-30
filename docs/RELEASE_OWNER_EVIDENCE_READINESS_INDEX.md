@@ -9,68 +9,77 @@ owner evidence. It is not release approval.
 
 - Status: `blocked_waiting_for_owner_evidence`
 - Open gates: 77
-- Owner evidence inputs: 51
-- Template-covered owner inputs: 51
+- Owner evidence inputs: 60
+- Template-covered owner inputs: 60
 - Real owner evidence files present: 0
-- Gates ready for owner input: 51
-- Gates without owner-input JSON path: 26
+- Gates ready for owner input: 74
+- Gates without owner-input JSON path: 3
 - Evidence intake status: `blocked_external_evidence`
 
 ## Owner Input Evidence
 
-| Evidence path                                                                                                            | Template                                                                                                                                   | Gate                                                                                     | Status               |
-| ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------- | -------------------- |
-| `docs/release-owner-evidence/10-crawler-proverit-100-000-url-v-cloud.json`                                               | `docs/release-owner-evidence/templates/10-crawler-proverit-100-000-url-v-cloud.example.json`                                               | 10. Crawler / Проверить 100 000 URL в cloud                                              | `missing`, `covered` |
-| `docs/release-owner-evidence/11-postgresql-i-hranenie-dannyh-razvernut-nastoyashii-postgresql-rds.json`                  | `docs/release-owner-evidence/templates/11-postgresql-i-hranenie-dannyh-razvernut-nastoyashii-postgresql-rds.example.json`                  | 11. PostgreSQL и хранение данных / Развернуть настоящий PostgreSQL/RDS                   | `missing`, `covered` |
-| `docs/release-owner-evidence/12-s3-object-storage-razvernut-realnoe-object-storage.json`                                 | `docs/release-owner-evidence/templates/12-s3-object-storage-razvernut-realnoe-object-storage.example.json`                                 | 12. S3/Object Storage / Развернуть реальное object storage                               | `missing`, `covered` |
-| `docs/release-owner-evidence/13-backend-api-razvernut-production-api.json`                                               | `docs/release-owner-evidence/templates/13-backend-api-razvernut-production-api.example.json`                                               | 13. Backend API / Развернуть production API                                              | `missing`, `covered` |
-| `docs/release-owner-evidence/18-google-search-console-provesti-live-acceptance-na-realnom-saite.json`                    | `docs/release-owner-evidence/templates/18-google-search-console-provesti-live-acceptance-na-realnom-saite.example.json`                    | 18. Google Search Console / Провести live acceptance на реальном сайте                   | `missing`, `covered` |
-| `docs/release-owner-evidence/19-pagespeed-i-crux-provesti-live-acceptance.json`                                          | `docs/release-owner-evidence/templates/19-pagespeed-i-crux-provesti-live-acceptance.example.json`                                          | 19. PageSpeed и CrUX / Провести live acceptance                                          | `missing`, `covered` |
-| `docs/release-owner-evidence/20-yandeks-vebmaster-provesti-live-acceptance.json`                                         | `docs/release-owner-evidence/templates/20-yandeks-vebmaster-provesti-live-acceptance.example.json`                                         | 20. Яндекс.Вебмастер / Провести live acceptance                                          | `missing`, `covered` |
-| `docs/release-owner-evidence/21-yandeks-metrika-provesti-live-acceptance.json`                                           | `docs/release-owner-evidence/templates/21-yandeks-metrika-provesti-live-acceptance.example.json`                                           | 21. Яндекс.Метрика / Провести live acceptance                                            | `missing`, `covered` |
-| `docs/release-owner-evidence/22-istoriya-i-korrelyaciya-provesti-deployed-dashboard-timeline-acceptance.json`            | `docs/release-owner-evidence/templates/22-istoriya-i-korrelyaciya-provesti-deployed-dashboard-timeline-acceptance.example.json`            | 22. История и корреляция / Провести deployed dashboard timeline acceptance               | `missing`, `covered` |
-| `docs/release-owner-evidence/24-notifications-provesti-live-email-delivery-acceptance.json`                              | `docs/release-owner-evidence/templates/24-notifications-provesti-live-email-delivery-acceptance.example.json`                              | 24. Notifications / Провести live email delivery acceptance                              | `missing`, `covered` |
-| `docs/release-owner-evidence/24-notifications-provesti-live-slack-delivery-acceptance.json`                              | `docs/release-owner-evidence/templates/24-notifications-provesti-live-slack-delivery-acceptance.example.json`                              | 24. Notifications / Провести live Slack delivery acceptance                              | `missing`, `covered` |
-| `docs/release-owner-evidence/24-notifications-provesti-live-telegram-delivery-acceptance-esli-nuzhen.json`               | `docs/release-owner-evidence/templates/24-notifications-provesti-live-telegram-delivery-acceptance-esli-nuzhen.example.json`               | 24. Notifications / Провести live Telegram delivery acceptance, если нужен               | `missing`, `covered` |
-| `docs/release-owner-evidence/24-notifications-provesti-live-webhook-delivery-acceptance.json`                            | `docs/release-owner-evidence/templates/24-notifications-provesti-live-webhook-delivery-acceptance.example.json`                            | 24. Notifications / Провести live webhook delivery acceptance                            | `missing`, `covered` |
-| `docs/release-owner-evidence/25-billing-proverit-deployed-stripe-webhook-persistence-on-rds.json`                        | `docs/release-owner-evidence/templates/25-billing-proverit-deployed-stripe-webhook-persistence-on-rds.example.json`                        | 25. Billing / Проверить deployed Stripe webhook persistence on RDS                       | `missing`, `covered` |
-| `docs/release-owner-evidence/25-billing-provesti-live-customer-portal-acceptance.json`                                   | `docs/release-owner-evidence/templates/25-billing-provesti-live-customer-portal-acceptance.example.json`                                   | 25. Billing / Провести live customer portal acceptance                                   | `missing`, `covered` |
-| `docs/release-owner-evidence/25-billing-provesti-live-stripe-acceptance.json`                                            | `docs/release-owner-evidence/templates/25-billing-provesti-live-stripe-acceptance.example.json`                                            | 25. Billing / Провести live Stripe acceptance                                            | `missing`, `covered` |
-| `docs/release-owner-evidence/25-billing-provesti-live-subscription-trial-upgrade-downgrade-cancellation-acceptance.json` | `docs/release-owner-evidence/templates/25-billing-provesti-live-subscription-trial-upgrade-downgrade-cancellation-acceptance.example.json` | 25. Billing / Провести live subscription/trial/upgrade/downgrade/cancellation acceptance | `missing`, `covered` |
-| `docs/release-owner-evidence/26-agency-mode-proverit-client-invite-email-delivery.json`                                  | `docs/release-owner-evidence/templates/26-agency-mode-proverit-client-invite-email-delivery.example.json`                                  | 26. Agency mode / Проверить client invite email delivery                                 | `missing`, `covered` |
-| `docs/release-owner-evidence/26-agency-mode-razvernut-client-portal.json`                                                | `docs/release-owner-evidence/templates/26-agency-mode-razvernut-client-portal.example.json`                                                | 26. Agency mode / Развернуть client portal                                               | `missing`, `covered` |
-| `docs/release-owner-evidence/26-agency-mode-realizovat-live-agency-billing.json`                                         | `docs/release-owner-evidence/templates/26-agency-mode-realizovat-live-agency-billing.example.json`                                         | 26. Agency mode / Реализовать live agency billing                                        | `missing`, `covered` |
-| `docs/release-owner-evidence/27-observability-podklyuchit-cloudwatch-otlp.json`                                          | `docs/release-owner-evidence/templates/27-observability-podklyuchit-cloudwatch-otlp.example.json`                                          | 27. Observability / Подключить CloudWatch/OTLP                                           | `missing`, `covered` |
-| `docs/release-owner-evidence/27-observability-razvernut-logging.json`                                                    | `docs/release-owner-evidence/templates/27-observability-razvernut-logging.example.json`                                                    | 27. Observability / Развернуть logging                                                   | `missing`, `covered` |
-| `docs/release-owner-evidence/27-observability-razvernut-metrics.json`                                                    | `docs/release-owner-evidence/templates/27-observability-razvernut-metrics.example.json`                                                    | 27. Observability / Развернуть metrics                                                   | `missing`, `covered` |
-| `docs/release-owner-evidence/27-observability-razvernut-tracing.json`                                                    | `docs/release-owner-evidence/templates/27-observability-razvernut-tracing.example.json`                                                    | 27. Observability / Развернуть tracing                                                   | `missing`, `covered` |
-| `docs/release-owner-evidence/28-security-i-privacy-provesti-dast.json`                                                   | `docs/release-owner-evidence/templates/28-security-i-privacy-provesti-dast.example.json`                                                   | 28. Security и Privacy / Провести DAST                                                   | `missing`, `covered` |
-| `docs/release-owner-evidence/28-security-i-privacy-zavershit-security-release-gate.json`                                 | `docs/release-owner-evidence/templates/28-security-i-privacy-zavershit-security-release-gate.example.json`                                 | 28. Security и Privacy / Завершить security release gate                                 | `missing`, `covered` |
-| `docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-agency-mode-gotov.json`                             | `docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-agency-mode-gotov.example.json`                             | 31. Финальный SearchLint 1.0 Release Gate / Agency mode готов                            | `missing`, `covered` |
-| `docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-api-deployment-proof-proiden.json`                  | `docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-api-deployment-proof-proiden.example.json`                  | 31. Финальный SearchLint 1.0 Release Gate / API deployment proof пройден                 | `missing`, `covered` |
-| `docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-billing-live-acceptance-proiden.json`               | `docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-billing-live-acceptance-proiden.example.json`               | 31. Финальный SearchLint 1.0 Release Gate / Billing live acceptance пройден              | `missing`, `covered` |
-| `docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-cognito-rbac-proof-proiden.json`                    | `docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-cognito-rbac-proof-proiden.example.json`                    | 31. Финальный SearchLint 1.0 Release Gate / Cognito/RBAC proof пройден                   | `missing`, `covered` |
-| `docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-dashboard-production-e2e-proiden.json`              | `docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-dashboard-production-e2e-proiden.example.json`              | 31. Финальный SearchLint 1.0 Release Gate / Dashboard production E2E пройден             | `missing`, `covered` |
-| `docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-google-live-acceptance-proiden.json`                | `docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-google-live-acceptance-proiden.example.json`                | 31. Финальный SearchLint 1.0 Release Gate / Google live acceptance пройден               | `missing`, `covered` |
-| `docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-notifications-gotovy.json`                          | `docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-notifications-gotovy.example.json`                          | 31. Финальный SearchLint 1.0 Release Gate / Notifications готовы                         | `missing`, `covered` |
-| `docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-npm-pakety-opublikovany.json`                       | `docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-npm-pakety-opublikovany.example.json`                       | 31. Финальный SearchLint 1.0 Release Gate / npm-пакеты опубликованы                      | `missing`, `covered` |
-| `docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-oauth-vault-proof-proiden.json`                     | `docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-oauth-vault-proof-proiden.example.json`                     | 31. Финальный SearchLint 1.0 Release Gate / OAuth vault proof пройден                    | `missing`, `covered` |
-| `docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-observability-gotova.json`                          | `docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-observability-gotova.example.json`                          | 31. Финальный SearchLint 1.0 Release Gate / Observability готова                         | `missing`, `covered` |
-| `docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-opublikovan-searchlint-1-0.json`                    | `docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-opublikovan-searchlint-1-0.example.json`                    | 31. Финальный SearchLint 1.0 Release Gate / Опубликован SearchLint 1.0                   | `missing`, `covered` |
-| `docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-postgresql-rds-proof-proiden.json`                  | `docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-postgresql-rds-proof-proiden.example.json`                  | 31. Финальный SearchLint 1.0 Release Gate / PostgreSQL/RDS proof пройден                 | `missing`, `covered` |
-| `docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-public-website-gotov.json`                          | `docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-public-website-gotov.example.json`                          | 31. Финальный SearchLint 1.0 Release Gate / Public website готов                         | `missing`, `covered` |
-| `docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-release-candidate-proshel-polnuyu-matricu.json`     | `docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-release-candidate-proshel-polnuyu-matricu.example.json`     | 31. Финальный SearchLint 1.0 Release Gate / Release candidate прошёл полную матрицу      | `missing`, `covered` |
-| `docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-s3-proof-proiden.json`                              | `docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-s3-proof-proiden.example.json`                              | 31. Финальный SearchLint 1.0 Release Gate / S3 proof пройден                             | `missing`, `covered` |
-| `docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-security-audit-proiden.json`                        | `docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-security-audit-proiden.example.json`                        | 31. Финальный SearchLint 1.0 Release Gate / Security audit пройден                       | `missing`, `covered` |
-| `docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-sozdan-git-tag-v1-0-0.json`                         | `docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-sozdan-git-tag-v1-0-0.example.json`                         | 31. Финальный SearchLint 1.0 Release Gate / Создан Git tag v1.0.0                        | `missing`, `covered` |
-| `docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-vs-code-extension-opublikovan.json`                 | `docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-vs-code-extension-opublikovan.example.json`                 | 31. Финальный SearchLint 1.0 Release Gate / VS Code extension опубликован                | `missing`, `covered` |
-| `docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-workers-sqs-proof-proiden.json`                     | `docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-workers-sqs-proof-proiden.example.json`                     | 31. Финальный SearchLint 1.0 Release Gate / Workers/SQS proof пройден                    | `missing`, `covered` |
-| `docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-yandex-live-acceptance-proiden.json`                | `docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-yandex-live-acceptance-proiden.example.json`                | 31. Финальный SearchLint 1.0 Release Gate / Yandex live acceptance пройден               | `missing`, `covered` |
-| `docs/release-owner-evidence/7-vs-code-i-lsp-nastroit-publisher-account.json`                                            | `docs/release-owner-evidence/templates/7-vs-code-i-lsp-nastroit-publisher-account.example.json`                                            | 7. VS Code и LSP / Настроить publisher account                                           | `missing`, `covered` |
-| `docs/release-owner-evidence/7-vs-code-i-lsp-podpisat-i-opublikovat-extension.json`                                      | `docs/release-owner-evidence/templates/7-vs-code-i-lsp-podpisat-i-opublikovat-extension.example.json`                                      | 7. VS Code и LSP / Подписать и опубликовать extension                                    | `missing`, `covered` |
-| `docs/release-owner-evidence/8-npm-pakety-opublikovat-beta-packages.json`                                                | `docs/release-owner-evidence/templates/8-npm-pakety-opublikovat-beta-packages.example.json`                                                | 8. npm-пакеты / Опубликовать beta packages                                               | `missing`, `covered` |
-| `docs/release-owner-evidence/8-npm-pakety-podgotovit-finalnuyu-publikaciyu-1-0-0.json`                                   | `docs/release-owner-evidence/templates/8-npm-pakety-podgotovit-finalnuyu-publikaciyu-1-0-0.example.json`                                   | 8. npm-пакеты / Подготовить финальную публикацию 1.0.0                                   | `missing`, `covered` |
-| `docs/release-owner-evidence/8-npm-pakety-zamenit-0-0-0-beta-versions-na-final-release-versions.json`                    | `docs/release-owner-evidence/templates/8-npm-pakety-zamenit-0-0-0-beta-versions-na-final-release-versions.example.json`                    | 8. npm-пакеты / Заменить `0.0.0`/beta versions на final release versions                 | `missing`, `covered` |
+| Evidence path                                                                                                            | Template                                                                                                                                                                                                                             | Gate                                                                                     | Status               |
+| ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------- | -------------------- |
+| `docs/legal-release-approval.json`                                                                                       | `docs/legal-release-approval.example.json`                                                                                                                                                                                           | 1. Управление проектом / 2 release gates                                                 | `missing`, `covered` |
+| `docs/live-backup-restore-drill.json`                                                                                    | `docs/live-backup-restore-drill.example.json`                                                                                                                                                                                        | 31. Финальный SearchLint 1.0 Release Gate / Backup/restore проверены                     | `missing`, `covered` |
+| `docs/release-owner-evidence/10-crawler-proverit-100-000-url-v-cloud.json`                                               | `docs/release-owner-evidence/templates/10-crawler-proverit-100-000-url-v-cloud.example.json`                                                                                                                                         | 10. Crawler / Проверить 100 000 URL в cloud                                              | `missing`, `covered` |
+| `docs/release-owner-evidence/11-postgresql-i-hranenie-dannyh-razvernut-nastoyashii-postgresql-rds.json`                  | `docs/release-owner-evidence/templates/11-postgresql-i-hranenie-dannyh-razvernut-nastoyashii-postgresql-rds.example.json`                                                                                                            | 11. PostgreSQL и хранение данных / Развернуть настоящий PostgreSQL/RDS                   | `missing`, `covered` |
+| `docs/release-owner-evidence/12-s3-object-storage-razvernut-realnoe-object-storage.json`                                 | `docs/release-owner-evidence/templates/12-s3-object-storage-razvernut-realnoe-object-storage.example.json`                                                                                                                           | 12. S3/Object Storage / Развернуть реальное object storage                               | `missing`, `covered` |
+| `docs/release-owner-evidence/13-backend-api-razvernut-production-api.json`                                               | `docs/release-owner-evidence/templates/13-backend-api-razvernut-production-api.example.json`                                                                                                                                         | 13. Backend API / Развернуть production API                                              | `missing`, `covered` |
+| `docs/release-owner-evidence/18-google-search-console-provesti-live-acceptance-na-realnom-saite.json`                    | `docs/release-owner-evidence/templates/18-google-search-console-provesti-live-acceptance-na-realnom-saite.example.json`                                                                                                              | 18. Google Search Console / Провести live acceptance на реальном сайте                   | `missing`, `covered` |
+| `docs/release-owner-evidence/19-pagespeed-i-crux-provesti-live-acceptance.json`                                          | `docs/release-owner-evidence/templates/19-pagespeed-i-crux-provesti-live-acceptance.example.json`                                                                                                                                    | 19. PageSpeed и CrUX / Провести live acceptance                                          | `missing`, `covered` |
+| `docs/release-owner-evidence/20-yandeks-vebmaster-provesti-live-acceptance.json`                                         | `docs/release-owner-evidence/templates/20-yandeks-vebmaster-provesti-live-acceptance.example.json`                                                                                                                                   | 20. Яндекс.Вебмастер / Провести live acceptance                                          | `missing`, `covered` |
+| `docs/release-owner-evidence/21-yandeks-metrika-provesti-live-acceptance.json`                                           | `docs/release-owner-evidence/templates/21-yandeks-metrika-provesti-live-acceptance.example.json`                                                                                                                                     | 21. Яндекс.Метрика / Провести live acceptance                                            | `missing`, `covered` |
+| `docs/release-owner-evidence/22-istoriya-i-korrelyaciya-provesti-deployed-dashboard-timeline-acceptance.json`            | `docs/release-owner-evidence/templates/22-istoriya-i-korrelyaciya-provesti-deployed-dashboard-timeline-acceptance.example.json`                                                                                                      | 22. История и корреляция / Провести deployed dashboard timeline acceptance               | `missing`, `covered` |
+| `docs/release-owner-evidence/24-notifications-provesti-live-email-delivery-acceptance.json`                              | `docs/release-owner-evidence/templates/24-notifications-provesti-live-email-delivery-acceptance.example.json`                                                                                                                        | 24. Notifications / Провести live email delivery acceptance                              | `missing`, `covered` |
+| `docs/release-owner-evidence/24-notifications-provesti-live-slack-delivery-acceptance.json`                              | `docs/release-owner-evidence/templates/24-notifications-provesti-live-slack-delivery-acceptance.example.json`                                                                                                                        | 24. Notifications / Провести live Slack delivery acceptance                              | `missing`, `covered` |
+| `docs/release-owner-evidence/24-notifications-provesti-live-telegram-delivery-acceptance-esli-nuzhen.json`               | `docs/release-owner-evidence/templates/24-notifications-provesti-live-telegram-delivery-acceptance-esli-nuzhen.example.json`                                                                                                         | 24. Notifications / Провести live Telegram delivery acceptance, если нужен               | `missing`, `covered` |
+| `docs/release-owner-evidence/24-notifications-provesti-live-webhook-delivery-acceptance.json`                            | `docs/release-owner-evidence/templates/24-notifications-provesti-live-webhook-delivery-acceptance.example.json`                                                                                                                      | 24. Notifications / Провести live webhook delivery acceptance                            | `missing`, `covered` |
+| `docs/release-owner-evidence/25-billing-proverit-deployed-stripe-webhook-persistence-on-rds.json`                        | `docs/release-owner-evidence/templates/25-billing-proverit-deployed-stripe-webhook-persistence-on-rds.example.json`                                                                                                                  | 25. Billing / Проверить deployed Stripe webhook persistence on RDS                       | `missing`, `covered` |
+| `docs/release-owner-evidence/25-billing-provesti-live-customer-portal-acceptance.json`                                   | `docs/release-owner-evidence/templates/25-billing-provesti-live-customer-portal-acceptance.example.json`                                                                                                                             | 25. Billing / Провести live customer portal acceptance                                   | `missing`, `covered` |
+| `docs/release-owner-evidence/25-billing-provesti-live-stripe-acceptance.json`                                            | `docs/release-owner-evidence/templates/25-billing-provesti-live-stripe-acceptance.example.json`                                                                                                                                      | 25. Billing / Провести live Stripe acceptance                                            | `missing`, `covered` |
+| `docs/release-owner-evidence/25-billing-provesti-live-subscription-trial-upgrade-downgrade-cancellation-acceptance.json` | `docs/release-owner-evidence/templates/25-billing-provesti-live-subscription-trial-upgrade-downgrade-cancellation-acceptance.example.json`                                                                                           | 25. Billing / Провести live subscription/trial/upgrade/downgrade/cancellation acceptance | `missing`, `covered` |
+| `docs/release-owner-evidence/26-agency-mode-proverit-client-invite-email-delivery.json`                                  | `docs/release-owner-evidence/templates/26-agency-mode-proverit-client-invite-email-delivery.example.json`                                                                                                                            | 26. Agency mode / Проверить client invite email delivery                                 | `missing`, `covered` |
+| `docs/release-owner-evidence/26-agency-mode-razvernut-client-portal.json`                                                | `docs/release-owner-evidence/templates/26-agency-mode-razvernut-client-portal.example.json`                                                                                                                                          | 26. Agency mode / Развернуть client portal                                               | `missing`, `covered` |
+| `docs/release-owner-evidence/26-agency-mode-realizovat-live-agency-billing.json`                                         | `docs/release-owner-evidence/templates/26-agency-mode-realizovat-live-agency-billing.example.json`                                                                                                                                   | 26. Agency mode / Реализовать live agency billing                                        | `missing`, `covered` |
+| `docs/release-owner-evidence/27-observability-podklyuchit-cloudwatch-otlp.json`                                          | `docs/release-owner-evidence/templates/27-observability-podklyuchit-cloudwatch-otlp.example.json`                                                                                                                                    | 27. Observability / Подключить CloudWatch/OTLP                                           | `missing`, `covered` |
+| `docs/release-owner-evidence/27-observability-razvernut-logging.json`                                                    | `docs/release-owner-evidence/templates/27-observability-razvernut-logging.example.json`                                                                                                                                              | 27. Observability / Развернуть logging                                                   | `missing`, `covered` |
+| `docs/release-owner-evidence/27-observability-razvernut-metrics.json`                                                    | `docs/release-owner-evidence/templates/27-observability-razvernut-metrics.example.json`                                                                                                                                              | 27. Observability / Развернуть metrics                                                   | `missing`, `covered` |
+| `docs/release-owner-evidence/27-observability-razvernut-tracing.json`                                                    | `docs/release-owner-evidence/templates/27-observability-razvernut-tracing.example.json`                                                                                                                                              | 27. Observability / Развернуть tracing                                                   | `missing`, `covered` |
+| `docs/release-owner-evidence/28-security-i-privacy-provesti-dast.json`                                                   | `docs/release-owner-evidence/templates/28-security-i-privacy-provesti-dast.example.json`                                                                                                                                             | 28. Security и Privacy / Провести DAST                                                   | `missing`, `covered` |
+| `docs/release-owner-evidence/28-security-i-privacy-zavershit-security-release-gate.json`                                 | `docs/release-owner-evidence/templates/28-security-i-privacy-zavershit-security-release-gate.example.json`                                                                                                                           | 28. Security и Privacy / Завершить security release gate                                 | `missing`, `covered` |
+| `docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-agency-mode-gotov.json`                             | `docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-agency-mode-gotov.example.json`                                                                                                                       | 31. Финальный SearchLint 1.0 Release Gate / Agency mode готов                            | `missing`, `covered` |
+| `docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-api-deployment-proof-proiden.json`                  | `docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-api-deployment-proof-proiden.example.json`                                                                                                            | 31. Финальный SearchLint 1.0 Release Gate / API deployment proof пройден                 | `missing`, `covered` |
+| `docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-billing-live-acceptance-proiden.json`               | `docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-billing-live-acceptance-proiden.example.json`                                                                                                         | 31. Финальный SearchLint 1.0 Release Gate / Billing live acceptance пройден              | `missing`, `covered` |
+| `docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-cognito-rbac-proof-proiden.json`                    | `docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-cognito-rbac-proof-proiden.example.json`                                                                                                              | 31. Финальный SearchLint 1.0 Release Gate / Cognito/RBAC proof пройден                   | `missing`, `covered` |
+| `docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-dashboard-production-e2e-proiden.json`              | `docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-dashboard-production-e2e-proiden.example.json`                                                                                                        | 31. Финальный SearchLint 1.0 Release Gate / Dashboard production E2E пройден             | `missing`, `covered` |
+| `docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-google-live-acceptance-proiden.json`                | `docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-google-live-acceptance-proiden.example.json`                                                                                                          | 31. Финальный SearchLint 1.0 Release Gate / Google live acceptance пройден               | `missing`, `covered` |
+| `docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-notifications-gotovy.json`                          | `docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-notifications-gotovy.example.json`                                                                                                                    | 31. Финальный SearchLint 1.0 Release Gate / Notifications готовы                         | `missing`, `covered` |
+| `docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-npm-pakety-opublikovany.json`                       | `docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-npm-pakety-opublikovany.example.json`                                                                                                                 | 31. Финальный SearchLint 1.0 Release Gate / npm-пакеты опубликованы                      | `missing`, `covered` |
+| `docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-oauth-vault-proof-proiden.json`                     | `docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-oauth-vault-proof-proiden.example.json`                                                                                                               | 31. Финальный SearchLint 1.0 Release Gate / OAuth vault proof пройден                    | `missing`, `covered` |
+| `docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-observability-gotova.json`                          | `docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-observability-gotova.example.json`                                                                                                                    | 31. Финальный SearchLint 1.0 Release Gate / Observability готова                         | `missing`, `covered` |
+| `docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-opublikovan-searchlint-1-0.json`                    | `docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-opublikovan-searchlint-1-0.example.json`                                                                                                              | 31. Финальный SearchLint 1.0 Release Gate / Опубликован SearchLint 1.0                   | `missing`, `covered` |
+| `docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-postgresql-rds-proof-proiden.json`                  | `docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-postgresql-rds-proof-proiden.example.json`                                                                                                            | 31. Финальный SearchLint 1.0 Release Gate / PostgreSQL/RDS proof пройден                 | `missing`, `covered` |
+| `docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-public-website-gotov.json`                          | `docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-public-website-gotov.example.json`                                                                                                                    | 31. Финальный SearchLint 1.0 Release Gate / Public website готов                         | `missing`, `covered` |
+| `docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-release-candidate-proshel-polnuyu-matricu.json`     | `docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-release-candidate-proshel-polnuyu-matricu.example.json`                                                                                               | 31. Финальный SearchLint 1.0 Release Gate / Release candidate прошёл полную матрицу      | `missing`, `covered` |
+| `docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-s3-proof-proiden.json`                              | `docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-s3-proof-proiden.example.json`                                                                                                                        | 31. Финальный SearchLint 1.0 Release Gate / S3 proof пройден                             | `missing`, `covered` |
+| `docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-security-audit-proiden.json`                        | `docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-security-audit-proiden.example.json`                                                                                                                  | 31. Финальный SearchLint 1.0 Release Gate / Security audit пройден                       | `missing`, `covered` |
+| `docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-sozdan-git-tag-v1-0-0.json`                         | `docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-sozdan-git-tag-v1-0-0.example.json`                                                                                                                   | 31. Финальный SearchLint 1.0 Release Gate / Создан Git tag v1.0.0                        | `missing`, `covered` |
+| `docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-vs-code-extension-opublikovan.json`                 | `docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-vs-code-extension-opublikovan.example.json`                                                                                                           | 31. Финальный SearchLint 1.0 Release Gate / VS Code extension опубликован                | `missing`, `covered` |
+| `docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-workers-sqs-proof-proiden.json`                     | `docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-workers-sqs-proof-proiden.example.json`                                                                                                               | 31. Финальный SearchLint 1.0 Release Gate / Workers/SQS proof пройден                    | `missing`, `covered` |
+| `docs/release-owner-evidence/31-finalnyi-searchlint-1-0-release-gate-yandex-live-acceptance-proiden.json`                | `docs/release-owner-evidence/templates/31-finalnyi-searchlint-1-0-release-gate-yandex-live-acceptance-proiden.example.json`                                                                                                          | 31. Финальный SearchLint 1.0 Release Gate / Yandex live acceptance пройден               | `missing`, `covered` |
+| `docs/release-owner-evidence/7-vs-code-i-lsp-nastroit-publisher-account.json`                                            | `docs/release-owner-evidence/templates/7-vs-code-i-lsp-nastroit-publisher-account.example.json`                                                                                                                                      | 7. VS Code и LSP / Настроить publisher account                                           | `missing`, `covered` |
+| `docs/release-owner-evidence/7-vs-code-i-lsp-podpisat-i-opublikovat-extension.json`                                      | `docs/release-owner-evidence/templates/7-vs-code-i-lsp-podpisat-i-opublikovat-extension.example.json`                                                                                                                                | 7. VS Code и LSP / Подписать и опубликовать extension                                    | `missing`, `covered` |
+| `docs/release-owner-evidence/8-npm-pakety-opublikovat-beta-packages.json`                                                | `docs/release-owner-evidence/templates/8-npm-pakety-opublikovat-beta-packages.example.json`                                                                                                                                          | 8. npm-пакеты / Опубликовать beta packages                                               | `missing`, `covered` |
+| `docs/release-owner-evidence/8-npm-pakety-podgotovit-finalnuyu-publikaciyu-1-0-0.json`                                   | `docs/release-owner-evidence/templates/8-npm-pakety-podgotovit-finalnuyu-publikaciyu-1-0-0.example.json`                                                                                                                             | 8. npm-пакеты / Подготовить финальную публикацию 1.0.0                                   | `missing`, `covered` |
+| `docs/release-owner-evidence/8-npm-pakety-zamenit-0-0-0-beta-versions-na-final-release-versions.json`                    | `docs/release-owner-evidence/templates/8-npm-pakety-zamenit-0-0-0-beta-versions-na-final-release-versions.example.json`                                                                                                              | 8. npm-пакеты / Заменить `0.0.0`/beta versions на final release versions                 | `missing`, `covered` |
+| `docs/reviews/blocker-benchmark/DELIVERY_EVIDENCE.json`                                                                  | `docs/reviews/blocker-benchmark/DELIVERY_EVIDENCE.example.json`<br>`docs/reviews/blocker-benchmark/README.md`<br>`docs/reviews/blocker-benchmark/REVIEW_INSTRUCTIONS.md`<br>`docs/reviews/blocker-benchmark/REVIEW_FORM_TEMPLATE.md` | 2. Независимая проверка blocker-правил / Передать им review packet                       | `missing`, `covered` |
+| `docs/reviews/blocker-benchmark/reviewer-1.review.json`                                                                  | `docs/reviews/blocker-benchmark/reviewer-1.review.example.json`<br>`docs/reviews/blocker-benchmark/README.md`<br>`docs/reviews/blocker-benchmark/REVIEW_INSTRUCTIONS.md`<br>`docs/reviews/blocker-benchmark/REVIEW_FORM_TEMPLATE.md` | 2. Независимая проверка blocker-правил / 13 release gates                                | `missing`, `covered` |
+| `docs/reviews/blocker-benchmark/reviewer-2.review.json`                                                                  | `docs/reviews/blocker-benchmark/reviewer-2.review.example.json`<br>`docs/reviews/blocker-benchmark/README.md`<br>`docs/reviews/blocker-benchmark/REVIEW_INSTRUCTIONS.md`<br>`docs/reviews/blocker-benchmark/REVIEW_FORM_TEMPLATE.md` | 2. Независимая проверка blocker-правил / 13 release gates                                | `missing`, `covered` |
+| `docs/reviews/oauth-vault-security/reviewer-1.review.json`                                                               | `docs/reviews/oauth-vault-security/REVIEW_FORM_TEMPLATE.md`                                                                                                                                                                          | 16. OAuth vault / Провести external security review vault                                | `missing`, `covered` |
+| `docs/reviews/oauth-vault-security/reviewer-2.review.json`                                                               | `docs/reviews/oauth-vault-security/REVIEW_FORM_TEMPLATE.md`                                                                                                                                                                          | 16. OAuth vault / Провести external security review vault                                | `missing`, `covered` |
+| `docs/reviews/overlay-accessibility/reviewer.review.json`                                                                | `docs/reviews/overlay-accessibility/REVIEW_FORM_TEMPLATE.md`                                                                                                                                                                         | 6. Badge и Overlay / 3 release gates                                                     | `missing`, `covered` |
+| `docs/reviews/penetration-test/report-summary.json`                                                                      | `docs/reviews/penetration-test/REPORT_SUMMARY_TEMPLATE.md`                                                                                                                                                                           | 28. Security и Privacy / 2 release gates                                                 | `missing`, `covered` |
 
 ## Open Gate Readiness
 
@@ -78,216 +87,241 @@ owner evidence. It is not release approval.
 
 - Gate type: `legal_owner_gate`
 - Related command: `pnpm legal:release-gate`
-- Readiness status: `waiting_for_external_non_owner_json_evidence`
+- Readiness status: `ready_for_owner_input`
 - Required evidence: Qualified legal/owner approval JSON plus reviewed
   public/private repository boundary evidence.
 - Next owner action: Complete legal review and provide the approved release-gate
   evidence file.
+- Owner input templates:
+  - `docs/legal-release-approval.json` from
+    `docs/legal-release-approval.example.json` -> `missing`
 - Generated/supporting evidence:
-  - `docs/legal-release-approval.json` -> `missing`
   - `reports/legal-release-approval-report.json` -> `missing`
 
 ### 2. 2. Независимая проверка blocker-правил: Найти двух независимых reviewers
 
 - Gate type: `independent_reviewer_gate`
 - Related command: `pnpm rule-qa:review`
-- Readiness status: `waiting_for_external_non_owner_json_evidence`
+- Readiness status: `ready_for_owner_input`
 - Required evidence: Two real independent reviewer JSON files, full benchmark
   coverage, matching benchmarkVersion, adjudicated disagreements, and passing
   pnpm rule-qa:review.
 - Next owner action: Select two independent reviewers, collect
   reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then
   rerun the review gate.
+- Owner input templates:
+  - `docs/reviews/blocker-benchmark/reviewer-1.review.json` from
+    `docs/reviews/blocker-benchmark/reviewer-1.review.example.json` -> `missing`
+  - `docs/reviews/blocker-benchmark/reviewer-2.review.json` from
+    `docs/reviews/blocker-benchmark/reviewer-2.review.example.json` -> `missing`
 - Generated/supporting evidence:
-  - `docs/reviews/blocker-benchmark/reviewer-1.review.json` -> `missing`
-  - `docs/reviews/blocker-benchmark/reviewer-2.review.json` -> `missing`
-  - `reports/blocker-benchmark-adjudication-summary.json` ->
-    `present_blocked_or_failing`
+  - `reports/blocker-benchmark-adjudication-summary.json` -> `missing`
 
 ### 3. 2. Независимая проверка blocker-правил: Передать им review packet
 
 - Gate type: `independent_reviewer_delivery_gate`
 - Related command: `pnpm rule-qa:review-delivery`
-- Readiness status: `waiting_for_external_non_owner_json_evidence`
+- Readiness status: `ready_for_owner_input`
 - Required evidence: Owner-provided DELIVERY_EVIDENCE.json proving the blocker
   benchmark review packet was sent to two intended independent reviewers, with
   matching benchmarkVersion and case-index SHA-256.
 - Next owner action: Send the handoff packet to two intended independent
   reviewers, provide DELIVERY_EVIDENCE.json, then run the delivery gate.
+- Owner input templates:
+  - `docs/reviews/blocker-benchmark/DELIVERY_EVIDENCE.json` from
+    `docs/reviews/blocker-benchmark/DELIVERY_EVIDENCE.example.json` -> `missing`
 - Generated/supporting evidence:
-  - `docs/reviews/blocker-benchmark/DELIVERY_EVIDENCE.json` -> `missing`
-  - `reports/blocker-benchmark-review-delivery-report.json` ->
-    `present_blocked_or_failing`
+  - `reports/blocker-benchmark-review-delivery-report.json` -> `missing`
 
 ### 4. 2. Независимая проверка blocker-правил: Проверить все 1960 benchmark cases
 
 - Gate type: `independent_reviewer_gate`
 - Related command: `pnpm rule-qa:review`
-- Readiness status: `waiting_for_external_non_owner_json_evidence`
+- Readiness status: `ready_for_owner_input`
 - Required evidence: Two real independent reviewer JSON files, full benchmark
   coverage, matching benchmarkVersion, adjudicated disagreements, and passing
   pnpm rule-qa:review.
 - Next owner action: Select two independent reviewers, collect
   reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then
   rerun the review gate.
+- Owner input templates:
+  - `docs/reviews/blocker-benchmark/reviewer-1.review.json` from
+    `docs/reviews/blocker-benchmark/reviewer-1.review.example.json` -> `missing`
+  - `docs/reviews/blocker-benchmark/reviewer-2.review.json` from
+    `docs/reviews/blocker-benchmark/reviewer-2.review.example.json` -> `missing`
 - Generated/supporting evidence:
-  - `docs/reviews/blocker-benchmark/reviewer-1.review.json` -> `missing`
-  - `docs/reviews/blocker-benchmark/reviewer-2.review.json` -> `missing`
-  - `reports/blocker-benchmark-adjudication-summary.json` ->
-    `present_blocked_or_failing`
+  - `reports/blocker-benchmark-adjudication-summary.json` -> `missing`
 
 ### 5. 2. Независимая проверка blocker-правил: Получить reviewer-1.review.json
 
 - Gate type: `independent_reviewer_gate`
 - Related command: `pnpm rule-qa:review`
-- Readiness status: `waiting_for_external_non_owner_json_evidence`
+- Readiness status: `ready_for_owner_input`
 - Required evidence: Two real independent reviewer JSON files, full benchmark
   coverage, matching benchmarkVersion, adjudicated disagreements, and passing
   pnpm rule-qa:review.
 - Next owner action: Select two independent reviewers, collect
   reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then
   rerun the review gate.
+- Owner input templates:
+  - `docs/reviews/blocker-benchmark/reviewer-1.review.json` from
+    `docs/reviews/blocker-benchmark/reviewer-1.review.example.json` -> `missing`
+  - `docs/reviews/blocker-benchmark/reviewer-2.review.json` from
+    `docs/reviews/blocker-benchmark/reviewer-2.review.example.json` -> `missing`
 - Generated/supporting evidence:
-  - `docs/reviews/blocker-benchmark/reviewer-1.review.json` -> `missing`
-  - `docs/reviews/blocker-benchmark/reviewer-2.review.json` -> `missing`
-  - `reports/blocker-benchmark-adjudication-summary.json` ->
-    `present_blocked_or_failing`
+  - `reports/blocker-benchmark-adjudication-summary.json` -> `missing`
 
 ### 6. 2. Независимая проверка blocker-правил: Получить reviewer-2.review.json
 
 - Gate type: `independent_reviewer_gate`
 - Related command: `pnpm rule-qa:review`
-- Readiness status: `waiting_for_external_non_owner_json_evidence`
+- Readiness status: `ready_for_owner_input`
 - Required evidence: Two real independent reviewer JSON files, full benchmark
   coverage, matching benchmarkVersion, adjudicated disagreements, and passing
   pnpm rule-qa:review.
 - Next owner action: Select two independent reviewers, collect
   reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then
   rerun the review gate.
+- Owner input templates:
+  - `docs/reviews/blocker-benchmark/reviewer-1.review.json` from
+    `docs/reviews/blocker-benchmark/reviewer-1.review.example.json` -> `missing`
+  - `docs/reviews/blocker-benchmark/reviewer-2.review.json` from
+    `docs/reviews/blocker-benchmark/reviewer-2.review.example.json` -> `missing`
 - Generated/supporting evidence:
-  - `docs/reviews/blocker-benchmark/reviewer-1.review.json` -> `missing`
-  - `docs/reviews/blocker-benchmark/reviewer-2.review.json` -> `missing`
-  - `reports/blocker-benchmark-adjudication-summary.json` ->
-    `present_blocked_or_failing`
+  - `reports/blocker-benchmark-adjudication-summary.json` -> `missing`
 
 ### 7. 2. Независимая проверка blocker-правил: Проверить полный coverage обоих review-файлов
 
 - Gate type: `independent_reviewer_gate`
 - Related command: `pnpm rule-qa:review`
-- Readiness status: `waiting_for_external_non_owner_json_evidence`
+- Readiness status: `ready_for_owner_input`
 - Required evidence: Two real independent reviewer JSON files, full benchmark
   coverage, matching benchmarkVersion, adjudicated disagreements, and passing
   pnpm rule-qa:review.
 - Next owner action: Select two independent reviewers, collect
   reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then
   rerun the review gate.
+- Owner input templates:
+  - `docs/reviews/blocker-benchmark/reviewer-1.review.json` from
+    `docs/reviews/blocker-benchmark/reviewer-1.review.example.json` -> `missing`
+  - `docs/reviews/blocker-benchmark/reviewer-2.review.json` from
+    `docs/reviews/blocker-benchmark/reviewer-2.review.example.json` -> `missing`
 - Generated/supporting evidence:
-  - `docs/reviews/blocker-benchmark/reviewer-1.review.json` -> `missing`
-  - `docs/reviews/blocker-benchmark/reviewer-2.review.json` -> `missing`
-  - `reports/blocker-benchmark-adjudication-summary.json` ->
-    `present_blocked_or_failing`
+  - `reports/blocker-benchmark-adjudication-summary.json` -> `missing`
 
 ### 8. 2. Независимая проверка blocker-правил: Проверить совпадение benchmarkVersion
 
 - Gate type: `independent_reviewer_gate`
 - Related command: `pnpm rule-qa:review`
-- Readiness status: `waiting_for_external_non_owner_json_evidence`
+- Readiness status: `ready_for_owner_input`
 - Required evidence: Two real independent reviewer JSON files, full benchmark
   coverage, matching benchmarkVersion, adjudicated disagreements, and passing
   pnpm rule-qa:review.
 - Next owner action: Select two independent reviewers, collect
   reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then
   rerun the review gate.
+- Owner input templates:
+  - `docs/reviews/blocker-benchmark/reviewer-1.review.json` from
+    `docs/reviews/blocker-benchmark/reviewer-1.review.example.json` -> `missing`
+  - `docs/reviews/blocker-benchmark/reviewer-2.review.json` from
+    `docs/reviews/blocker-benchmark/reviewer-2.review.example.json` -> `missing`
 - Generated/supporting evidence:
-  - `docs/reviews/blocker-benchmark/reviewer-1.review.json` -> `missing`
-  - `docs/reviews/blocker-benchmark/reviewer-2.review.json` -> `missing`
-  - `reports/blocker-benchmark-adjudication-summary.json` ->
-    `present_blocked_or_failing`
+  - `reports/blocker-benchmark-adjudication-summary.json` -> `missing`
 
 ### 9. 2. Независимая проверка blocker-правил: Разобрать disagreements
 
 - Gate type: `independent_reviewer_gate`
 - Related command: `pnpm rule-qa:review`
-- Readiness status: `waiting_for_external_non_owner_json_evidence`
+- Readiness status: `ready_for_owner_input`
 - Required evidence: Two real independent reviewer JSON files, full benchmark
   coverage, matching benchmarkVersion, adjudicated disagreements, and passing
   pnpm rule-qa:review.
 - Next owner action: Select two independent reviewers, collect
   reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then
   rerun the review gate.
+- Owner input templates:
+  - `docs/reviews/blocker-benchmark/reviewer-1.review.json` from
+    `docs/reviews/blocker-benchmark/reviewer-1.review.example.json` -> `missing`
+  - `docs/reviews/blocker-benchmark/reviewer-2.review.json` from
+    `docs/reviews/blocker-benchmark/reviewer-2.review.example.json` -> `missing`
 - Generated/supporting evidence:
-  - `docs/reviews/blocker-benchmark/reviewer-1.review.json` -> `missing`
-  - `docs/reviews/blocker-benchmark/reviewer-2.review.json` -> `missing`
-  - `reports/blocker-benchmark-adjudication-summary.json` ->
-    `present_blocked_or_failing`
+  - `reports/blocker-benchmark-adjudication-summary.json` -> `missing`
 
 ### 10. 2. Независимая проверка blocker-правил: Провести adjudication disputed cases
 
 - Gate type: `independent_reviewer_gate`
 - Related command: `pnpm rule-qa:review`
-- Readiness status: `waiting_for_external_non_owner_json_evidence`
+- Readiness status: `ready_for_owner_input`
 - Required evidence: Two real independent reviewer JSON files, full benchmark
   coverage, matching benchmarkVersion, adjudicated disagreements, and passing
   pnpm rule-qa:review.
 - Next owner action: Select two independent reviewers, collect
   reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then
   rerun the review gate.
+- Owner input templates:
+  - `docs/reviews/blocker-benchmark/reviewer-1.review.json` from
+    `docs/reviews/blocker-benchmark/reviewer-1.review.example.json` -> `missing`
+  - `docs/reviews/blocker-benchmark/reviewer-2.review.json` from
+    `docs/reviews/blocker-benchmark/reviewer-2.review.example.json` -> `missing`
 - Generated/supporting evidence:
-  - `docs/reviews/blocker-benchmark/reviewer-1.review.json` -> `missing`
-  - `docs/reviews/blocker-benchmark/reviewer-2.review.json` -> `missing`
-  - `reports/blocker-benchmark-adjudication-summary.json` ->
-    `present_blocked_or_failing`
+  - `reports/blocker-benchmark-adjudication-summary.json` -> `missing`
 
 ### 11. 2. Независимая проверка blocker-правил: Повторно запустить pnpm rule-qa:review
 
 - Gate type: `independent_reviewer_gate`
 - Related command: `pnpm rule-qa:review`
-- Readiness status: `waiting_for_external_non_owner_json_evidence`
+- Readiness status: `ready_for_owner_input`
 - Required evidence: Two real independent reviewer JSON files, full benchmark
   coverage, matching benchmarkVersion, adjudicated disagreements, and passing
   pnpm rule-qa:review.
 - Next owner action: Select two independent reviewers, collect
   reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then
   rerun the review gate.
+- Owner input templates:
+  - `docs/reviews/blocker-benchmark/reviewer-1.review.json` from
+    `docs/reviews/blocker-benchmark/reviewer-1.review.example.json` -> `missing`
+  - `docs/reviews/blocker-benchmark/reviewer-2.review.json` from
+    `docs/reviews/blocker-benchmark/reviewer-2.review.example.json` -> `missing`
 - Generated/supporting evidence:
-  - `docs/reviews/blocker-benchmark/reviewer-1.review.json` -> `missing`
-  - `docs/reviews/blocker-benchmark/reviewer-2.review.json` -> `missing`
-  - `reports/blocker-benchmark-adjudication-summary.json` ->
-    `present_blocked_or_failing`
+  - `reports/blocker-benchmark-adjudication-summary.json` -> `missing`
 
 ### 12. 2. Независимая проверка blocker-правил: Получить успешный OD-023 release gate
 
 - Gate type: `independent_reviewer_gate`
 - Related command: `pnpm rule-qa:review`
-- Readiness status: `waiting_for_external_non_owner_json_evidence`
+- Readiness status: `ready_for_owner_input`
 - Required evidence: Two real independent reviewer JSON files, full benchmark
   coverage, matching benchmarkVersion, adjudicated disagreements, and passing
   pnpm rule-qa:review.
 - Next owner action: Select two independent reviewers, collect
   reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then
   rerun the review gate.
+- Owner input templates:
+  - `docs/reviews/blocker-benchmark/reviewer-1.review.json` from
+    `docs/reviews/blocker-benchmark/reviewer-1.review.example.json` -> `missing`
+  - `docs/reviews/blocker-benchmark/reviewer-2.review.json` from
+    `docs/reviews/blocker-benchmark/reviewer-2.review.example.json` -> `missing`
 - Generated/supporting evidence:
-  - `docs/reviews/blocker-benchmark/reviewer-1.review.json` -> `missing`
-  - `docs/reviews/blocker-benchmark/reviewer-2.review.json` -> `missing`
-  - `reports/blocker-benchmark-adjudication-summary.json` ->
-    `present_blocked_or_failing`
+  - `reports/blocker-benchmark-adjudication-summary.json` -> `missing`
 
 ### 13. 2. Независимая проверка blocker-правил: Сохранить reviewer evidence и итоговый отчёт
 
 - Gate type: `independent_reviewer_gate`
 - Related command: `pnpm rule-qa:review`
-- Readiness status: `waiting_for_external_non_owner_json_evidence`
+- Readiness status: `ready_for_owner_input`
 - Required evidence: Two real independent reviewer JSON files, full benchmark
   coverage, matching benchmarkVersion, adjudicated disagreements, and passing
   pnpm rule-qa:review.
 - Next owner action: Select two independent reviewers, collect
   reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then
   rerun the review gate.
+- Owner input templates:
+  - `docs/reviews/blocker-benchmark/reviewer-1.review.json` from
+    `docs/reviews/blocker-benchmark/reviewer-1.review.example.json` -> `missing`
+  - `docs/reviews/blocker-benchmark/reviewer-2.review.json` from
+    `docs/reviews/blocker-benchmark/reviewer-2.review.example.json` -> `missing`
 - Generated/supporting evidence:
-  - `docs/reviews/blocker-benchmark/reviewer-1.review.json` -> `missing`
-  - `docs/reviews/blocker-benchmark/reviewer-2.review.json` -> `missing`
-  - `reports/blocker-benchmark-adjudication-summary.json` ->
-    `present_blocked_or_failing`
+  - `reports/blocker-benchmark-adjudication-summary.json` -> `missing`
 
 ### 14. 2. Независимая проверка blocker-правил: Обновить статус Rule QA на VERIFIED_COMPLETE
 
@@ -299,51 +333,56 @@ owner evidence. It is not release approval.
 - Next owner action: Complete the independent reviewer gate, then rerun rule QA
   and update status.
 - Generated/supporting evidence:
-  - `reports/blocker-benchmark-adjudication-summary.json` ->
-    `present_blocked_or_failing`
-  - `reports/rule-qa-summary.json` -> `present_with_pass_signal`
+  - `reports/blocker-benchmark-adjudication-summary.json` -> `missing`
+  - `reports/rule-qa-summary.json` -> `missing`
 
 ### 15. 3. Core и все 120 правил: Подтвердить release-quality всех 120 правил после reviewer gate
 
 - Gate type: `independent_reviewer_gate`
 - Related command: `pnpm rule-qa:review`
-- Readiness status: `waiting_for_external_non_owner_json_evidence`
+- Readiness status: `ready_for_owner_input`
 - Required evidence: Two real independent reviewer JSON files, full benchmark
   coverage, matching benchmarkVersion, adjudicated disagreements, and passing
   pnpm rule-qa:review.
 - Next owner action: Select two independent reviewers, collect
   reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then
   rerun the review gate.
+- Owner input templates:
+  - `docs/reviews/blocker-benchmark/reviewer-1.review.json` from
+    `docs/reviews/blocker-benchmark/reviewer-1.review.example.json` -> `missing`
+  - `docs/reviews/blocker-benchmark/reviewer-2.review.json` from
+    `docs/reviews/blocker-benchmark/reviewer-2.review.example.json` -> `missing`
 - Generated/supporting evidence:
-  - `docs/reviews/blocker-benchmark/reviewer-1.review.json` -> `missing`
-  - `docs/reviews/blocker-benchmark/reviewer-2.review.json` -> `missing`
-  - `reports/blocker-benchmark-adjudication-summary.json` ->
-    `present_blocked_or_failing`
+  - `reports/blocker-benchmark-adjudication-summary.json` -> `missing`
 
 ### 16. 6. Badge и Overlay: Провести ручной accessibility audit
 
 - Gate type: `manual_accessibility_review_gate`
 - Related command: `pnpm overlay:manual-a11y-review`
-- Readiness status: `waiting_for_external_non_owner_json_evidence`
+- Readiness status: `ready_for_owner_input`
 - Required evidence: Manual accessibility review evidence for the required
   assistive technology/browser matrix.
 - Next owner action: Run the manual accessibility review and record reviewer
   evidence.
+- Owner input templates:
+  - `docs/reviews/overlay-accessibility/reviewer.review.json` from
+    `docs/reviews/overlay-accessibility/REVIEW_FORM_TEMPLATE.md` -> `missing`
 - Generated/supporting evidence:
-  - `docs/reviews/overlay-accessibility/reviewer.review.json` -> `missing`
   - `reports/overlay-manual-a11y-review-report.json` -> `missing`
 
 ### 17. 6. Badge и Overlay: Проверить screen readers
 
 - Gate type: `manual_accessibility_review_gate`
 - Related command: `pnpm overlay:manual-a11y-review`
-- Readiness status: `waiting_for_external_non_owner_json_evidence`
+- Readiness status: `ready_for_owner_input`
 - Required evidence: Manual accessibility review evidence for the required
   assistive technology/browser matrix.
 - Next owner action: Run the manual accessibility review and record reviewer
   evidence.
+- Owner input templates:
+  - `docs/reviews/overlay-accessibility/reviewer.review.json` from
+    `docs/reviews/overlay-accessibility/REVIEW_FORM_TEMPLATE.md` -> `missing`
 - Generated/supporting evidence:
-  - `docs/reviews/overlay-accessibility/reviewer.review.json` -> `missing`
   - `reports/overlay-manual-a11y-review-report.json` -> `missing`
 
 ### 18. 7. VS Code и LSP: Настроить publisher account
@@ -514,14 +553,17 @@ owner evidence. It is not release approval.
 
 - Gate type: `external_security_review_gate`
 - Related command: `pnpm oauth-vault:security-review`
-- Readiness status: `waiting_for_external_non_owner_json_evidence`
+- Readiness status: `ready_for_owner_input`
 - Required evidence: Two real independent OAuth vault security reviewer files
   plus passing vault security review report.
 - Next owner action: Provide real OAuth vault security reviewer evidence and
   rerun the vault security review gate.
+- Owner input templates:
+  - `docs/reviews/oauth-vault-security/reviewer-1.review.json` from
+    `docs/reviews/oauth-vault-security/REVIEW_FORM_TEMPLATE.md` -> `missing`
+  - `docs/reviews/oauth-vault-security/reviewer-2.review.json` from
+    `docs/reviews/oauth-vault-security/REVIEW_FORM_TEMPLATE.md` -> `missing`
 - Generated/supporting evidence:
-  - `docs/reviews/oauth-vault-security/reviewer-1.review.json` -> `missing`
-  - `docs/reviews/oauth-vault-security/reviewer-2.review.json` -> `missing`
   - `reports/oauth-vault-security-review-report.json` -> `missing`
 
 ### 28. 18. Google Search Console: Провести live acceptance на реальном сайте
@@ -901,14 +943,16 @@ owner evidence. It is not release approval.
 
 - Gate type: `external_security_review_gate`
 - Related command: `pnpm security:pentest`
-- Readiness status: `waiting_for_external_non_owner_json_evidence`
+- Readiness status: `ready_for_owner_input`
 - Required evidence: Passed deployed-target DAST, independent penetration-test
   report, remediation sign-off, and security/legal approval.
 - Next owner action: Run DAST against deployed production-equivalent targets,
   commission independent penetration testing, remediate findings, and approve
   the final gate.
+- Owner input templates:
+  - `docs/reviews/penetration-test/report-summary.json` from
+    `docs/reviews/penetration-test/REPORT_SUMMARY_TEMPLATE.md` -> `missing`
 - Generated/supporting evidence:
-  - `docs/reviews/penetration-test/report-summary.json` -> `missing`
   - `reports/penetration-test-release-gate-report.json` -> `missing`
 
 ### 50. 28. Security и Privacy: Завершить security release gate
@@ -935,18 +979,20 @@ owner evidence. It is not release approval.
 
 - Gate type: `independent_reviewer_gate`
 - Related command: `pnpm rule-qa:review`
-- Readiness status: `waiting_for_external_non_owner_json_evidence`
+- Readiness status: `ready_for_owner_input`
 - Required evidence: Two real independent reviewer JSON files, full benchmark
   coverage, matching benchmarkVersion, adjudicated disagreements, and passing
   pnpm rule-qa:review.
 - Next owner action: Select two independent reviewers, collect
   reviewer-1.review.json and reviewer-2.review.json, adjudicate disputes, then
   rerun the review gate.
+- Owner input templates:
+  - `docs/reviews/blocker-benchmark/reviewer-1.review.json` from
+    `docs/reviews/blocker-benchmark/reviewer-1.review.example.json` -> `missing`
+  - `docs/reviews/blocker-benchmark/reviewer-2.review.json` from
+    `docs/reviews/blocker-benchmark/reviewer-2.review.example.json` -> `missing`
 - Generated/supporting evidence:
-  - `docs/reviews/blocker-benchmark/reviewer-1.review.json` -> `missing`
-  - `docs/reviews/blocker-benchmark/reviewer-2.review.json` -> `missing`
-  - `reports/blocker-benchmark-adjudication-summary.json` ->
-    `present_blocked_or_failing`
+  - `reports/blocker-benchmark-adjudication-summary.json` -> `missing`
 
 ### 52. 31. Финальный SearchLint 1.0 Release Gate: Rule QA gate прошёл
 
@@ -958,9 +1004,8 @@ owner evidence. It is not release approval.
 - Next owner action: Complete the independent reviewer gate, then rerun rule QA
   and update status.
 - Generated/supporting evidence:
-  - `reports/blocker-benchmark-adjudication-summary.json` ->
-    `present_blocked_or_failing`
-  - `reports/rule-qa-summary.json` -> `present_with_pass_signal`
+  - `reports/blocker-benchmark-adjudication-summary.json` -> `missing`
+  - `reports/rule-qa-summary.json` -> `missing`
 
 ### 53. 31. Финальный SearchLint 1.0 Release Gate: Все 120 правил verified
 
@@ -972,9 +1017,8 @@ owner evidence. It is not release approval.
 - Next owner action: Complete the independent reviewer gate, then rerun rule QA
   and update status.
 - Generated/supporting evidence:
-  - `reports/blocker-benchmark-adjudication-summary.json` ->
-    `present_blocked_or_failing`
-  - `reports/rule-qa-summary.json` -> `present_with_pass_signal`
+  - `reports/blocker-benchmark-adjudication-summary.json` -> `missing`
+  - `reports/rule-qa-summary.json` -> `missing`
 
 ### 54. 31. Финальный SearchLint 1.0 Release Gate: npm-пакеты опубликованы
 
@@ -1017,15 +1061,17 @@ owner evidence. It is not release approval.
 
 - Gate type: `manual_accessibility_review_gate`
 - Related command: `pnpm overlay:manual-a11y-review`
-- Readiness status: `waiting_for_external_non_owner_json_evidence`
+- Readiness status: `ready_for_owner_input`
 - Required evidence: Overlay automated acceptance, visual regression, and manual
   accessibility/screen-reader reviewer evidence.
 - Next owner action: Run overlay acceptance/visual checks and provide real
   manual accessibility reviewer evidence.
+- Owner input templates:
+  - `docs/reviews/overlay-accessibility/reviewer.review.json` from
+    `docs/reviews/overlay-accessibility/REVIEW_FORM_TEMPLATE.md` -> `missing`
 - Generated/supporting evidence:
   - `reports/overlay-acceptance-report.json` -> `missing`
   - `reports/overlay-visual-regression-report.json` -> `missing`
-  - `docs/reviews/overlay-accessibility/reviewer.review.json` -> `missing`
   - `reports/overlay-manual-a11y-review-report.json` -> `missing`
 
 ### 57. 31. Финальный SearchLint 1.0 Release Gate: PostgreSQL/RDS proof пройден
@@ -1288,27 +1334,31 @@ owner evidence. It is not release approval.
 
 - Gate type: `external_security_review_gate`
 - Related command: `pnpm security:pentest`
-- Readiness status: `waiting_for_external_non_owner_json_evidence`
+- Readiness status: `ready_for_owner_input`
 - Required evidence: Passed deployed-target DAST, independent penetration-test
   report, remediation sign-off, and security/legal approval.
 - Next owner action: Run DAST against deployed production-equivalent targets,
   commission independent penetration testing, remediate findings, and approve
   the final gate.
+- Owner input templates:
+  - `docs/reviews/penetration-test/report-summary.json` from
+    `docs/reviews/penetration-test/REPORT_SUMMARY_TEMPLATE.md` -> `missing`
 - Generated/supporting evidence:
-  - `docs/reviews/penetration-test/report-summary.json` -> `missing`
   - `reports/penetration-test-release-gate-report.json` -> `missing`
 
 ### 72. 31. Финальный SearchLint 1.0 Release Gate: Backup/restore проверены
 
 - Gate type: `production_deployment_gate`
 - Related command: `pnpm backup:restore-live-gate`
-- Readiness status: `waiting_for_external_non_owner_json_evidence`
+- Readiness status: `ready_for_owner_input`
 - Required evidence: Live RDS backup restore, RDS PITR, and S3 object restore
   drill evidence.
 - Next owner action: Provide live backup/restore drill evidence and run the
   backup restore live gate.
+- Owner input templates:
+  - `docs/live-backup-restore-drill.json` from
+    `docs/live-backup-restore-drill.example.json` -> `missing`
 - Generated/supporting evidence:
-  - `docs/live-backup-restore-drill.json` -> `missing`
   - `reports/live-backup-restore-drill-report.json` -> `missing`
 
 ### 73. 31. Финальный SearchLint 1.0 Release Gate: Public website готов
@@ -1332,13 +1382,15 @@ owner evidence. It is not release approval.
 
 - Gate type: `legal_owner_gate`
 - Related command: `pnpm legal:release-gate`
-- Readiness status: `waiting_for_external_non_owner_json_evidence`
+- Readiness status: `ready_for_owner_input`
 - Required evidence: Qualified legal/owner approval JSON plus reviewed
   public/private repository boundary evidence.
 - Next owner action: Complete legal review and provide the approved release-gate
   evidence file.
+- Owner input templates:
+  - `docs/legal-release-approval.json` from
+    `docs/legal-release-approval.example.json` -> `missing`
 - Generated/supporting evidence:
-  - `docs/legal-release-approval.json` -> `missing`
   - `reports/legal-release-approval-report.json` -> `missing`
 
 ### 75. 31. Финальный SearchLint 1.0 Release Gate: Release candidate прошёл полную матрицу
