@@ -9,9 +9,9 @@ evidence, security evidence, or release approval.
 
 ## Current Baseline
 
-- Baseline commit: `e198ecc4950a9fe8ba3d21478d2765e5ae062c40`
+- Baseline commit: `ae5cd871ae85ca030e06906b1eedc8646b097555`
 - Baseline CI: passed in GitHub Actions run
-  `https://github.com/muhamed1222/searchlint/actions/runs/28462082258`
+  `https://github.com/muhamed1222/searchlint/actions/runs/28462720725`
 - Final release gate: `BLOCKED`
 - Release readiness: 522/599 done; 77 remaining
 - Real owner evidence inputs: 0/60 present
