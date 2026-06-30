@@ -3,7 +3,7 @@ import { execFileSync } from "node:child_process";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-import { format } from "prettier";
+import { format, resolveConfig } from "prettier";
 
 const missingTemplateReportPath =
   "reports/release-missing-evidence-template-index-report.json";
@@ -275,6 +275,10 @@ function renderMarkdown(report, packages) {
     "",
     "This runbook aggregates missing owner evidence inputs from `reports/release-missing-evidence-template-index-report.json`. It does not create evidence and it does not close release gates.",
     "",
+    "## Orchestration Board",
+    "",
+    "Use `docs/RELEASE_EVIDENCE_CONTROL_BOARD.md` to route these missing owner inputs to the active GitHub release-evidence issues, handoff packets, and dispatch instructions. The board is an orchestration document only; it does not replace the real owner inputs listed below.",
+    "",
     "## Summary",
     "",
     `- status: \`${report.status}\``,
@@ -335,15 +339,28 @@ function renderMarkdown(report, packages) {
 
 async function writeMarkdown(filePath, markdown) {
   await mkdir(path.dirname(filePath), { recursive: true });
-  await writeFile(filePath, await format(markdown, { parser: "markdown" }));
+  await writeFile(
+    filePath,
+    await format(markdown, {
+      ...(await prettierOptions(filePath)),
+      parser: "markdown"
+    })
+  );
 }
 
 async function writeJson(filePath, value) {
   await mkdir(path.dirname(filePath), { recursive: true });
   await writeFile(
     filePath,
-    await format(JSON.stringify(value), { parser: "json" })
+    await format(`${JSON.stringify(value, null, 2)}\n`, {
+      ...(await prettierOptions(filePath)),
+      parser: "json"
+    })
   );
+}
+
+async function prettierOptions(filePath) {
+  return (await resolveConfig(filePath)) ?? {};
 }
 
 function sensitivePatternMatch(serialized) {
