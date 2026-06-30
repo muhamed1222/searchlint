@@ -6,16 +6,21 @@ This document is an orchestration board for the remaining SearchLint 1.0 release
 evidence work. It does not approve SearchLint 1.0, does not replace real owner
 evidence, and does not close any release gate.
 
-## Current State
+## Last Verified Baseline
 
-- Current `main`: `6cc058272ee3438ccd211a4b087e3664fef9979a`
-- Main CI: passed in GitHub Actions run
+- Verified baseline commit: `6cc058272ee3438ccd211a4b087e3664fef9979a`
+- Baseline CI: passed in GitHub Actions run
   `https://github.com/muhamed1222/searchlint/actions/runs/28456960471`
 - Final release gate: `blocked`
 - Release readiness: 522/599 done; 77 remaining
 - Real owner evidence inputs: 0/60 present
 - Missing evidence paths: 108
 - `v1.0.0`: absent and must not be created yet
+
+`main` may advance as orchestration-only documents are merged. Before using this
+board to close a release gate, rerun the affected verifier plus
+`pnpm release:evidence-readiness` and `pnpm final-release:gate` from a fresh
+checkout.
 
 ## Source Of Truth
 
